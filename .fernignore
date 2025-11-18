@@ -1,0 +1,8 @@
+# Protect custom .gitignore
+.gitignore
+
+# Protect licensing
+LICENSE
+
+# Let Fern generate README
+# README.md
