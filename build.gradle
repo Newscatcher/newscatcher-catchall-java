@@ -9,7 +9,7 @@ plugins {
 repositories {
     mavenCentral()
     maven {
-        url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+        url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
     }
 }
 
@@ -24,8 +24,10 @@ dependencies {
 }
 
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 tasks.withType(Javadoc) {
     failOnError false
