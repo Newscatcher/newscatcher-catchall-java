@@ -1,8 +1,4 @@
-# Protect custom .gitignore
-.gitignore
-
-# Protect licensing
-LICENSE
-
-# Let Fern generate README
-# README.md
+gradle/wrapper/gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties
+gradlew
+gradlew.bat
