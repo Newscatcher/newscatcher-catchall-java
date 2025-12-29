@@ -32,9 +32,13 @@ public final class MonitorListItemDto {
 
     private final Optional<String> schedule;
 
+    private final Optional<String> scheduleHumanReadable;
+
     private final Optional<String> timezone;
 
     private final Optional<OffsetDateTime> createdAt;
+
+    private final Optional<WebhookDto> webhook;
 
     private final Map<String, Object> additionalProperties;
 
@@ -44,16 +48,20 @@ public final class MonitorListItemDto {
             String referenceJobQuery,
             boolean enabled,
             Optional<String> schedule,
+            Optional<String> scheduleHumanReadable,
             Optional<String> timezone,
             Optional<OffsetDateTime> createdAt,
+            Optional<WebhookDto> webhook,
             Map<String, Object> additionalProperties) {
         this.monitorId = monitorId;
         this.referenceJobId = referenceJobId;
         this.referenceJobQuery = referenceJobQuery;
         this.enabled = enabled;
         this.schedule = schedule;
+        this.scheduleHumanReadable = scheduleHumanReadable;
         this.timezone = timezone;
         this.createdAt = createdAt;
+        this.webhook = webhook;
         this.additionalProperties = additionalProperties;
     }
 
@@ -98,6 +106,14 @@ public final class MonitorListItemDto {
     }
 
     /**
+     * @return Natural language description of the monitor schedule.
+     */
+    @JsonProperty("schedule_human_readable")
+    public Optional<String> getScheduleHumanReadable() {
+        return scheduleHumanReadable;
+    }
+
+    /**
      * @return Timezone for schedule execution.
      */
     @JsonProperty("timezone")
@@ -111,6 +127,14 @@ public final class MonitorListItemDto {
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
+    }
+
+    /**
+     * @return Webhook configuration for this monitor (if set).
+     */
+    @JsonProperty("webhook")
+    public Optional<WebhookDto> getWebhook() {
+        return webhook;
     }
 
     @java.lang.Override
@@ -130,8 +154,10 @@ public final class MonitorListItemDto {
                 && referenceJobQuery.equals(other.referenceJobQuery)
                 && enabled == other.enabled
                 && schedule.equals(other.schedule)
+                && scheduleHumanReadable.equals(other.scheduleHumanReadable)
                 && timezone.equals(other.timezone)
-                && createdAt.equals(other.createdAt);
+                && createdAt.equals(other.createdAt)
+                && webhook.equals(other.webhook);
     }
 
     @java.lang.Override
@@ -142,8 +168,10 @@ public final class MonitorListItemDto {
                 this.referenceJobQuery,
                 this.enabled,
                 this.schedule,
+                this.scheduleHumanReadable,
                 this.timezone,
-                this.createdAt);
+                this.createdAt,
+                this.webhook);
     }
 
     @java.lang.Override
@@ -196,6 +224,13 @@ public final class MonitorListItemDto {
         _FinalStage schedule(String schedule);
 
         /**
+         * <p>Natural language description of the monitor schedule.</p>
+         */
+        _FinalStage scheduleHumanReadable(Optional<String> scheduleHumanReadable);
+
+        _FinalStage scheduleHumanReadable(String scheduleHumanReadable);
+
+        /**
          * <p>Timezone for schedule execution.</p>
          */
         _FinalStage timezone(Optional<String> timezone);
@@ -208,6 +243,13 @@ public final class MonitorListItemDto {
         _FinalStage createdAt(Optional<OffsetDateTime> createdAt);
 
         _FinalStage createdAt(OffsetDateTime createdAt);
+
+        /**
+         * <p>Webhook configuration for this monitor (if set).</p>
+         */
+        _FinalStage webhook(Optional<WebhookDto> webhook);
+
+        _FinalStage webhook(WebhookDto webhook);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -221,9 +263,13 @@ public final class MonitorListItemDto {
 
         private boolean enabled;
 
+        private Optional<WebhookDto> webhook = Optional.empty();
+
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
         private Optional<String> timezone = Optional.empty();
+
+        private Optional<String> scheduleHumanReadable = Optional.empty();
 
         private Optional<String> schedule = Optional.empty();
 
@@ -239,8 +285,10 @@ public final class MonitorListItemDto {
             referenceJobQuery(other.getReferenceJobQuery());
             enabled(other.getEnabled());
             schedule(other.getSchedule());
+            scheduleHumanReadable(other.getScheduleHumanReadable());
             timezone(other.getTimezone());
             createdAt(other.getCreatedAt());
+            webhook(other.getWebhook());
             return this;
         }
 
@@ -293,6 +341,26 @@ public final class MonitorListItemDto {
         }
 
         /**
+         * <p>Webhook configuration for this monitor (if set).</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage webhook(WebhookDto webhook) {
+            this.webhook = Optional.ofNullable(webhook);
+            return this;
+        }
+
+        /**
+         * <p>Webhook configuration for this monitor (if set).</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "webhook", nulls = Nulls.SKIP)
+        public _FinalStage webhook(Optional<WebhookDto> webhook) {
+            this.webhook = webhook;
+            return this;
+        }
+
+        /**
          * <p>The date when the monitor was created.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -333,6 +401,26 @@ public final class MonitorListItemDto {
         }
 
         /**
+         * <p>Natural language description of the monitor schedule.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage scheduleHumanReadable(String scheduleHumanReadable) {
+            this.scheduleHumanReadable = Optional.ofNullable(scheduleHumanReadable);
+            return this;
+        }
+
+        /**
+         * <p>Natural language description of the monitor schedule.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "schedule_human_readable", nulls = Nulls.SKIP)
+        public _FinalStage scheduleHumanReadable(Optional<String> scheduleHumanReadable) {
+            this.scheduleHumanReadable = scheduleHumanReadable;
+            return this;
+        }
+
+        /**
          * <p>Cron expression for monitor schedule.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -360,8 +448,10 @@ public final class MonitorListItemDto {
                     referenceJobQuery,
                     enabled,
                     schedule,
+                    scheduleHumanReadable,
                     timezone,
                     createdAt,
+                    webhook,
                     additionalProperties);
         }
     }

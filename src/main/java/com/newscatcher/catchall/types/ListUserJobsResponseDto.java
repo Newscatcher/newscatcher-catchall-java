@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -23,11 +24,22 @@ public final class ListUserJobsResponseDto {
 
     private final String query;
 
+    private final OffsetDateTime createdAt;
+
+    private final String status;
+
     private final Map<String, Object> additionalProperties;
 
-    private ListUserJobsResponseDto(String jobId, String query, Map<String, Object> additionalProperties) {
+    private ListUserJobsResponseDto(
+            String jobId,
+            String query,
+            OffsetDateTime createdAt,
+            String status,
+            Map<String, Object> additionalProperties) {
         this.jobId = jobId;
         this.query = query;
+        this.createdAt = createdAt;
+        this.status = status;
         this.additionalProperties = additionalProperties;
     }
 
@@ -47,6 +59,22 @@ public final class ListUserJobsResponseDto {
         return query;
     }
 
+    /**
+     * @return Job creation timestamp in ISO 8601 format.
+     */
+    @JsonProperty("created_at")
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    /**
+     * @return Current processing status of the job.
+     */
+    @JsonProperty("status")
+    public String getStatus() {
+        return status;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -59,12 +87,15 @@ public final class ListUserJobsResponseDto {
     }
 
     private boolean equalTo(ListUserJobsResponseDto other) {
-        return jobId.equals(other.jobId) && query.equals(other.query);
+        return jobId.equals(other.jobId)
+                && query.equals(other.query)
+                && createdAt.equals(other.createdAt)
+                && status.equals(other.status);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.jobId, this.query);
+        return Objects.hash(this.jobId, this.query, this.createdAt, this.status);
     }
 
     @java.lang.Override
@@ -89,7 +120,21 @@ public final class ListUserJobsResponseDto {
         /**
          * <p>The natural language query for this job.</p>
          */
-        _FinalStage query(@NotNull String query);
+        CreatedAtStage query(@NotNull String query);
+    }
+
+    public interface CreatedAtStage {
+        /**
+         * <p>Job creation timestamp in ISO 8601 format.</p>
+         */
+        StatusStage createdAt(@NotNull OffsetDateTime createdAt);
+    }
+
+    public interface StatusStage {
+        /**
+         * <p>Current processing status of the job.</p>
+         */
+        _FinalStage status(@NotNull String status);
     }
 
     public interface _FinalStage {
@@ -97,10 +142,14 @@ public final class ListUserJobsResponseDto {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements JobIdStage, QueryStage, _FinalStage {
+    public static final class Builder implements JobIdStage, QueryStage, CreatedAtStage, StatusStage, _FinalStage {
         private String jobId;
 
         private String query;
+
+        private OffsetDateTime createdAt;
+
+        private String status;
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -111,6 +160,8 @@ public final class ListUserJobsResponseDto {
         public Builder from(ListUserJobsResponseDto other) {
             jobId(other.getJobId());
             query(other.getQuery());
+            createdAt(other.getCreatedAt());
+            status(other.getStatus());
             return this;
         }
 
@@ -133,14 +184,38 @@ public final class ListUserJobsResponseDto {
          */
         @java.lang.Override
         @JsonSetter("query")
-        public _FinalStage query(@NotNull String query) {
+        public CreatedAtStage query(@NotNull String query) {
             this.query = Objects.requireNonNull(query, "query must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Job creation timestamp in ISO 8601 format.</p>
+         * <p>Job creation timestamp in ISO 8601 format.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("created_at")
+        public StatusStage createdAt(@NotNull OffsetDateTime createdAt) {
+            this.createdAt = Objects.requireNonNull(createdAt, "createdAt must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Current processing status of the job.</p>
+         * <p>Current processing status of the job.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("status")
+        public _FinalStage status(@NotNull String status) {
+            this.status = Objects.requireNonNull(status, "status must not be null");
             return this;
         }
 
         @java.lang.Override
         public ListUserJobsResponseDto build() {
-            return new ListUserJobsResponseDto(jobId, query, additionalProperties);
+            return new ListUserJobsResponseDto(jobId, query, createdAt, status, additionalProperties);
         }
     }
 }
