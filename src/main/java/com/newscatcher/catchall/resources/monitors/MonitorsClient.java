@@ -36,8 +36,17 @@ public class MonitorsClient {
 
     /**
      * Create a monitor that runs jobs based on a reference job with a specified schedule.
-     * <p><strong>Warning</strong>: Schedule validation is limited. Invalid schedules may be parsed incorrectly.
-     * Always test schedules before production use.</p>
+     * <p><strong>Schedule requirements:</strong></p>
+     * <ul>
+     * <li>Minimum 24-hour interval between executions</li>
+     * <li>Natural language format (e.g., &quot;every day at 12 PM UTC&quot;, &quot;every 48 hours&quot;)</li>
+     * </ul>
+     * <p><strong>Validation:</strong></p>
+     * <ul>
+     * <li>Schedules below minimum frequency return error with descriptive message.</li>
+     * <li>Invalid job IDs return 400 Bad Request.</li>
+     * <li>Duplicate monitors (same job already monitored) return error.</li>
+     * </ul>
      */
     public CreateMonitorResponseDto createMonitor(CreateMonitorRequestDto request) {
         return this.rawClient.createMonitor(request).body();
@@ -45,8 +54,17 @@ public class MonitorsClient {
 
     /**
      * Create a monitor that runs jobs based on a reference job with a specified schedule.
-     * <p><strong>Warning</strong>: Schedule validation is limited. Invalid schedules may be parsed incorrectly.
-     * Always test schedules before production use.</p>
+     * <p><strong>Schedule requirements:</strong></p>
+     * <ul>
+     * <li>Minimum 24-hour interval between executions</li>
+     * <li>Natural language format (e.g., &quot;every day at 12 PM UTC&quot;, &quot;every 48 hours&quot;)</li>
+     * </ul>
+     * <p><strong>Validation:</strong></p>
+     * <ul>
+     * <li>Schedules below minimum frequency return error with descriptive message.</li>
+     * <li>Invalid job IDs return 400 Bad Request.</li>
+     * <li>Duplicate monitors (same job already monitored) return error.</li>
+     * </ul>
      */
     public CreateMonitorResponseDto createMonitor(CreateMonitorRequestDto request, RequestOptions requestOptions) {
         return this.rawClient.createMonitor(request, requestOptions).body();
