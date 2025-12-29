@@ -50,13 +50,8 @@ public final class CreateMonitorRequestDto {
     }
 
     /**
-     * @return Natural language schedule description. Examples:
-     * <ul>
-     * <li>&quot;every day at 12 PM UTC&quot;</li>
-     * <li>&quot;every Monday at 9 AM EST&quot;</li>
-     * <li>&quot;every 6 hours&quot;</li>
-     * </ul>
-     * <p><strong>Warning</strong>: Schedule validation is limited. Test carefully before production.</p>
+     * @return Natural language schedule (e.g. 'every day at 12 AM EST').
+     * <p><strong>Minimum frequency:</strong> Monitors must be scheduled at least 24 hours apart.</p>
      */
     @JsonProperty("schedule")
     public String getSchedule() {
@@ -113,13 +108,8 @@ public final class CreateMonitorRequestDto {
 
     public interface ScheduleStage {
         /**
-         * <p>Natural language schedule description. Examples:</p>
-         * <ul>
-         * <li>&quot;every day at 12 PM UTC&quot;</li>
-         * <li>&quot;every Monday at 9 AM EST&quot;</li>
-         * <li>&quot;every 6 hours&quot;</li>
-         * </ul>
-         * <p><strong>Warning</strong>: Schedule validation is limited. Test carefully before production.</p>
+         * <p>Natural language schedule (e.g. 'every day at 12 AM EST').</p>
+         * <p><strong>Minimum frequency:</strong> Monitors must be scheduled at least 24 hours apart.</p>
          */
         _FinalStage schedule(@NotNull String schedule);
     }
@@ -169,20 +159,10 @@ public final class CreateMonitorRequestDto {
         }
 
         /**
-         * <p>Natural language schedule description. Examples:</p>
-         * <ul>
-         * <li>&quot;every day at 12 PM UTC&quot;</li>
-         * <li>&quot;every Monday at 9 AM EST&quot;</li>
-         * <li>&quot;every 6 hours&quot;</li>
-         * </ul>
-         * <p><strong>Warning</strong>: Schedule validation is limited. Test carefully before production.</p>
-         * <p>Natural language schedule description. Examples:</p>
-         * <ul>
-         * <li>&quot;every day at 12 PM UTC&quot;</li>
-         * <li>&quot;every Monday at 9 AM EST&quot;</li>
-         * <li>&quot;every 6 hours&quot;</li>
-         * </ul>
-         * <p><strong>Warning</strong>: Schedule validation is limited. Test carefully before production.</p>
+         * <p>Natural language schedule (e.g. 'every day at 12 AM EST').</p>
+         * <p><strong>Minimum frequency:</strong> Monitors must be scheduled at least 24 hours apart.</p>
+         * <p>Natural language schedule (e.g. 'every day at 12 AM EST').</p>
+         * <p><strong>Minimum frequency:</strong> Monitors must be scheduled at least 24 hours apart.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

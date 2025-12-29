@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = MonitorCitation.Builder.class)
 public final class MonitorCitation {
+    private final String id;
+
     private final String title;
 
     private final String link;
@@ -33,18 +35,28 @@ public final class MonitorCitation {
     private final Map<String, Object> additionalProperties;
 
     private MonitorCitation(
+            String id,
             String title,
             String link,
             OffsetDateTime publishedDate,
             String jobId,
             OffsetDateTime addedOn,
             Map<String, Object> additionalProperties) {
+        this.id = id;
         this.title = title;
         this.link = link;
         this.publishedDate = publishedDate;
         this.jobId = jobId;
         this.addedOn = addedOn;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return Article identifier from News API v3
+     */
+    @JsonProperty("id")
+    public String getId() {
+        return id;
     }
 
     /**
@@ -99,7 +111,8 @@ public final class MonitorCitation {
     }
 
     private boolean equalTo(MonitorCitation other) {
-        return title.equals(other.title)
+        return id.equals(other.id)
+                && title.equals(other.title)
                 && link.equals(other.link)
                 && publishedDate.equals(other.publishedDate)
                 && jobId.equals(other.jobId)
@@ -108,7 +121,7 @@ public final class MonitorCitation {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.title, this.link, this.publishedDate, this.jobId, this.addedOn);
+        return Objects.hash(this.id, this.title, this.link, this.publishedDate, this.jobId, this.addedOn);
     }
 
     @java.lang.Override
@@ -116,8 +129,17 @@ public final class MonitorCitation {
         return ObjectMappers.stringify(this);
     }
 
-    public static TitleStage builder() {
+    public static IdStage builder() {
         return new Builder();
+    }
+
+    public interface IdStage {
+        /**
+         * <p>Article identifier from News API v3</p>
+         */
+        TitleStage id(@NotNull String id);
+
+        Builder from(MonitorCitation other);
     }
 
     public interface TitleStage {
@@ -125,8 +147,6 @@ public final class MonitorCitation {
          * <p>Article title</p>
          */
         LinkStage title(@NotNull String title);
-
-        Builder from(MonitorCitation other);
     }
 
     public interface LinkStage {
@@ -163,7 +183,9 @@ public final class MonitorCitation {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder
-            implements TitleStage, LinkStage, PublishedDateStage, JobIdStage, AddedOnStage, _FinalStage {
+            implements IdStage, TitleStage, LinkStage, PublishedDateStage, JobIdStage, AddedOnStage, _FinalStage {
+        private String id;
+
         private String title;
 
         private String link;
@@ -181,11 +203,24 @@ public final class MonitorCitation {
 
         @java.lang.Override
         public Builder from(MonitorCitation other) {
+            id(other.getId());
             title(other.getTitle());
             link(other.getLink());
             publishedDate(other.getPublishedDate());
             jobId(other.getJobId());
             addedOn(other.getAddedOn());
+            return this;
+        }
+
+        /**
+         * <p>Article identifier from News API v3</p>
+         * <p>Article identifier from News API v3</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("id")
+        public TitleStage id(@NotNull String id) {
+            this.id = Objects.requireNonNull(id, "id must not be null");
             return this;
         }
 
@@ -251,7 +286,7 @@ public final class MonitorCitation {
 
         @java.lang.Override
         public MonitorCitation build() {
-            return new MonitorCitation(title, link, publishedDate, jobId, addedOn, additionalProperties);
+            return new MonitorCitation(id, title, link, publishedDate, jobId, addedOn, additionalProperties);
         }
     }
 }
