@@ -20,6 +20,7 @@ import com.newscatcher.catchall.resources.monitors.requests.DisableMonitorReques
 import com.newscatcher.catchall.resources.monitors.requests.EnableMonitorRequest;
 import com.newscatcher.catchall.resources.monitors.requests.ListMonitorJobsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.PullMonitorResultsRequest;
+import com.newscatcher.catchall.resources.monitors.requests.UpdateMonitorRequestDto;
 import com.newscatcher.catchall.resources.monitors.types.DisableMonitorResponse;
 import com.newscatcher.catchall.resources.monitors.types.EnableMonitorResponse;
 import com.newscatcher.catchall.resources.monitors.types.ListMonitorJobsResponse;
@@ -27,6 +28,7 @@ import com.newscatcher.catchall.types.CreateMonitorResponseDto;
 import com.newscatcher.catchall.types.Error;
 import com.newscatcher.catchall.types.ListMonitorsResponseDto;
 import com.newscatcher.catchall.types.PullMonitorResponseDto;
+import com.newscatcher.catchall.types.UpdateMonitorResponseDto;
 import com.newscatcher.catchall.types.ValidationErrorResponse;
 import java.io.IOException;
 import okhttp3.Headers;
@@ -78,10 +80,14 @@ public class RawMonitorsClient {
      */
     public CatchAllApiHttpResponse<CreateMonitorResponseDto> createMonitor(
             CreateMonitorRequestDto request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
-                .addPathSegments("catchAll/monitors/create")
-                .build();
+                .addPathSegments("catchAll/monitors/create");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((key, value) -> {
+                httpUrl.addQueryParameter(key, value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -90,7 +96,7 @@ public class RawMonitorsClient {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
@@ -126,11 +132,139 @@ public class RawMonitorsClient {
     }
 
     /**
+     * Update webhook configuration for an existing monitor without recreating it.
+     * <p><strong>Supported updates:</strong></p>
+     * <ul>
+     * <li>Webhook URL</li>
+     * <li>HTTP method (POST/PUT)</li>
+     * <li>Headers and authentication</li>
+     * <li>Query parameters</li>
+     * </ul>
+     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     */
+    public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(String monitorId) {
+        return updateMonitor(monitorId, UpdateMonitorRequestDto.builder().build());
+    }
+
+    /**
+     * Update webhook configuration for an existing monitor without recreating it.
+     * <p><strong>Supported updates:</strong></p>
+     * <ul>
+     * <li>Webhook URL</li>
+     * <li>HTTP method (POST/PUT)</li>
+     * <li>Headers and authentication</li>
+     * <li>Query parameters</li>
+     * </ul>
+     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     */
+    public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(
+            String monitorId, RequestOptions requestOptions) {
+        return updateMonitor(monitorId, UpdateMonitorRequestDto.builder().build(), requestOptions);
+    }
+
+    /**
+     * Update webhook configuration for an existing monitor without recreating it.
+     * <p><strong>Supported updates:</strong></p>
+     * <ul>
+     * <li>Webhook URL</li>
+     * <li>HTTP method (POST/PUT)</li>
+     * <li>Headers and authentication</li>
+     * <li>Query parameters</li>
+     * </ul>
+     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     */
+    public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(
+            String monitorId, UpdateMonitorRequestDto request) {
+        return updateMonitor(monitorId, request, null);
+    }
+
+    /**
+     * Update webhook configuration for an existing monitor without recreating it.
+     * <p><strong>Supported updates:</strong></p>
+     * <ul>
+     * <li>Webhook URL</li>
+     * <li>HTTP method (POST/PUT)</li>
+     * <li>Headers and authentication</li>
+     * <li>Query parameters</li>
+     * </ul>
+     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     */
+    public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(
+            String monitorId, UpdateMonitorRequestDto request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/monitors")
+                .addPathSegment(monitorId);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((key, value) -> {
+                httpUrl.addQueryParameter(key, value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("PATCH", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new CatchAllApiHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, UpdateMonitorResponseDto.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidationErrorResponse.class),
+                                response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new CatchAllApiApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (IOException e) {
+            throw new CatchAllApiException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
      * Returns all jobs associated with a monitor, sorted by start_date.
      * Each job includes job_id, start_date, and end_date.
      */
     public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(String monitorId) {
         return listMonitorJobs(monitorId, ListMonitorJobsRequest.builder().build());
+    }
+
+    /**
+     * Returns all jobs associated with a monitor, sorted by start_date.
+     * Each job includes job_id, start_date, and end_date.
+     */
+    public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(
+            String monitorId, RequestOptions requestOptions) {
+        return listMonitorJobs(monitorId, ListMonitorJobsRequest.builder().build(), requestOptions);
     }
 
     /**
@@ -156,6 +290,11 @@ public class RawMonitorsClient {
         if (request.getSort().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "sort", request.getSort().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((key, value) -> {
+                httpUrl.addQueryParameter(key, value);
+            });
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
@@ -209,6 +348,15 @@ public class RawMonitorsClient {
      * Includes monitor configuration, execution history, and all records collected.
      */
     public CatchAllApiHttpResponse<PullMonitorResponseDto> pullMonitorResults(
+            String monitorId, RequestOptions requestOptions) {
+        return pullMonitorResults(monitorId, PullMonitorResultsRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Retrieve aggregated results from all jobs executed by this monitor.
+     * Includes monitor configuration, execution history, and all records collected.
+     */
+    public CatchAllApiHttpResponse<PullMonitorResponseDto> pullMonitorResults(
             String monitorId, PullMonitorResultsRequest request) {
         return pullMonitorResults(monitorId, request, null);
     }
@@ -219,13 +367,17 @@ public class RawMonitorsClient {
      */
     public CatchAllApiHttpResponse<PullMonitorResponseDto> pullMonitorResults(
             String monitorId, PullMonitorResultsRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors/pull")
-                .addPathSegment(monitorId)
-                .build();
+                .addPathSegment(monitorId);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((key, value) -> {
+                httpUrl.addQueryParameter(key, value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
@@ -276,6 +428,15 @@ public class RawMonitorsClient {
      * Validates that the provided API key is associated with the monitor.
      */
     public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(
+            String monitorId, RequestOptions requestOptions) {
+        return disableMonitor(monitorId, DisableMonitorRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Disables a monitor to stop executing scheduled jobs.
+     * Validates that the provided API key is associated with the monitor.
+     */
+    public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(
             String monitorId, DisableMonitorRequest request) {
         return disableMonitor(monitorId, request, null);
     }
@@ -286,14 +447,18 @@ public class RawMonitorsClient {
      */
     public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(
             String monitorId, DisableMonitorRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors")
                 .addPathSegment(monitorId)
-                .addPathSegments("disable")
-                .build();
+                .addPathSegments("disable");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((key, value) -> {
+                httpUrl.addQueryParameter(key, value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("POST", RequestBody.create("", null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
@@ -347,6 +512,15 @@ public class RawMonitorsClient {
      * Validates that the provided API key is associated with the monitor.
      */
     public CatchAllApiHttpResponse<EnableMonitorResponse> enableMonitor(
+            String monitorId, RequestOptions requestOptions) {
+        return enableMonitor(monitorId, EnableMonitorRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Enables a monitor to resume executing scheduled jobs.
+     * Validates that the provided API key is associated with the monitor.
+     */
+    public CatchAllApiHttpResponse<EnableMonitorResponse> enableMonitor(
             String monitorId, EnableMonitorRequest request) {
         return enableMonitor(monitorId, request, null);
     }
@@ -357,14 +531,18 @@ public class RawMonitorsClient {
      */
     public CatchAllApiHttpResponse<EnableMonitorResponse> enableMonitor(
             String monitorId, EnableMonitorRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors")
                 .addPathSegment(monitorId)
-                .addPathSegments("enable")
-                .build();
+                .addPathSegments("enable");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((key, value) -> {
+                httpUrl.addQueryParameter(key, value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("POST", RequestBody.create("", null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
@@ -415,12 +593,16 @@ public class RawMonitorsClient {
      * Returns all monitors created by the authenticated user.
      */
     public CatchAllApiHttpResponse<ListMonitorsResponseDto> listMonitors(RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
-                .addPathSegments("catchAll/monitors")
-                .build();
+                .addPathSegments("catchAll/monitors");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((key, value) -> {
+                httpUrl.addQueryParameter(key, value);
+            });
+        }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
