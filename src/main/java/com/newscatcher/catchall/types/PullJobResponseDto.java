@@ -40,6 +40,8 @@ public final class PullJobResponseDto {
 
     private final Optional<Integer> validRecords;
 
+    private final Optional<Integer> progressValidated;
+
     private final Optional<PullJobResponseDtoDateRange> dateRange;
 
     private final Optional<Integer> page;
@@ -62,6 +64,7 @@ public final class PullJobResponseDto {
             Optional<String> duration,
             Optional<Integer> candidateRecords,
             Optional<Integer> validRecords,
+            Optional<Integer> progressValidated,
             Optional<PullJobResponseDtoDateRange> dateRange,
             Optional<Integer> page,
             Optional<Integer> totalPages,
@@ -77,6 +80,7 @@ public final class PullJobResponseDto {
         this.duration = duration;
         this.candidateRecords = candidateRecords;
         this.validRecords = validRecords;
+        this.progressValidated = progressValidated;
         this.dateRange = dateRange;
         this.page = page;
         this.totalPages = totalPages;
@@ -158,6 +162,15 @@ public final class PullJobResponseDto {
         return validRecords;
     }
 
+    /**
+     * @return Number of candidate records that have been validated during processing.
+     * <p>The system process records in batches. This field tracks how many candidates have been checked against validation criteria so far.</p>
+     */
+    @JsonProperty("progress_validated")
+    public Optional<Integer> getProgressValidated() {
+        return progressValidated;
+    }
+
     @JsonProperty("date_range")
     public Optional<PullJobResponseDtoDateRange> getDateRange() {
         return dateRange;
@@ -216,6 +229,7 @@ public final class PullJobResponseDto {
                 && duration.equals(other.duration)
                 && candidateRecords.equals(other.candidateRecords)
                 && validRecords.equals(other.validRecords)
+                && progressValidated.equals(other.progressValidated)
                 && dateRange.equals(other.dateRange)
                 && page.equals(other.page)
                 && totalPages.equals(other.totalPages)
@@ -235,6 +249,7 @@ public final class PullJobResponseDto {
                 this.duration,
                 this.candidateRecords,
                 this.validRecords,
+                this.progressValidated,
                 this.dateRange,
                 this.page,
                 this.totalPages,
@@ -320,6 +335,14 @@ public final class PullJobResponseDto {
 
         _FinalStage validRecords(Integer validRecords);
 
+        /**
+         * <p>Number of candidate records that have been validated during processing.</p>
+         * <p>The system process records in batches. This field tracks how many candidates have been checked against validation criteria so far.</p>
+         */
+        _FinalStage progressValidated(Optional<Integer> progressValidated);
+
+        _FinalStage progressValidated(Integer progressValidated);
+
         _FinalStage dateRange(Optional<PullJobResponseDtoDateRange> dateRange);
 
         _FinalStage dateRange(PullJobResponseDtoDateRange dateRange);
@@ -369,6 +392,8 @@ public final class PullJobResponseDto {
 
         private Optional<PullJobResponseDtoDateRange> dateRange = Optional.empty();
 
+        private Optional<Integer> progressValidated = Optional.empty();
+
         private Optional<Integer> validRecords = Optional.empty();
 
         private Optional<Integer> candidateRecords = Optional.empty();
@@ -399,6 +424,7 @@ public final class PullJobResponseDto {
             duration(other.getDuration());
             candidateRecords(other.getCandidateRecords());
             validRecords(other.getValidRecords());
+            progressValidated(other.getProgressValidated());
             dateRange(other.getDateRange());
             page(other.getPage());
             totalPages(other.getTotalPages());
@@ -521,6 +547,28 @@ public final class PullJobResponseDto {
         @JsonSetter(value = "date_range", nulls = Nulls.SKIP)
         public _FinalStage dateRange(Optional<PullJobResponseDtoDateRange> dateRange) {
             this.dateRange = dateRange;
+            return this;
+        }
+
+        /**
+         * <p>Number of candidate records that have been validated during processing.</p>
+         * <p>The system process records in batches. This field tracks how many candidates have been checked against validation criteria so far.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage progressValidated(Integer progressValidated) {
+            this.progressValidated = Optional.ofNullable(progressValidated);
+            return this;
+        }
+
+        /**
+         * <p>Number of candidate records that have been validated during processing.</p>
+         * <p>The system process records in batches. This field tracks how many candidates have been checked against validation criteria so far.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "progress_validated", nulls = Nulls.SKIP)
+        public _FinalStage progressValidated(Optional<Integer> progressValidated) {
+            this.progressValidated = progressValidated;
             return this;
         }
 
@@ -678,6 +726,7 @@ public final class PullJobResponseDto {
                     duration,
                     candidateRecords,
                     validRecords,
+                    progressValidated,
                     dateRange,
                     page,
                     totalPages,

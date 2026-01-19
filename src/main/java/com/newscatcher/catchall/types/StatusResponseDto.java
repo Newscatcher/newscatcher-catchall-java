@@ -25,14 +25,14 @@ import org.jetbrains.annotations.NotNull;
 public final class StatusResponseDto {
     private final String jobId;
 
-    private final Optional<String> status;
+    private final Optional<JobStatus> status;
 
     private final List<JobStep> steps;
 
     private final Map<String, Object> additionalProperties;
 
     private StatusResponseDto(
-            String jobId, Optional<String> status, List<JobStep> steps, Map<String, Object> additionalProperties) {
+            String jobId, Optional<JobStatus> status, List<JobStep> steps, Map<String, Object> additionalProperties) {
         this.jobId = jobId;
         this.status = status;
         this.steps = steps;
@@ -48,10 +48,10 @@ public final class StatusResponseDto {
     }
 
     /**
-     * @return Internal job processing status. Use the <code>steps</code> array for reliable status tracking.
+     * @return Current job processing status.
      */
     @JsonProperty("status")
-    public Optional<String> getStatus() {
+    public Optional<JobStatus> getStatus() {
         return status;
     }
 
@@ -105,11 +105,11 @@ public final class StatusResponseDto {
         StatusResponseDto build();
 
         /**
-         * <p>Internal job processing status. Use the <code>steps</code> array for reliable status tracking.</p>
+         * <p>Current job processing status.</p>
          */
-        _FinalStage status(Optional<String> status);
+        _FinalStage status(Optional<JobStatus> status);
 
-        _FinalStage status(String status);
+        _FinalStage status(JobStatus status);
 
         /**
          * <p>Detailed progress tracking for each processing stage. Steps progress sequentially from order 1 (submitted) through 5 (enriching), ending at order 6 (completed) or 7 (failed).</p>
@@ -127,7 +127,7 @@ public final class StatusResponseDto {
 
         private List<JobStep> steps = new ArrayList<>();
 
-        private Optional<String> status = Optional.empty();
+        private Optional<JobStatus> status = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -190,21 +190,21 @@ public final class StatusResponseDto {
         }
 
         /**
-         * <p>Internal job processing status. Use the <code>steps</code> array for reliable status tracking.</p>
+         * <p>Current job processing status.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage status(String status) {
+        public _FinalStage status(JobStatus status) {
             this.status = Optional.ofNullable(status);
             return this;
         }
 
         /**
-         * <p>Internal job processing status. Use the <code>steps</code> array for reliable status tracking.</p>
+         * <p>Current job processing status.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
-        public _FinalStage status(Optional<String> status) {
+        public _FinalStage status(Optional<JobStatus> status) {
             this.status = status;
             return this;
         }

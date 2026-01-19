@@ -52,7 +52,7 @@ public final class MonitorCitation {
     }
 
     /**
-     * @return Article identifier from News API v3
+     * @return Article identifier from News API
      */
     @JsonProperty("id")
     public String getId() {
@@ -135,7 +135,7 @@ public final class MonitorCitation {
 
     public interface IdStage {
         /**
-         * <p>Article identifier from News API v3</p>
+         * <p>Article identifier from News API</p>
          */
         TitleStage id(@NotNull String id);
 
@@ -213,8 +213,8 @@ public final class MonitorCitation {
         }
 
         /**
-         * <p>Article identifier from News API v3</p>
-         * <p>Article identifier from News API v3</p>
+         * <p>Article identifier from News API</p>
+         * <p>Article identifier from News API</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
