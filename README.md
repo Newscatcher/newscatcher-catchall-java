@@ -13,7 +13,7 @@ Add the dependency in your `build.gradle` file:
 
 ```groovy
 dependencies {
-    implementation 'com.newscatcherapi:newscatcher-catchall-sdk:0.1.0'
+    implementation 'com.newscatcherapi:newscatcher-catchall-sdk:0.3.0'
 }
 ```
 
@@ -25,7 +25,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
     <groupId>com.newscatcherapi</groupId>
     <artifactId>newscatcher-catchall-sdk</artifactId>
-    <version>0.1.0</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
@@ -42,9 +42,11 @@ Submit a query and retrieve structured results:
 ```java
 import com.newscatcher.catchall.CatchAllApi;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
+import com.newscatcher.catchall.resources.jobs.requests.ContinueRequestDto;
 import com.newscatcher.catchall.types.StatusResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
 import com.newscatcher.catchall.types.SubmitResponseBody;
+import com.newscatcher.catchall.types.ContinueResponseDto;
 
 public class JobsExample {
     public static void main(String[] args) throws InterruptedException {
@@ -52,39 +54,73 @@ public class JobsExample {
             .apiKey("YOUR_API_KEY")
             .build();
 
-        // Create a job
+        // Create a job with optional limit for testing
         SubmitResponseBody job = client.jobs().createJob(
             SubmitRequestDto.builder()
                 .query("Tech company earnings this quarter")
                 .context("Focus on revenue and profit margins")
-                .schema("Company [NAME] earned [REVENUE] in [QUARTER]")
+                .limit(10) // Start with 10 records for quick testing
                 .build()
         );
         System.out.println("Job created: " + job.getJobId());
 
-        // Poll for completion
+        // Poll for completion with progress updates
         String jobId = job.getJobId();
         while (true) {
             StatusResponseDto status = client.jobs().getJobStatus(jobId);
+            String currentStatus = status.getStatus().orElse("");
 
-            System.out.println("Current status: " + status.getStatus());
-
-            // Check if job is completed
-            if ("job_completed".equals(status.getStatus())) {
-                System.out.println("Job completed!");
+            // Check if completed or enriching (early access)
+            if ("completed".equals(currentStatus) || "enriching".equals(currentStatus)) {
+                System.out.println("Job " + currentStatus + "!");
                 break;
             }
+
+            // Show current processing step
+            status.getSteps().stream()
+                .filter(step -> !step.getCompleted().orElse(false))
+                .findFirst()
+                .ifPresent(step -> System.out.println(String.format(
+                    "Processing: %s (step %d/7)",
+                    step.getStatus(),
+                    step.getOrder()
+                )));
 
             Thread.sleep(60000); // Wait 60 seconds
         }
 
-        // Retrieve results
+        // Retrieve initial results (available during enriching stage)
         PullJobResponseDto results = client.jobs().getJobResults(jobId);
+        System.out.println("Found " + results.getValidRecords() + " valid records");
         System.out.println(String.format(
-            "Found %d valid records from %d candidates",
-            results.getValidRecords(),
-            results.getCandidateRecords()
+            "Progress: %d/%d validated",
+            results.getProgressValidated().orElse(0),
+            results.getCandidateRecords().orElse(0)
         ));
+
+        // Continue job to process more records
+        if (results.getValidRecords() >= 10) {
+            ContinueResponseDto continued = client.jobs().continueJob(
+                ContinueRequestDto.builder()
+                    .jobId(jobId)
+                    .newLimit(50) // Increase to 50 records
+                    .build()
+            );
+            System.out.println("Job continued: " + continued.getJobId());
+
+            // Wait for completion
+            while (true) {
+                StatusResponseDto status = client.jobs().getJobStatus(jobId);
+                if ("completed".equals(status.getStatus().orElse(""))) {
+                    break;
+                }
+                Thread.sleep(60000);
+            }
+
+            // Get final results
+            PullJobResponseDto finalResults = client.jobs().getJobResults(jobId);
+            System.out.println("Final: " + finalResults.getValidRecords() + " records");
+        }
 
         results.getAllRecords().forEach(record ->
             System.out.println(record.getRecordTitle())
@@ -102,10 +138,15 @@ Automate recurring queries with scheduled execution:
 ```java
 import com.newscatcher.catchall.CatchAllApi;
 import com.newscatcher.catchall.resources.monitors.requests.CreateMonitorRequestDto;
+import com.newscatcher.catchall.resources.monitors.requests.UpdateMonitorRequestDto;
+import com.newscatcher.catchall.resources.monitors.requests.ListMonitorJobsRequest;
 import com.newscatcher.catchall.types.WebhookDto;
 import com.newscatcher.catchall.types.CreateMonitorResponseDto;
-import com.newscatcher.catchall.types.ListMonitorsResponseDto;
+import com.newscatcher.catchall.types.UpdateMonitorResponseDto;
+import com.newscatcher.catchall.types.ListMonitorJobsResponse;
 import com.newscatcher.catchall.types.PullMonitorResponseDto;
+import com.newscatcher.catchall.types.DisableMonitorResponse;
+import com.newscatcher.catchall.types.EnableMonitorResponse;
 import java.util.Map;
 
 public class MonitorsExample {
@@ -128,15 +169,48 @@ public class MonitorsExample {
         );
         System.out.println("Monitor created: " + monitor.getMonitorId().orElse("N/A"));
 
-        // List all monitors
-        ListMonitorsResponseDto monitors = client.monitors().listMonitors();
-        System.out.println("Total monitors: " + monitors.getTotalMonitors());
+        String monitorId = monitor.getMonitorId().orElseThrow();
+
+        // Update webhook configuration without recreating monitor
+        UpdateMonitorResponseDto updated = client.monitors().updateMonitor(
+            monitorId,
+            UpdateMonitorRequestDto.builder()
+                .webhook(WebhookDto.builder()
+                    .url("https://new-endpoint.com/webhook")
+                    .method("POST")
+                    .headers(Map.of("Authorization", "Bearer NEW_TOKEN"))
+                    .build())
+                .build()
+        );
+
+        // Pause monitor execution
+        DisableMonitorResponse disabled = client.monitors().disableMonitor(monitorId);
+        System.out.println("Monitor paused");
+
+        // Resume monitor execution
+        EnableMonitorResponse enabled = client.monitors().enableMonitor(monitorId);
+        System.out.println("Monitor resumed");
+
+        // List monitor execution history
+        ListMonitorJobsResponse jobs = client.monitors().listMonitorJobs(
+            monitorId,
+            ListMonitorJobsRequest.builder()
+                .sort("desc") // Most recent first
+                .build()
+        );
+        System.out.println("Monitor has executed " + jobs.getTotalJobs() + " jobs");
+        jobs.getJobs().forEach(job ->
+            System.out.println(String.format(
+                "  Job %s: %s to %s",
+                job.getJobId(),
+                job.getStartDate(),
+                job.getEndDate()
+            ))
+        );
 
         // Get aggregated results
-        monitor.getMonitorId().ifPresent(monitorId -> {
-            PullMonitorResponseDto results = client.monitors().pullMonitorResults(monitorId);
-            System.out.println("Collected " + results.getRecords() + " records");
-        });
+        PullMonitorResponseDto results = client.monitors().pullMonitorResults(monitorId);
+        System.out.println("Collected " + results.getRecords() + " records across all executions");
     }
 }
 ```
