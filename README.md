@@ -13,7 +13,7 @@ Add the dependency in your `build.gradle` file:
 
 ```groovy
 dependencies {
-    implementation 'com.newscatcherapi:newscatcher-catchall-sdk:0.3.0'
+    implementation 'com.newscatcherapi:newscatcher-catchall-sdk:0.3.1'
 }
 ```
 
@@ -25,7 +25,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
     <groupId>com.newscatcherapi</groupId>
     <artifactId>newscatcher-catchall-sdk</artifactId>
-    <version>0.3.0</version>
+    <version>0.3.1</version>
 </dependency>
 ```
 
@@ -47,6 +47,7 @@ import com.newscatcher.catchall.types.StatusResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
 import com.newscatcher.catchall.types.SubmitResponseBody;
 import com.newscatcher.catchall.types.ContinueResponseDto;
+import com.newscatcher.catchall.types.JobStatus;
 
 public class JobsExample {
     public static void main(String[] args) throws InterruptedException {
@@ -68,11 +69,11 @@ public class JobsExample {
         String jobId = job.getJobId();
         while (true) {
             StatusResponseDto status = client.jobs().getJobStatus(jobId);
-            String currentStatus = status.getStatus().orElse("");
-
+            
             // Check if completed or enriching (early access)
-            if ("completed".equals(currentStatus) || "enriching".equals(currentStatus)) {
-                System.out.println("Job " + currentStatus + "!");
+            if (JobStatus.COMPLETED.equals(status.getStatus().orElse(null)) || 
+                JobStatus.ENRICHING.equals(status.getStatus().orElse(null))) {
+                System.out.println("Job " + status.getStatus().orElse(null) + "!");
                 break;
             }
 
@@ -91,7 +92,7 @@ public class JobsExample {
 
         // Retrieve initial results (available during enriching stage)
         PullJobResponseDto results = client.jobs().getJobResults(jobId);
-        System.out.println("Found " + results.getValidRecords() + " valid records");
+        System.out.println("Found " + results.getValidRecords().orElse(0) + " valid records");
         System.out.println(String.format(
             "Progress: %d/%d validated",
             results.getProgressValidated().orElse(0),
@@ -99,7 +100,7 @@ public class JobsExample {
         ));
 
         // Continue job to process more records
-        if (results.getValidRecords() >= 10) {
+        if (results.getValidRecords().orElse(0) >= 10) {
             ContinueResponseDto continued = client.jobs().continueJob(
                 ContinueRequestDto.builder()
                     .jobId(jobId)
@@ -111,7 +112,7 @@ public class JobsExample {
             // Wait for completion
             while (true) {
                 StatusResponseDto status = client.jobs().getJobStatus(jobId);
-                if ("completed".equals(status.getStatus().orElse(""))) {
+                if (JobStatus.COMPLETED.equals(status.getStatus().orElse(null))) {
                     break;
                 }
                 Thread.sleep(60000);
@@ -119,11 +120,13 @@ public class JobsExample {
 
             // Get final results
             PullJobResponseDto finalResults = client.jobs().getJobResults(jobId);
-            System.out.println("Final: " + finalResults.getValidRecords() + " records");
+            System.out.println("Final: " + finalResults.getValidRecords().orElse(0) + " records");
         }
 
-        results.getAllRecords().forEach(record ->
-            System.out.println(record.getRecordTitle())
+        results.getAllRecords().ifPresent(records ->
+            records.forEach(record ->
+                System.out.println(record.getRecordTitle())
+            )
         );
     }
 }
@@ -141,6 +144,7 @@ import com.newscatcher.catchall.resources.monitors.requests.CreateMonitorRequest
 import com.newscatcher.catchall.resources.monitors.requests.UpdateMonitorRequestDto;
 import com.newscatcher.catchall.resources.monitors.requests.ListMonitorJobsRequest;
 import com.newscatcher.catchall.types.WebhookDto;
+import com.newscatcher.catchall.types.WebhookDtoMethod;
 import com.newscatcher.catchall.types.CreateMonitorResponseDto;
 import com.newscatcher.catchall.types.UpdateMonitorResponseDto;
 import com.newscatcher.catchall.types.ListMonitorJobsResponse;
@@ -162,7 +166,7 @@ public class MonitorsExample {
                 .schedule("every day at 12 PM UTC")
                 .webhook(WebhookDto.builder()
                     .url("https://your-endpoint.com/webhook")
-                    .method("POST")
+                    .method(WebhookDtoMethod.POST)
                     .headers(Map.of("Authorization", "Bearer YOUR_TOKEN"))
                     .build())
                 .build()
@@ -177,7 +181,7 @@ public class MonitorsExample {
             UpdateMonitorRequestDto.builder()
                 .webhook(WebhookDto.builder()
                     .url("https://new-endpoint.com/webhook")
-                    .method("POST")
+                    .method(WebhookDtoMethod.POST)
                     .headers(Map.of("Authorization", "Bearer NEW_TOKEN"))
                     .build())
                 .build()
@@ -210,7 +214,7 @@ public class MonitorsExample {
 
         // Get aggregated results
         PullMonitorResponseDto results = client.monitors().pullMonitorResults(monitorId);
-        System.out.println("Collected " + results.getRecords() + " records across all executions");
+        System.out.println("Collected " + results.getRecords().orElse(0) + " records across all executions");
     }
 }
 ```
@@ -258,23 +262,25 @@ while (true) {
 
     System.out.println(String.format(
         "Page %d/%d: %d records",
-        results.getPage(),
-        results.getTotalPages(),
-        results.getAllRecords().size()
+        results.getPage().orElse(0),
+        results.getTotalPages().orElse(0),
+        results.getAllRecords().map(List::size).orElse(0)
     ));
 
-    results.getAllRecords().forEach(record -> {
-        // Process each record
-        System.out.println("  - " + record.getRecordTitle());
-    });
+    results.getAllRecords().ifPresent(records ->
+        records.forEach(record -> {
+            // Process each record
+            System.out.println("  - " + record.getRecordTitle());
+        })
+    );
 
-    if (results.getPage() >= results.getTotalPages()) {
+    if (results.getPage().orElse(0) >= results.getTotalPages().orElse(1)) {
         break;
     }
     page++;
 }
 
-System.out.println("Processed " + results.getValidRecords() + " total records");
+System.out.println("Processed " + results.getValidRecords().orElse(0) + " total records");
 ```
 
 ### Access raw response data
