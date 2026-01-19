@@ -5,9 +5,11 @@ package com.newscatcher.catchall.resources.jobs;
 
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
+import com.newscatcher.catchall.resources.jobs.requests.ContinueRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobResultsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobStatusRequest;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
+import com.newscatcher.catchall.types.ContinueResponseDto;
 import com.newscatcher.catchall.types.ListUserJobsResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
 import com.newscatcher.catchall.types.StatusResponseDto;
@@ -46,10 +48,31 @@ public class JobsClient {
     }
 
     /**
+     * Continue an existing job to process more records beyond the initial limit.
+     */
+    public ContinueResponseDto continueJob(ContinueRequestDto request) {
+        return this.rawClient.continueJob(request).body();
+    }
+
+    /**
+     * Continue an existing job to process more records beyond the initial limit.
+     */
+    public ContinueResponseDto continueJob(ContinueRequestDto request, RequestOptions requestOptions) {
+        return this.rawClient.continueJob(request, requestOptions).body();
+    }
+
+    /**
      * Retrieve the current processing status of a job.
      */
     public StatusResponseDto getJobStatus(String jobId) {
         return this.rawClient.getJobStatus(jobId).body();
+    }
+
+    /**
+     * Retrieve the current processing status of a job.
+     */
+    public StatusResponseDto getJobStatus(String jobId, RequestOptions requestOptions) {
+        return this.rawClient.getJobStatus(jobId, requestOptions).body();
     }
 
     /**
@@ -85,6 +108,13 @@ public class JobsClient {
      */
     public PullJobResponseDto getJobResults(String jobId) {
         return this.rawClient.getJobResults(jobId).body();
+    }
+
+    /**
+     * Retrieve the final results for a completed job.
+     */
+    public PullJobResponseDto getJobResults(String jobId, RequestOptions requestOptions) {
+        return this.rawClient.getJobResults(jobId, requestOptions).body();
     }
 
     /**

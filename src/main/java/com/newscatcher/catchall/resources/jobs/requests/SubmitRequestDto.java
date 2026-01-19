@@ -27,13 +27,20 @@ public final class SubmitRequestDto {
 
     private final Optional<String> context;
 
+    private final Optional<Integer> limit;
+
     private final Map<String, Object> additionalProperties;
 
     private SubmitRequestDto(
-            String query, Optional<String> schema, Optional<String> context, Map<String, Object> additionalProperties) {
+            String query,
+            Optional<String> schema,
+            Optional<String> context,
+            Optional<Integer> limit,
+            Map<String, Object> additionalProperties) {
         this.query = query;
         this.schema = schema;
         this.context = context;
+        this.limit = limit;
         this.additionalProperties = additionalProperties;
     }
 
@@ -52,6 +59,15 @@ public final class SubmitRequestDto {
         return context;
     }
 
+    /**
+     * @return Maximum number of records to return. If not specified, defaults to your plan limit.
+     * <p>Use /catchAll/continue to extend the limit after job completion without reprocessing.</p>
+     */
+    @JsonProperty("limit")
+    public Optional<Integer> getLimit() {
+        return limit;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -64,12 +80,15 @@ public final class SubmitRequestDto {
     }
 
     private boolean equalTo(SubmitRequestDto other) {
-        return query.equals(other.query) && schema.equals(other.schema) && context.equals(other.context);
+        return query.equals(other.query)
+                && schema.equals(other.schema)
+                && context.equals(other.context)
+                && limit.equals(other.limit);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.query, this.schema, this.context);
+        return Objects.hash(this.query, this.schema, this.context, this.limit);
     }
 
     @java.lang.Override
@@ -97,11 +116,21 @@ public final class SubmitRequestDto {
         _FinalStage context(Optional<String> context);
 
         _FinalStage context(String context);
+
+        /**
+         * <p>Maximum number of records to return. If not specified, defaults to your plan limit.</p>
+         * <p>Use /catchAll/continue to extend the limit after job completion without reprocessing.</p>
+         */
+        _FinalStage limit(Optional<Integer> limit);
+
+        _FinalStage limit(Integer limit);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements QueryStage, _FinalStage {
         private String query;
+
+        private Optional<Integer> limit = Optional.empty();
 
         private Optional<String> context = Optional.empty();
 
@@ -117,6 +146,7 @@ public final class SubmitRequestDto {
             query(other.getQuery());
             schema(other.getSchema());
             context(other.getContext());
+            limit(other.getLimit());
             return this;
         }
 
@@ -124,6 +154,28 @@ public final class SubmitRequestDto {
         @JsonSetter("query")
         public _FinalStage query(@NotNull String query) {
             this.query = Objects.requireNonNull(query, "query must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Maximum number of records to return. If not specified, defaults to your plan limit.</p>
+         * <p>Use /catchAll/continue to extend the limit after job completion without reprocessing.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage limit(Integer limit) {
+            this.limit = Optional.ofNullable(limit);
+            return this;
+        }
+
+        /**
+         * <p>Maximum number of records to return. If not specified, defaults to your plan limit.</p>
+         * <p>Use /catchAll/continue to extend the limit after job completion without reprocessing.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "limit", nulls = Nulls.SKIP)
+        public _FinalStage limit(Optional<Integer> limit) {
+            this.limit = limit;
             return this;
         }
 
@@ -155,7 +207,7 @@ public final class SubmitRequestDto {
 
         @java.lang.Override
         public SubmitRequestDto build() {
-            return new SubmitRequestDto(query, schema, context, additionalProperties);
+            return new SubmitRequestDto(query, schema, context, limit, additionalProperties);
         }
     }
 }

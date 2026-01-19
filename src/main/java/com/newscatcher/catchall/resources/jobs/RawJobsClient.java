@@ -13,12 +13,15 @@ import com.newscatcher.catchall.core.MediaTypes;
 import com.newscatcher.catchall.core.ObjectMappers;
 import com.newscatcher.catchall.core.QueryStringMapper;
 import com.newscatcher.catchall.core.RequestOptions;
+import com.newscatcher.catchall.errors.BadRequestError;
 import com.newscatcher.catchall.errors.ForbiddenError;
 import com.newscatcher.catchall.errors.NotFoundError;
 import com.newscatcher.catchall.errors.UnprocessableEntityError;
+import com.newscatcher.catchall.resources.jobs.requests.ContinueRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobResultsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobStatusRequest;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
+import com.newscatcher.catchall.types.ContinueResponseDto;
 import com.newscatcher.catchall.types.Error;
 import com.newscatcher.catchall.types.ListUserJobsResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
@@ -54,10 +57,14 @@ public class RawJobsClient {
      */
     public CatchAllApiHttpResponse<SubmitResponseBody> createJob(
             SubmitRequestDto request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
-                .addPathSegments("catchAll/submit")
-                .build();
+                .addPathSegments("catchAll/submit");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((key, value) -> {
+                httpUrl.addQueryParameter(key, value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -66,7 +73,7 @@ public class RawJobsClient {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
@@ -105,10 +112,86 @@ public class RawJobsClient {
     }
 
     /**
+     * Continue an existing job to process more records beyond the initial limit.
+     */
+    public CatchAllApiHttpResponse<ContinueResponseDto> continueJob(ContinueRequestDto request) {
+        return continueJob(request, null);
+    }
+
+    /**
+     * Continue an existing job to process more records beyond the initial limit.
+     */
+    public CatchAllApiHttpResponse<ContinueResponseDto> continueJob(
+            ContinueRequestDto request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/continue");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((key, value) -> {
+                httpUrl.addQueryParameter(key, value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new CatchAllApiHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ContinueResponseDto.class), response);
+            }
+            try {
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidationErrorResponse.class),
+                                response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new CatchAllApiApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (IOException e) {
+            throw new CatchAllApiException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
      * Retrieve the current processing status of a job.
      */
     public CatchAllApiHttpResponse<StatusResponseDto> getJobStatus(String jobId) {
         return getJobStatus(jobId, GetJobStatusRequest.builder().build());
+    }
+
+    /**
+     * Retrieve the current processing status of a job.
+     */
+    public CatchAllApiHttpResponse<StatusResponseDto> getJobStatus(String jobId, RequestOptions requestOptions) {
+        return getJobStatus(jobId, GetJobStatusRequest.builder().build(), requestOptions);
     }
 
     /**
@@ -123,13 +206,17 @@ public class RawJobsClient {
      */
     public CatchAllApiHttpResponse<StatusResponseDto> getJobStatus(
             String jobId, GetJobStatusRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/status")
-                .addPathSegment(jobId)
-                .build();
+                .addPathSegment(jobId);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((key, value) -> {
+                httpUrl.addQueryParameter(key, value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
@@ -176,12 +263,16 @@ public class RawJobsClient {
      * Returns all jobs created by the authenticated user.
      */
     public CatchAllApiHttpResponse<List<ListUserJobsResponseDto>> getUserJobs(RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
-                .addPathSegments("catchAll/jobs/user")
-                .build();
+                .addPathSegments("catchAll/jobs/user");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((key, value) -> {
+                httpUrl.addQueryParameter(key, value);
+            });
+        }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
@@ -217,6 +308,13 @@ public class RawJobsClient {
     /**
      * Retrieve the final results for a completed job.
      */
+    public CatchAllApiHttpResponse<PullJobResponseDto> getJobResults(String jobId, RequestOptions requestOptions) {
+        return getJobResults(jobId, GetJobResultsRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Retrieve the final results for a completed job.
+     */
     public CatchAllApiHttpResponse<PullJobResponseDto> getJobResults(String jobId, GetJobResultsRequest request) {
         return getJobResults(jobId, request, null);
     }
@@ -237,6 +335,11 @@ public class RawJobsClient {
         if (request.getPageSize().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "page_size", request.getPageSize().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((key, value) -> {
+                httpUrl.addQueryParameter(key, value);
+            });
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())

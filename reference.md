@@ -68,6 +68,86 @@ client.jobs().createJob(
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` 
+
+Maximum number of records to return. If not specified, defaults to your plan limit.
+
+Use /catchAll/continue to extend the limit after job completion without reprocessing.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.jobs.continueJob(request) -> ContinueResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Continue an existing job to process more records beyond the initial limit.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.jobs().continueJob(
+    ContinueRequestDto
+        .builder()
+        .jobId("af7a26d6-cf0b-458c-a6ed-4b6318c74da3")
+        .newLimit(100)
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**jobId:** `String` — Job identifier of the completed job to continue.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**newLimit:** `Integer` — New record limit for continued processing. Must be greater than the previous limit.
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
@@ -135,7 +215,7 @@ client.jobs().getJobStatus(
 </dl>
 </details>
 
-<details><summary><code>client.jobs.getUserJobs() -> List&lt;ListUserJobsResponseDto&gt;</code></summary>
+<details><summary><code>client.jobs.getUserJobs() -> List&amp;lt;ListUserJobsResponseDto&amp;gt;</code></summary>
 <dl>
 <dd>
 
@@ -328,6 +408,93 @@ Natural language schedule (e.g. 'every day at 12 AM EST').
 <dd>
 
 **webhook:** `Optional<WebhookDto>` — Optional webhook to receive notifications when jobs complete.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.monitors.updateMonitor(monitorId, request) -> UpdateMonitorResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update webhook configuration for an existing monitor without recreating it.
+
+**Supported updates:**
+- Webhook URL
+- HTTP method (POST/PUT)
+- Headers and authentication
+- Query parameters
+
+**Note:** Schedule and reference job cannot be modified. To change these, create a new monitor.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.monitors().updateMonitor(
+    "monitor_id",
+    UpdateMonitorRequestDto
+        .builder()
+        .webhook(
+            WebhookDto
+                .builder()
+                .url("https://new-endpoint.com/webhook")
+                .method(WebhookDtoMethod.POST)
+                .headers(
+                    new HashMap<String, String>() {{
+                        put("Authorization", "Bearer new_token_xyz");
+                    }}
+                )
+                .build()
+        )
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**monitorId:** `String` — Monitor identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**webhook:** `Optional<WebhookDto>` — Updated webhook configuration.
     
 </dd>
 </dl>
