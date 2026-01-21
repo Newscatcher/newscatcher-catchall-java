@@ -7,5 +7,5 @@
     "client-class-name": "CatchAllApi",
     "package-prefix": "com.newscatcher.catchall"
   },
-  "sdkVersion": "0.3.0"
+  "sdkVersion": "0.3.1"
 }
