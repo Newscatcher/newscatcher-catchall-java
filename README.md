@@ -48,7 +48,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.newscatcherapi</groupId>
   <artifactId>newscatcher-catchall-sdk</artifactId>
-  <version>0.3.1</version>
+  <version>0.3.2</version>
 </dependency>
 ```
 
@@ -65,6 +65,7 @@ package com.example.usage;
 
 import com.newscatcher.catchall.CatchAllApi;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
+import java.time.OffsetDateTime;
 
 public class Example {
     public static void main(String[] args) {
@@ -78,6 +79,9 @@ public class Example {
                 .builder()
                 .query("AI company acquisitions")
                 .context("Focus on deal size and acquiring company details")
+                .limit(10)
+                .startDate(OffsetDateTime.parse("2026-01-30T00:00:00Z"))
+                .endDate(OffsetDateTime.parse("2026-02-05T00:00:00Z"))
                 .build()
         );
     }

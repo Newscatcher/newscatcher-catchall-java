@@ -43,6 +43,7 @@ public final class CreateMonitorRequestDto {
 
     /**
      * @return Job ID to use as template for scheduled runs.
+     * <p>Job's <code>end_date</code> must be within the last 7 days.</p>
      */
     @JsonProperty("reference_job_id")
     public String getReferenceJobId() {
@@ -100,6 +101,7 @@ public final class CreateMonitorRequestDto {
     public interface ReferenceJobIdStage {
         /**
          * <p>Job ID to use as template for scheduled runs.</p>
+         * <p>Job's <code>end_date</code> must be within the last 7 days.</p>
          */
         ScheduleStage referenceJobId(@NotNull String referenceJobId);
 
@@ -148,7 +150,9 @@ public final class CreateMonitorRequestDto {
 
         /**
          * <p>Job ID to use as template for scheduled runs.</p>
+         * <p>Job's <code>end_date</code> must be within the last 7 days.</p>
          * <p>Job ID to use as template for scheduled runs.</p>
+         * <p>Job's <code>end_date</code> must be within the last 7 days.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
