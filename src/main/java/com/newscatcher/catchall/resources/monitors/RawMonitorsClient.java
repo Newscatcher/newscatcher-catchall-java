@@ -48,6 +48,10 @@ public class RawMonitorsClient {
 
     /**
      * Create a monitor that runs jobs based on a reference job with a specified schedule.
+     * <p><strong>Reference job requirements:</strong></p>
+     * <ul>
+     * <li>Job's <code>end_date</code> must be within the last 7 days</li>
+     * </ul>
      * <p><strong>Schedule requirements:</strong></p>
      * <ul>
      * <li>Minimum 24-hour interval between executions</li>
@@ -55,6 +59,7 @@ public class RawMonitorsClient {
      * </ul>
      * <p><strong>Validation:</strong></p>
      * <ul>
+     * <li>Reference jobs older than 7 days return 400 Bad Request.</li>
      * <li>Schedules below minimum frequency return error with descriptive message.</li>
      * <li>Invalid job IDs return 400 Bad Request.</li>
      * <li>Duplicate monitors (same job already monitored) return error.</li>
@@ -66,6 +71,10 @@ public class RawMonitorsClient {
 
     /**
      * Create a monitor that runs jobs based on a reference job with a specified schedule.
+     * <p><strong>Reference job requirements:</strong></p>
+     * <ul>
+     * <li>Job's <code>end_date</code> must be within the last 7 days</li>
+     * </ul>
      * <p><strong>Schedule requirements:</strong></p>
      * <ul>
      * <li>Minimum 24-hour interval between executions</li>
@@ -73,6 +82,7 @@ public class RawMonitorsClient {
      * </ul>
      * <p><strong>Validation:</strong></p>
      * <ul>
+     * <li>Reference jobs older than 7 days return 400 Bad Request.</li>
      * <li>Schedules below minimum frequency return error with descriptive message.</li>
      * <li>Invalid job IDs return 400 Bad Request.</li>
      * <li>Duplicate monitors (same job already monitored) return error.</li>
@@ -84,8 +94,8 @@ public class RawMonitorsClient {
                 .newBuilder()
                 .addPathSegments("catchAll/monitors/create");
         if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((key, value) -> {
-                httpUrl.addQueryParameter(key, value);
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
             });
         }
         RequestBody body;
@@ -196,8 +206,8 @@ public class RawMonitorsClient {
                 .addPathSegments("catchAll/monitors")
                 .addPathSegment(monitorId);
         if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((key, value) -> {
-                httpUrl.addQueryParameter(key, value);
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
             });
         }
         RequestBody body;
@@ -292,8 +302,8 @@ public class RawMonitorsClient {
                     httpUrl, "sort", request.getSort().get(), false);
         }
         if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((key, value) -> {
-                httpUrl.addQueryParameter(key, value);
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
             });
         }
         Request.Builder _requestBuilder = new Request.Builder()
@@ -372,8 +382,8 @@ public class RawMonitorsClient {
                 .addPathSegments("catchAll/monitors/pull")
                 .addPathSegment(monitorId);
         if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((key, value) -> {
-                httpUrl.addQueryParameter(key, value);
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
             });
         }
         Request.Builder _requestBuilder = new Request.Builder()
@@ -453,8 +463,8 @@ public class RawMonitorsClient {
                 .addPathSegment(monitorId)
                 .addPathSegments("disable");
         if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((key, value) -> {
-                httpUrl.addQueryParameter(key, value);
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
             });
         }
         Request.Builder _requestBuilder = new Request.Builder()
@@ -537,8 +547,8 @@ public class RawMonitorsClient {
                 .addPathSegment(monitorId)
                 .addPathSegments("enable");
         if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((key, value) -> {
-                httpUrl.addQueryParameter(key, value);
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
             });
         }
         Request.Builder _requestBuilder = new Request.Builder()
@@ -597,8 +607,8 @@ public class RawMonitorsClient {
                 .newBuilder()
                 .addPathSegments("catchAll/monitors");
         if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((key, value) -> {
-                httpUrl.addQueryParameter(key, value);
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
             });
         }
         Request okhttpRequest = new Request.Builder()

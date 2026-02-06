@@ -1,5 +1,74 @@
 # Reference
 ## Jobs
+<details><summary><code>client.jobs.initialize(request) -> InitializeResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get suggested validators, enrichments, and date ranges for a query before submitting a job.
+
+Returns LLM-generated suggestions based on query analysis and validates against plan limits.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.jobs().initialize(
+    InitializeRequestDto
+        .builder()
+        .query("AI company acquisitions in fintech last week")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**query:** `String` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**context:** `Optional<String>` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.jobs.createJob(request) -> SubmitResponseBody</code></summary>
 <dl>
 <dd>
@@ -13,6 +82,9 @@
 <dd>
 
 Submit a natural language query to create a new processing job.
+
+Optionally specify context, date ranges, limit, custom validators, and enrichments. 
+If dates exceed plan limits, returns 400 error.
 </dd>
 </dl>
 </dd>
@@ -32,6 +104,9 @@ client.jobs().createJob(
         .builder()
         .query("AI company acquisitions")
         .context("Focus on deal size and acquiring company details")
+        .limit(10)
+        .startDate(OffsetDateTime.parse("2026-01-30T00:00:00Z"))
+        .endDate(OffsetDateTime.parse("2026-02-05T00:00:00Z"))
         .build()
 );
 ```
@@ -73,10 +148,46 @@ client.jobs().createJob(
 <dd>
 
 **limit:** `Optional<Integer>` 
+    
+</dd>
+</dl>
 
-Maximum number of records to return. If not specified, defaults to your plan limit.
+<dl>
+<dd>
 
-Use /catchAll/continue to extend the limit after job completion without reprocessing.
+**startDate:** `Optional<OffsetDateTime>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**endDate:** `Optional<OffsetDateTime>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**validators:** `Optional<List<ValidatorSchema>>` 
+
+Custom validators for filtering article clusters.
+
+If not provided, validators are generated automatically based on the query.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**enrichments:** `Optional<List<EnrichmentSchema>>` 
+
+Custom enrichment fields for data extraction.
+
+If not provided, enrichments are generated automatically based on the query.
     
 </dd>
 </dl>
@@ -203,7 +314,7 @@ client.jobs().getJobStatus(
 <dl>
 <dd>
 
-**jobId:** `String` — Unique job identifier returned from the `/catchAll/submit` endpoint.
+**jobId:** `String` — Unique job identifier returned from the [`POST /catchAll/submit`](https://www.newscatcherapi.com/docs/v3/catch-all/endpoints/create-job) endpoint.
     
 </dd>
 </dl>
@@ -242,8 +353,35 @@ Returns all jobs created by the authenticated user.
 <dd>
 
 ```java
-client.jobs().getUserJobs();
+client.jobs().getUserJobs(
+    GetUserJobsRequest
+        .builder()
+        .build()
+);
 ```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**page:** `Optional<Integer>` — Page number to retrieve.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageSize:** `Optional<Integer>` — Number of records per page.
+    
 </dd>
 </dl>
 </dd>
@@ -301,7 +439,7 @@ client.jobs().getJobResults(
 <dl>
 <dd>
 
-**jobId:** `String` — Unique job identifier returned from the `/catchAll/submit` endpoint.
+**jobId:** `String` — Unique job identifier returned from the [`POST /catchAll/submit`](https://www.newscatcherapi.com/docs/v3/catch-all/endpoints/create-job) endpoint.
     
 </dd>
 </dl>
@@ -344,11 +482,15 @@ client.jobs().getJobResults(
 
 Create a monitor that runs jobs based on a reference job with a specified schedule.
 
+**Reference job requirements:**
+- Job's `end_date` must be within the last 7 days
+
 **Schedule requirements:**
 - Minimum 24-hour interval between executions
 - Natural language format (e.g., "every day at 12 PM UTC", "every 48 hours")
 
 **Validation:**
+- Reference jobs older than 7 days return 400 Bad Request.
 - Schedules below minimum frequency return error with descriptive message.
 - Invalid job IDs return 400 Bad Request.
 - Duplicate monitors (same job already monitored) return error.
@@ -387,7 +529,11 @@ client.monitors().createMonitor(
 <dl>
 <dd>
 
-**referenceJobId:** `String` — Job ID to use as template for scheduled runs.
+**referenceJobId:** `String` 
+
+Job ID to use as template for scheduled runs.
+
+Job's `end_date` must be within the last 7 days.
     
 </dd>
 </dl>

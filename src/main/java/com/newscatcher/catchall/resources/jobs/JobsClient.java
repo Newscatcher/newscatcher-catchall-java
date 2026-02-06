@@ -8,8 +8,11 @@ import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.jobs.requests.ContinueRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobResultsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobStatusRequest;
+import com.newscatcher.catchall.resources.jobs.requests.GetUserJobsRequest;
+import com.newscatcher.catchall.resources.jobs.requests.InitializeRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
 import com.newscatcher.catchall.types.ContinueResponseDto;
+import com.newscatcher.catchall.types.InitializeResponseDto;
 import com.newscatcher.catchall.types.ListUserJobsResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
 import com.newscatcher.catchall.types.StatusResponseDto;
@@ -34,7 +37,25 @@ public class JobsClient {
     }
 
     /**
+     * Get suggested validators, enrichments, and date ranges for a query before submitting a job.
+     * <p>Returns LLM-generated suggestions based on query analysis and validates against plan limits.</p>
+     */
+    public InitializeResponseDto initialize(InitializeRequestDto request) {
+        return this.rawClient.initialize(request).body();
+    }
+
+    /**
+     * Get suggested validators, enrichments, and date ranges for a query before submitting a job.
+     * <p>Returns LLM-generated suggestions based on query analysis and validates against plan limits.</p>
+     */
+    public InitializeResponseDto initialize(InitializeRequestDto request, RequestOptions requestOptions) {
+        return this.rawClient.initialize(request, requestOptions).body();
+    }
+
+    /**
      * Submit a natural language query to create a new processing job.
+     * <p>Optionally specify context, date ranges, limit, custom validators, and enrichments.
+     * If dates exceed plan limits, returns 400 error.</p>
      */
     public SubmitResponseBody createJob(SubmitRequestDto request) {
         return this.rawClient.createJob(request).body();
@@ -42,6 +63,8 @@ public class JobsClient {
 
     /**
      * Submit a natural language query to create a new processing job.
+     * <p>Optionally specify context, date ranges, limit, custom validators, and enrichments.
+     * If dates exceed plan limits, returns 400 error.</p>
      */
     public SubmitResponseBody createJob(SubmitRequestDto request, RequestOptions requestOptions) {
         return this.rawClient.createJob(request, requestOptions).body();
@@ -101,6 +124,20 @@ public class JobsClient {
      */
     public List<ListUserJobsResponseDto> getUserJobs(RequestOptions requestOptions) {
         return this.rawClient.getUserJobs(requestOptions).body();
+    }
+
+    /**
+     * Returns all jobs created by the authenticated user.
+     */
+    public List<ListUserJobsResponseDto> getUserJobs(GetUserJobsRequest request) {
+        return this.rawClient.getUserJobs(request).body();
+    }
+
+    /**
+     * Returns all jobs created by the authenticated user.
+     */
+    public List<ListUserJobsResponseDto> getUserJobs(GetUserJobsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.getUserJobs(request, requestOptions).body();
     }
 
     /**
