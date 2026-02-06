@@ -12,7 +12,11 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
+import com.newscatcher.catchall.types.EnrichmentSchema;
+import com.newscatcher.catchall.types.ValidatorSchema;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,6 +33,14 @@ public final class SubmitRequestDto {
 
     private final Optional<Integer> limit;
 
+    private final Optional<OffsetDateTime> startDate;
+
+    private final Optional<OffsetDateTime> endDate;
+
+    private final Optional<List<ValidatorSchema>> validators;
+
+    private final Optional<List<EnrichmentSchema>> enrichments;
+
     private final Map<String, Object> additionalProperties;
 
     private SubmitRequestDto(
@@ -36,11 +48,19 @@ public final class SubmitRequestDto {
             Optional<String> schema,
             Optional<String> context,
             Optional<Integer> limit,
+            Optional<OffsetDateTime> startDate,
+            Optional<OffsetDateTime> endDate,
+            Optional<List<ValidatorSchema>> validators,
+            Optional<List<EnrichmentSchema>> enrichments,
             Map<String, Object> additionalProperties) {
         this.query = query;
         this.schema = schema;
         this.context = context;
         this.limit = limit;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.validators = validators;
+        this.enrichments = enrichments;
         this.additionalProperties = additionalProperties;
     }
 
@@ -59,13 +79,37 @@ public final class SubmitRequestDto {
         return context;
     }
 
-    /**
-     * @return Maximum number of records to return. If not specified, defaults to your plan limit.
-     * <p>Use /catchAll/continue to extend the limit after job completion without reprocessing.</p>
-     */
     @JsonProperty("limit")
     public Optional<Integer> getLimit() {
         return limit;
+    }
+
+    @JsonProperty("start_date")
+    public Optional<OffsetDateTime> getStartDate() {
+        return startDate;
+    }
+
+    @JsonProperty("end_date")
+    public Optional<OffsetDateTime> getEndDate() {
+        return endDate;
+    }
+
+    /**
+     * @return Custom validators for filtering article clusters.
+     * <p>If not provided, validators are generated automatically based on the query.</p>
+     */
+    @JsonProperty("validators")
+    public Optional<List<ValidatorSchema>> getValidators() {
+        return validators;
+    }
+
+    /**
+     * @return Custom enrichment fields for data extraction.
+     * <p>If not provided, enrichments are generated automatically based on the query.</p>
+     */
+    @JsonProperty("enrichments")
+    public Optional<List<EnrichmentSchema>> getEnrichments() {
+        return enrichments;
     }
 
     @java.lang.Override
@@ -83,12 +127,24 @@ public final class SubmitRequestDto {
         return query.equals(other.query)
                 && schema.equals(other.schema)
                 && context.equals(other.context)
-                && limit.equals(other.limit);
+                && limit.equals(other.limit)
+                && startDate.equals(other.startDate)
+                && endDate.equals(other.endDate)
+                && validators.equals(other.validators)
+                && enrichments.equals(other.enrichments);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.query, this.schema, this.context, this.limit);
+        return Objects.hash(
+                this.query,
+                this.schema,
+                this.context,
+                this.limit,
+                this.startDate,
+                this.endDate,
+                this.validators,
+                this.enrichments);
     }
 
     @java.lang.Override
@@ -117,18 +173,46 @@ public final class SubmitRequestDto {
 
         _FinalStage context(String context);
 
-        /**
-         * <p>Maximum number of records to return. If not specified, defaults to your plan limit.</p>
-         * <p>Use /catchAll/continue to extend the limit after job completion without reprocessing.</p>
-         */
         _FinalStage limit(Optional<Integer> limit);
 
         _FinalStage limit(Integer limit);
+
+        _FinalStage startDate(Optional<OffsetDateTime> startDate);
+
+        _FinalStage startDate(OffsetDateTime startDate);
+
+        _FinalStage endDate(Optional<OffsetDateTime> endDate);
+
+        _FinalStage endDate(OffsetDateTime endDate);
+
+        /**
+         * <p>Custom validators for filtering article clusters.</p>
+         * <p>If not provided, validators are generated automatically based on the query.</p>
+         */
+        _FinalStage validators(Optional<List<ValidatorSchema>> validators);
+
+        _FinalStage validators(List<ValidatorSchema> validators);
+
+        /**
+         * <p>Custom enrichment fields for data extraction.</p>
+         * <p>If not provided, enrichments are generated automatically based on the query.</p>
+         */
+        _FinalStage enrichments(Optional<List<EnrichmentSchema>> enrichments);
+
+        _FinalStage enrichments(List<EnrichmentSchema> enrichments);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements QueryStage, _FinalStage {
         private String query;
+
+        private Optional<List<EnrichmentSchema>> enrichments = Optional.empty();
+
+        private Optional<List<ValidatorSchema>> validators = Optional.empty();
+
+        private Optional<OffsetDateTime> endDate = Optional.empty();
+
+        private Optional<OffsetDateTime> startDate = Optional.empty();
 
         private Optional<Integer> limit = Optional.empty();
 
@@ -147,6 +231,10 @@ public final class SubmitRequestDto {
             schema(other.getSchema());
             context(other.getContext());
             limit(other.getLimit());
+            startDate(other.getStartDate());
+            endDate(other.getEndDate());
+            validators(other.getValidators());
+            enrichments(other.getEnrichments());
             return this;
         }
 
@@ -158,20 +246,81 @@ public final class SubmitRequestDto {
         }
 
         /**
-         * <p>Maximum number of records to return. If not specified, defaults to your plan limit.</p>
-         * <p>Use /catchAll/continue to extend the limit after job completion without reprocessing.</p>
+         * <p>Custom enrichment fields for data extraction.</p>
+         * <p>If not provided, enrichments are generated automatically based on the query.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
+        @java.lang.Override
+        public _FinalStage enrichments(List<EnrichmentSchema> enrichments) {
+            this.enrichments = Optional.ofNullable(enrichments);
+            return this;
+        }
+
+        /**
+         * <p>Custom enrichment fields for data extraction.</p>
+         * <p>If not provided, enrichments are generated automatically based on the query.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "enrichments", nulls = Nulls.SKIP)
+        public _FinalStage enrichments(Optional<List<EnrichmentSchema>> enrichments) {
+            this.enrichments = enrichments;
+            return this;
+        }
+
+        /**
+         * <p>Custom validators for filtering article clusters.</p>
+         * <p>If not provided, validators are generated automatically based on the query.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage validators(List<ValidatorSchema> validators) {
+            this.validators = Optional.ofNullable(validators);
+            return this;
+        }
+
+        /**
+         * <p>Custom validators for filtering article clusters.</p>
+         * <p>If not provided, validators are generated automatically based on the query.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "validators", nulls = Nulls.SKIP)
+        public _FinalStage validators(Optional<List<ValidatorSchema>> validators) {
+            this.validators = validators;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage endDate(OffsetDateTime endDate) {
+            this.endDate = Optional.ofNullable(endDate);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "end_date", nulls = Nulls.SKIP)
+        public _FinalStage endDate(Optional<OffsetDateTime> endDate) {
+            this.endDate = endDate;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage startDate(OffsetDateTime startDate) {
+            this.startDate = Optional.ofNullable(startDate);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "start_date", nulls = Nulls.SKIP)
+        public _FinalStage startDate(Optional<OffsetDateTime> startDate) {
+            this.startDate = startDate;
+            return this;
+        }
+
         @java.lang.Override
         public _FinalStage limit(Integer limit) {
             this.limit = Optional.ofNullable(limit);
             return this;
         }
 
-        /**
-         * <p>Maximum number of records to return. If not specified, defaults to your plan limit.</p>
-         * <p>Use /catchAll/continue to extend the limit after job completion without reprocessing.</p>
-         */
         @java.lang.Override
         @JsonSetter(value = "limit", nulls = Nulls.SKIP)
         public _FinalStage limit(Optional<Integer> limit) {
@@ -207,7 +356,8 @@ public final class SubmitRequestDto {
 
         @java.lang.Override
         public SubmitRequestDto build() {
-            return new SubmitRequestDto(query, schema, context, limit, additionalProperties);
+            return new SubmitRequestDto(
+                    query, schema, context, limit, startDate, endDate, validators, enrichments, additionalProperties);
         }
     }
 }

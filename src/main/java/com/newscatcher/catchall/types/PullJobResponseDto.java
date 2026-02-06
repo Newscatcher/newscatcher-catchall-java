@@ -147,7 +147,7 @@ public final class PullJobResponseDto {
     }
 
     /**
-     * @return Number of candidate records before validation.
+     * @return Number of distinct event clusters identified before validation.
      */
     @JsonProperty("candidate_records")
     public Optional<Integer> getCandidateRecords() {
@@ -163,8 +163,8 @@ public final class PullJobResponseDto {
     }
 
     /**
-     * @return Number of candidate records that have been validated during processing.
-     * <p>The system process records in batches. This field tracks how many candidates have been checked against validation criteria so far.</p>
+     * @return Number of candidate clusters that have been validated during processing.
+     * <p>The system process data in batches. This field tracks how many candidates have been checked against validation criteria so far.</p>
      */
     @JsonProperty("progress_validated")
     public Optional<Integer> getProgressValidated() {
@@ -322,7 +322,7 @@ public final class PullJobResponseDto {
         _FinalStage duration(String duration);
 
         /**
-         * <p>Number of candidate records before validation.</p>
+         * <p>Number of distinct event clusters identified before validation.</p>
          */
         _FinalStage candidateRecords(Optional<Integer> candidateRecords);
 
@@ -336,8 +336,8 @@ public final class PullJobResponseDto {
         _FinalStage validRecords(Integer validRecords);
 
         /**
-         * <p>Number of candidate records that have been validated during processing.</p>
-         * <p>The system process records in batches. This field tracks how many candidates have been checked against validation criteria so far.</p>
+         * <p>Number of candidate clusters that have been validated during processing.</p>
+         * <p>The system process data in batches. This field tracks how many candidates have been checked against validation criteria so far.</p>
          */
         _FinalStage progressValidated(Optional<Integer> progressValidated);
 
@@ -551,8 +551,8 @@ public final class PullJobResponseDto {
         }
 
         /**
-         * <p>Number of candidate records that have been validated during processing.</p>
-         * <p>The system process records in batches. This field tracks how many candidates have been checked against validation criteria so far.</p>
+         * <p>Number of candidate clusters that have been validated during processing.</p>
+         * <p>The system process data in batches. This field tracks how many candidates have been checked against validation criteria so far.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -562,8 +562,8 @@ public final class PullJobResponseDto {
         }
 
         /**
-         * <p>Number of candidate records that have been validated during processing.</p>
-         * <p>The system process records in batches. This field tracks how many candidates have been checked against validation criteria so far.</p>
+         * <p>Number of candidate clusters that have been validated during processing.</p>
+         * <p>The system process data in batches. This field tracks how many candidates have been checked against validation criteria so far.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "progress_validated", nulls = Nulls.SKIP)
@@ -593,7 +593,7 @@ public final class PullJobResponseDto {
         }
 
         /**
-         * <p>Number of candidate records before validation.</p>
+         * <p>Number of distinct event clusters identified before validation.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -603,7 +603,7 @@ public final class PullJobResponseDto {
         }
 
         /**
-         * <p>Number of candidate records before validation.</p>
+         * <p>Number of distinct event clusters identified before validation.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "candidate_records", nulls = Nulls.SKIP)

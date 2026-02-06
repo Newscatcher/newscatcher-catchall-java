@@ -1,11 +1,11 @@
 {
-  "cliVersion": "3.47.0",
+  "cliVersion": "3.65.0",
   "generatorName": "fernapi/fern-java-sdk",
-  "generatorVersion": "3.32.0",
+  "generatorVersion": "3.34.8",
   "generatorConfig": {
     "publish-to": "central",
     "client-class-name": "CatchAllApi",
     "package-prefix": "com.newscatcher.catchall"
   },
-  "sdkVersion": "0.3.1"
+  "sdkVersion": "1.0.0"
 }
