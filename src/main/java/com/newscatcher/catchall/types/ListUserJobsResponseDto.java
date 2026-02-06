@@ -9,70 +9,83 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
-import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ListUserJobsResponseDto.Builder.class)
 public final class ListUserJobsResponseDto {
-    private final String jobId;
+    private final int total;
 
-    private final String query;
+    private final int page;
 
-    private final OffsetDateTime createdAt;
+    private final int pageSize;
 
-    private final String status;
+    private final int totalPages;
+
+    private final List<UserJob> jobs;
 
     private final Map<String, Object> additionalProperties;
 
     private ListUserJobsResponseDto(
-            String jobId,
-            String query,
-            OffsetDateTime createdAt,
-            String status,
+            int total,
+            int page,
+            int pageSize,
+            int totalPages,
+            List<UserJob> jobs,
             Map<String, Object> additionalProperties) {
-        this.jobId = jobId;
-        this.query = query;
-        this.createdAt = createdAt;
-        this.status = status;
+        this.total = total;
+        this.page = page;
+        this.pageSize = pageSize;
+        this.totalPages = totalPages;
+        this.jobs = jobs;
         this.additionalProperties = additionalProperties;
     }
 
     /**
-     * @return Job identifier.
+     * @return Total number of jobs for this user.
      */
-    @JsonProperty("job_id")
-    public String getJobId() {
-        return jobId;
+    @JsonProperty("total")
+    public int getTotal() {
+        return total;
     }
 
     /**
-     * @return The natural language query for this job.
+     * @return Current page number.
      */
-    @JsonProperty("query")
-    public String getQuery() {
-        return query;
+    @JsonProperty("page")
+    public int getPage() {
+        return page;
     }
 
     /**
-     * @return Job creation timestamp in ISO 8601 format.
+     * @return Number of jobs per page.
      */
-    @JsonProperty("created_at")
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
+    @JsonProperty("page_size")
+    public int getPageSize() {
+        return pageSize;
     }
 
     /**
-     * @return Current processing status of the job.
+     * @return Total number of pages available.
      */
-    @JsonProperty("status")
-    public String getStatus() {
-        return status;
+    @JsonProperty("total_pages")
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    /**
+     * @return Array of user jobs on this page.
+     */
+    @JsonProperty("jobs")
+    public List<UserJob> getJobs() {
+        return jobs;
     }
 
     @java.lang.Override
@@ -87,15 +100,16 @@ public final class ListUserJobsResponseDto {
     }
 
     private boolean equalTo(ListUserJobsResponseDto other) {
-        return jobId.equals(other.jobId)
-                && query.equals(other.query)
-                && createdAt.equals(other.createdAt)
-                && status.equals(other.status);
+        return total == other.total
+                && page == other.page
+                && pageSize == other.pageSize
+                && totalPages == other.totalPages
+                && jobs.equals(other.jobs);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.jobId, this.query, this.createdAt, this.status);
+        return Objects.hash(this.total, this.page, this.pageSize, this.totalPages, this.jobs);
     }
 
     @java.lang.Override
@@ -103,53 +117,64 @@ public final class ListUserJobsResponseDto {
         return ObjectMappers.stringify(this);
     }
 
-    public static JobIdStage builder() {
+    public static TotalStage builder() {
         return new Builder();
     }
 
-    public interface JobIdStage {
+    public interface TotalStage {
         /**
-         * <p>Job identifier.</p>
+         * <p>Total number of jobs for this user.</p>
          */
-        QueryStage jobId(@NotNull String jobId);
+        PageStage total(int total);
 
         Builder from(ListUserJobsResponseDto other);
     }
 
-    public interface QueryStage {
+    public interface PageStage {
         /**
-         * <p>The natural language query for this job.</p>
+         * <p>Current page number.</p>
          */
-        CreatedAtStage query(@NotNull String query);
+        PageSizeStage page(int page);
     }
 
-    public interface CreatedAtStage {
+    public interface PageSizeStage {
         /**
-         * <p>Job creation timestamp in ISO 8601 format.</p>
+         * <p>Number of jobs per page.</p>
          */
-        StatusStage createdAt(@NotNull OffsetDateTime createdAt);
+        TotalPagesStage pageSize(int pageSize);
     }
 
-    public interface StatusStage {
+    public interface TotalPagesStage {
         /**
-         * <p>Current processing status of the job.</p>
+         * <p>Total number of pages available.</p>
          */
-        _FinalStage status(@NotNull String status);
+        _FinalStage totalPages(int totalPages);
     }
 
     public interface _FinalStage {
         ListUserJobsResponseDto build();
+
+        /**
+         * <p>Array of user jobs on this page.</p>
+         */
+        _FinalStage jobs(List<UserJob> jobs);
+
+        _FinalStage addJobs(UserJob jobs);
+
+        _FinalStage addAllJobs(List<UserJob> jobs);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements JobIdStage, QueryStage, CreatedAtStage, StatusStage, _FinalStage {
-        private String jobId;
+    public static final class Builder implements TotalStage, PageStage, PageSizeStage, TotalPagesStage, _FinalStage {
+        private int total;
 
-        private String query;
+        private int page;
 
-        private OffsetDateTime createdAt;
+        private int pageSize;
 
-        private String status;
+        private int totalPages;
+
+        private List<UserJob> jobs = new ArrayList<>();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -158,64 +183,100 @@ public final class ListUserJobsResponseDto {
 
         @java.lang.Override
         public Builder from(ListUserJobsResponseDto other) {
-            jobId(other.getJobId());
-            query(other.getQuery());
-            createdAt(other.getCreatedAt());
-            status(other.getStatus());
+            total(other.getTotal());
+            page(other.getPage());
+            pageSize(other.getPageSize());
+            totalPages(other.getTotalPages());
+            jobs(other.getJobs());
             return this;
         }
 
         /**
-         * <p>Job identifier.</p>
-         * <p>Job identifier.</p>
+         * <p>Total number of jobs for this user.</p>
+         * <p>Total number of jobs for this user.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        @JsonSetter("job_id")
-        public QueryStage jobId(@NotNull String jobId) {
-            this.jobId = Objects.requireNonNull(jobId, "jobId must not be null");
+        @JsonSetter("total")
+        public PageStage total(int total) {
+            this.total = total;
             return this;
         }
 
         /**
-         * <p>The natural language query for this job.</p>
-         * <p>The natural language query for this job.</p>
+         * <p>Current page number.</p>
+         * <p>Current page number.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        @JsonSetter("query")
-        public CreatedAtStage query(@NotNull String query) {
-            this.query = Objects.requireNonNull(query, "query must not be null");
+        @JsonSetter("page")
+        public PageSizeStage page(int page) {
+            this.page = page;
             return this;
         }
 
         /**
-         * <p>Job creation timestamp in ISO 8601 format.</p>
-         * <p>Job creation timestamp in ISO 8601 format.</p>
+         * <p>Number of jobs per page.</p>
+         * <p>Number of jobs per page.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        @JsonSetter("created_at")
-        public StatusStage createdAt(@NotNull OffsetDateTime createdAt) {
-            this.createdAt = Objects.requireNonNull(createdAt, "createdAt must not be null");
+        @JsonSetter("page_size")
+        public TotalPagesStage pageSize(int pageSize) {
+            this.pageSize = pageSize;
             return this;
         }
 
         /**
-         * <p>Current processing status of the job.</p>
-         * <p>Current processing status of the job.</p>
+         * <p>Total number of pages available.</p>
+         * <p>Total number of pages available.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        @JsonSetter("status")
-        public _FinalStage status(@NotNull String status) {
-            this.status = Objects.requireNonNull(status, "status must not be null");
+        @JsonSetter("total_pages")
+        public _FinalStage totalPages(int totalPages) {
+            this.totalPages = totalPages;
+            return this;
+        }
+
+        /**
+         * <p>Array of user jobs on this page.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage addAllJobs(List<UserJob> jobs) {
+            if (jobs != null) {
+                this.jobs.addAll(jobs);
+            }
+            return this;
+        }
+
+        /**
+         * <p>Array of user jobs on this page.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage addJobs(UserJob jobs) {
+            this.jobs.add(jobs);
+            return this;
+        }
+
+        /**
+         * <p>Array of user jobs on this page.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "jobs", nulls = Nulls.SKIP)
+        public _FinalStage jobs(List<UserJob> jobs) {
+            this.jobs.clear();
+            if (jobs != null) {
+                this.jobs.addAll(jobs);
+            }
             return this;
         }
 
         @java.lang.Override
         public ListUserJobsResponseDto build() {
-            return new ListUserJobsResponseDto(jobId, query, createdAt, status, additionalProperties);
+            return new ListUserJobsResponseDto(total, page, pageSize, totalPages, jobs, additionalProperties);
         }
     }
 }

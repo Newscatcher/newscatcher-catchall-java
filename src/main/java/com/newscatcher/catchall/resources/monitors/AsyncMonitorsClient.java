@@ -39,6 +39,10 @@ public class AsyncMonitorsClient {
 
     /**
      * Create a monitor that runs jobs based on a reference job with a specified schedule.
+     * <p><strong>Reference job requirements:</strong></p>
+     * <ul>
+     * <li>Job's <code>end_date</code> must be within the last 7 days</li>
+     * </ul>
      * <p><strong>Schedule requirements:</strong></p>
      * <ul>
      * <li>Minimum 24-hour interval between executions</li>
@@ -46,6 +50,7 @@ public class AsyncMonitorsClient {
      * </ul>
      * <p><strong>Validation:</strong></p>
      * <ul>
+     * <li>Reference jobs older than 7 days return 400 Bad Request.</li>
      * <li>Schedules below minimum frequency return error with descriptive message.</li>
      * <li>Invalid job IDs return 400 Bad Request.</li>
      * <li>Duplicate monitors (same job already monitored) return error.</li>
@@ -57,6 +62,10 @@ public class AsyncMonitorsClient {
 
     /**
      * Create a monitor that runs jobs based on a reference job with a specified schedule.
+     * <p><strong>Reference job requirements:</strong></p>
+     * <ul>
+     * <li>Job's <code>end_date</code> must be within the last 7 days</li>
+     * </ul>
      * <p><strong>Schedule requirements:</strong></p>
      * <ul>
      * <li>Minimum 24-hour interval between executions</li>
@@ -64,6 +73,7 @@ public class AsyncMonitorsClient {
      * </ul>
      * <p><strong>Validation:</strong></p>
      * <ul>
+     * <li>Reference jobs older than 7 days return 400 Bad Request.</li>
      * <li>Schedules below minimum frequency return error with descriptive message.</li>
      * <li>Invalid job IDs return 400 Bad Request.</li>
      * <li>Duplicate monitors (same job already monitored) return error.</li>

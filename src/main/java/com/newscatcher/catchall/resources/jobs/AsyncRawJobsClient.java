@@ -20,9 +20,12 @@ import com.newscatcher.catchall.errors.UnprocessableEntityError;
 import com.newscatcher.catchall.resources.jobs.requests.ContinueRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobResultsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobStatusRequest;
+import com.newscatcher.catchall.resources.jobs.requests.GetUserJobsRequest;
+import com.newscatcher.catchall.resources.jobs.requests.InitializeRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
 import com.newscatcher.catchall.types.ContinueResponseDto;
 import com.newscatcher.catchall.types.Error;
+import com.newscatcher.catchall.types.InitializeResponseDto;
 import com.newscatcher.catchall.types.ListUserJobsResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
 import com.newscatcher.catchall.types.StatusResponseDto;
@@ -50,7 +53,95 @@ public class AsyncRawJobsClient {
     }
 
     /**
+     * Get suggested validators, enrichments, and date ranges for a query before submitting a job.
+     * <p>Returns LLM-generated suggestions based on query analysis and validates against plan limits.</p>
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<InitializeResponseDto>> initialize(InitializeRequestDto request) {
+        return initialize(request, null);
+    }
+
+    /**
+     * Get suggested validators, enrichments, and date ranges for a query before submitting a job.
+     * <p>Returns LLM-generated suggestions based on query analysis and validates against plan limits.</p>
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<InitializeResponseDto>> initialize(
+            InitializeRequestDto request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/initialize");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        CompletableFuture<CatchAllApiHttpResponse<InitializeResponseDto>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new CatchAllApiHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, InitializeResponseDto.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(
+                                                responseBodyString, ValidationErrorResponse.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new CatchAllApiApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (IOException e) {
+                    future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
      * Submit a natural language query to create a new processing job.
+     * <p>Optionally specify context, date ranges, limit, custom validators, and enrichments.
+     * If dates exceed plan limits, returns 400 error.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<SubmitResponseBody>> createJob(SubmitRequestDto request) {
         return createJob(request, null);
@@ -58,6 +149,8 @@ public class AsyncRawJobsClient {
 
     /**
      * Submit a natural language query to create a new processing job.
+     * <p>Optionally specify context, date ranges, limit, custom validators, and enrichments.
+     * If dates exceed plan limits, returns 400 error.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<SubmitResponseBody>> createJob(
             SubmitRequestDto request, RequestOptions requestOptions) {
@@ -65,8 +158,8 @@ public class AsyncRawJobsClient {
                 .newBuilder()
                 .addPathSegments("catchAll/submit");
         if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((key, value) -> {
-                httpUrl.addQueryParameter(key, value);
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
             });
         }
         RequestBody body;
@@ -101,6 +194,11 @@ public class AsyncRawJobsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 400:
+                                future.completeExceptionally(new BadRequestError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -149,8 +247,8 @@ public class AsyncRawJobsClient {
                 .newBuilder()
                 .addPathSegments("catchAll/continue");
         if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((key, value) -> {
-                httpUrl.addQueryParameter(key, value);
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
             });
         }
         RequestBody body;
@@ -255,8 +353,8 @@ public class AsyncRawJobsClient {
                 .addPathSegments("catchAll/status")
                 .addPathSegment(jobId);
         if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((key, value) -> {
-                httpUrl.addQueryParameter(key, value);
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
             });
         }
         Request.Builder _requestBuilder = new Request.Builder()
@@ -318,7 +416,7 @@ public class AsyncRawJobsClient {
      * Returns all jobs created by the authenticated user.
      */
     public CompletableFuture<CatchAllApiHttpResponse<List<ListUserJobsResponseDto>>> getUserJobs() {
-        return getUserJobs(null);
+        return getUserJobs(GetUserJobsRequest.builder().build());
     }
 
     /**
@@ -326,20 +424,44 @@ public class AsyncRawJobsClient {
      */
     public CompletableFuture<CatchAllApiHttpResponse<List<ListUserJobsResponseDto>>> getUserJobs(
             RequestOptions requestOptions) {
+        return getUserJobs(GetUserJobsRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Returns all jobs created by the authenticated user.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<List<ListUserJobsResponseDto>>> getUserJobs(
+            GetUserJobsRequest request) {
+        return getUserJobs(request, null);
+    }
+
+    /**
+     * Returns all jobs created by the authenticated user.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<List<ListUserJobsResponseDto>>> getUserJobs(
+            GetUserJobsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/jobs/user");
+        if (request.getPage().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page", request.getPage().get(), false);
+        }
+        if (request.getPageSize().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page_size", request.getPageSize().get(), false);
+        }
         if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((key, value) -> {
-                httpUrl.addQueryParameter(key, value);
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
             });
         }
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
@@ -356,6 +478,15 @@ public class AsyncRawJobsClient {
                                         responseBodyString, new TypeReference<List<ListUserJobsResponseDto>>() {}),
                                 response));
                         return;
+                    }
+                    try {
+                        if (response.code() == 403) {
+                            future.completeExceptionally(new ForbiddenError(
+                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response));
+                            return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
                     }
                     Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new CatchAllApiApiException(
@@ -415,8 +546,8 @@ public class AsyncRawJobsClient {
                     httpUrl, "page_size", request.getPageSize().get(), false);
         }
         if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((key, value) -> {
-                httpUrl.addQueryParameter(key, value);
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
             });
         }
         Request.Builder _requestBuilder = new Request.Builder()
