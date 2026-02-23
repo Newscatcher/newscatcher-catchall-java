@@ -165,6 +165,10 @@ public final class SubmitRequestDto {
     public interface _FinalStage {
         SubmitRequestDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage schema(Optional<String> schema);
 
         _FinalStage schema(String schema);
@@ -358,6 +362,18 @@ public final class SubmitRequestDto {
         public SubmitRequestDto build() {
             return new SubmitRequestDto(
                     query, schema, context, limit, startDate, endDate, validators, enrichments, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

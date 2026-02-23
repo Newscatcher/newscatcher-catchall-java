@@ -103,6 +103,10 @@ public final class JobStep {
     public interface _FinalStage {
         JobStep build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Whether this step has finished processing.</p>
          */
@@ -174,6 +178,18 @@ public final class JobStep {
         @java.lang.Override
         public JobStep build() {
             return new JobStep(status, order, completed, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -191,6 +191,10 @@ public final class PullMonitorResponseDto {
     public interface _FinalStage {
         PullMonitorResponseDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Parsed cron expression from the natural language schedule.
          * Standard cron format (minute hour day month day-of-week).</p>
@@ -412,6 +416,18 @@ public final class PullMonitorResponseDto {
                     status,
                     allRecords,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

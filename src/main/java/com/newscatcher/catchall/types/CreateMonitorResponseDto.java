@@ -91,6 +91,10 @@ public final class CreateMonitorResponseDto {
     public interface _FinalStage {
         CreateMonitorResponseDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Monitor ID if successful, null if error.</p>
          */
@@ -152,6 +156,18 @@ public final class CreateMonitorResponseDto {
         @java.lang.Override
         public CreateMonitorResponseDto build() {
             return new CreateMonitorResponseDto(monitorId, status, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

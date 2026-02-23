@@ -119,6 +119,10 @@ public final class CreateMonitorRequestDto {
     public interface _FinalStage {
         CreateMonitorRequestDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Optional webhook to receive notifications when jobs complete.</p>
          */
@@ -199,6 +203,18 @@ public final class CreateMonitorRequestDto {
         @java.lang.Override
         public CreateMonitorRequestDto build() {
             return new CreateMonitorRequestDto(referenceJobId, schedule, webhook, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

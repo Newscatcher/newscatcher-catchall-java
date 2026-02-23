@@ -134,6 +134,10 @@ public final class WebhookDto {
     public interface _FinalStage {
         WebhookDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>HTTP method to use.</p>
          */
@@ -285,6 +289,18 @@ public final class WebhookDto {
         @java.lang.Override
         public WebhookDto build() {
             return new WebhookDto(url, method, headers, params, auth, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }
