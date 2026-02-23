@@ -35,10 +35,10 @@ public final class ClientOptions {
         this.headers.putAll(headers);
         this.headers.putAll(new HashMap<String, String>() {
             {
-                put("User-Agent", "com.newscatcherapi:newscatcher-catchall-sdk/1.0.0");
+                put("User-Agent", "com.newscatcherapi:newscatcher-catchall-sdk/1.1.0");
                 put("X-Fern-Language", "JAVA");
                 put("X-Fern-SDK-Name", "com.newscatcher.fern:api-sdk");
-                put("X-Fern-SDK-Version", "1.0.0");
+                put("X-Fern-SDK-Version", "1.1.0");
             }
         });
         this.headerSuppliers = headerSuppliers;

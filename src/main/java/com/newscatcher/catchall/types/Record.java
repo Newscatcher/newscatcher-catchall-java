@@ -130,6 +130,10 @@ public final class Record {
     public interface _FinalStage {
         Record build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Structured data extracted from articles. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
          * <p>See <a href="https://www.newscatcherapi.com/docs/v3/catch-all/overview/dynamic-schemas">Understanding dynamic schemas</a> for integration guidance.</p>
@@ -274,6 +278,18 @@ public final class Record {
         @java.lang.Override
         public Record build() {
             return new Record(recordId, recordTitle, enrichment, citations, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

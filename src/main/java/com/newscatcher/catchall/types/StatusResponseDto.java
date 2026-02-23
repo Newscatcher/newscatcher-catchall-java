@@ -104,6 +104,10 @@ public final class StatusResponseDto {
     public interface _FinalStage {
         StatusResponseDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Current job processing status.</p>
          */
@@ -212,6 +216,18 @@ public final class StatusResponseDto {
         @java.lang.Override
         public StatusResponseDto build() {
             return new StatusResponseDto(jobId, status, steps, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

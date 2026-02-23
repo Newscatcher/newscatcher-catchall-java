@@ -127,6 +127,10 @@ public final class ContinueResponseDto {
     public interface _FinalStage {
         ContinueResponseDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Previous record limit before continuation.</p>
          */
@@ -233,6 +237,18 @@ public final class ContinueResponseDto {
         @java.lang.Override
         public ContinueResponseDto build() {
             return new ContinueResponseDto(jobId, previousLimit, newLimit, status, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

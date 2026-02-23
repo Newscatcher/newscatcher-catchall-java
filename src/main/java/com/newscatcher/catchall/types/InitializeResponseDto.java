@@ -133,6 +133,10 @@ public final class InitializeResponseDto {
     public interface _FinalStage {
         InitializeResponseDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Suggested validators for filtering relevant articles.</p>
          */
@@ -297,6 +301,18 @@ public final class InitializeResponseDto {
         public InitializeResponseDto build() {
             return new InitializeResponseDto(
                     validators, enrichments, startDate, endDate, dateModificationMessage, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

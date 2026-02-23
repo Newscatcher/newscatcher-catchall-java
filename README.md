@@ -48,7 +48,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.newscatcherapi</groupId>
   <artifactId>newscatcher-catchall-sdk</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
