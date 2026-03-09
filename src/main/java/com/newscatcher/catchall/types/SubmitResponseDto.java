@@ -17,13 +17,13 @@ import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = SubmitResponseBody.Builder.class)
-public final class SubmitResponseBody {
+@JsonDeserialize(builder = SubmitResponseDto.Builder.class)
+public final class SubmitResponseDto {
     private final String jobId;
 
     private final Map<String, Object> additionalProperties;
 
-    private SubmitResponseBody(String jobId, Map<String, Object> additionalProperties) {
+    private SubmitResponseDto(String jobId, Map<String, Object> additionalProperties) {
         this.jobId = jobId;
         this.additionalProperties = additionalProperties;
     }
@@ -39,7 +39,7 @@ public final class SubmitResponseBody {
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof SubmitResponseBody && equalTo((SubmitResponseBody) other);
+        return other instanceof SubmitResponseDto && equalTo((SubmitResponseDto) other);
     }
 
     @JsonAnyGetter
@@ -47,7 +47,7 @@ public final class SubmitResponseBody {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(SubmitResponseBody other) {
+    private boolean equalTo(SubmitResponseDto other) {
         return jobId.equals(other.jobId);
     }
 
@@ -71,11 +71,15 @@ public final class SubmitResponseBody {
          */
         _FinalStage jobId(@NotNull String jobId);
 
-        Builder from(SubmitResponseBody other);
+        Builder from(SubmitResponseDto other);
     }
 
     public interface _FinalStage {
-        SubmitResponseBody build();
+        SubmitResponseDto build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -88,7 +92,7 @@ public final class SubmitResponseBody {
         private Builder() {}
 
         @java.lang.Override
-        public Builder from(SubmitResponseBody other) {
+        public Builder from(SubmitResponseDto other) {
             jobId(other.getJobId());
             return this;
         }
@@ -106,8 +110,20 @@ public final class SubmitResponseBody {
         }
 
         @java.lang.Override
-        public SubmitResponseBody build() {
-            return new SubmitResponseBody(jobId, additionalProperties);
+        public SubmitResponseDto build() {
+            return new SubmitResponseDto(jobId, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

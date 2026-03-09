@@ -13,8 +13,6 @@ public final class EnrichmentType {
 
     public static final EnrichmentType DATE = new EnrichmentType(Value.DATE, "date");
 
-    public static final EnrichmentType DICT = new EnrichmentType(Value.DICT, "dict");
-
     public static final EnrichmentType URL = new EnrichmentType(Value.URL, "url");
 
     public static final EnrichmentType OPTION = new EnrichmentType(Value.OPTION, "option");
@@ -59,8 +57,6 @@ public final class EnrichmentType {
                 return visitor.visitText();
             case DATE:
                 return visitor.visitDate();
-            case DICT:
-                return visitor.visitDict();
             case URL:
                 return visitor.visitUrl();
             case OPTION:
@@ -82,8 +78,6 @@ public final class EnrichmentType {
                 return TEXT;
             case "date":
                 return DATE;
-            case "dict":
-                return DICT;
             case "url":
                 return URL;
             case "option":
@@ -106,8 +100,6 @@ public final class EnrichmentType {
 
         URL,
 
-        DICT,
-
         COMPANY,
 
         UNKNOWN
@@ -123,8 +115,6 @@ public final class EnrichmentType {
         T visitOption();
 
         T visitUrl();
-
-        T visitDict();
 
         T visitCompany();
 

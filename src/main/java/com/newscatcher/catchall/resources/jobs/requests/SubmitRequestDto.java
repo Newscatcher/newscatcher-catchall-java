@@ -27,8 +27,6 @@ import org.jetbrains.annotations.NotNull;
 public final class SubmitRequestDto {
     private final String query;
 
-    private final Optional<String> schema;
-
     private final Optional<String> context;
 
     private final Optional<Integer> limit;
@@ -45,7 +43,6 @@ public final class SubmitRequestDto {
 
     private SubmitRequestDto(
             String query,
-            Optional<String> schema,
             Optional<String> context,
             Optional<Integer> limit,
             Optional<OffsetDateTime> startDate,
@@ -54,7 +51,6 @@ public final class SubmitRequestDto {
             Optional<List<EnrichmentSchema>> enrichments,
             Map<String, Object> additionalProperties) {
         this.query = query;
-        this.schema = schema;
         this.context = context;
         this.limit = limit;
         this.startDate = startDate;
@@ -67,11 +63,6 @@ public final class SubmitRequestDto {
     @JsonProperty("query")
     public String getQuery() {
         return query;
-    }
-
-    @JsonProperty("schema")
-    public Optional<String> getSchema() {
-        return schema;
     }
 
     @JsonProperty("context")
@@ -95,7 +86,7 @@ public final class SubmitRequestDto {
     }
 
     /**
-     * @return Custom validators for filtering article clusters.
+     * @return Custom validators for filtering web page clusters.
      * <p>If not provided, validators are generated automatically based on the query.</p>
      */
     @JsonProperty("validators")
@@ -125,7 +116,6 @@ public final class SubmitRequestDto {
 
     private boolean equalTo(SubmitRequestDto other) {
         return query.equals(other.query)
-                && schema.equals(other.schema)
                 && context.equals(other.context)
                 && limit.equals(other.limit)
                 && startDate.equals(other.startDate)
@@ -137,14 +127,7 @@ public final class SubmitRequestDto {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.query,
-                this.schema,
-                this.context,
-                this.limit,
-                this.startDate,
-                this.endDate,
-                this.validators,
-                this.enrichments);
+                this.query, this.context, this.limit, this.startDate, this.endDate, this.validators, this.enrichments);
     }
 
     @java.lang.Override
@@ -165,9 +148,9 @@ public final class SubmitRequestDto {
     public interface _FinalStage {
         SubmitRequestDto build();
 
-        _FinalStage schema(Optional<String> schema);
+        _FinalStage additionalProperty(String key, Object value);
 
-        _FinalStage schema(String schema);
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage context(Optional<String> context);
 
@@ -186,7 +169,7 @@ public final class SubmitRequestDto {
         _FinalStage endDate(OffsetDateTime endDate);
 
         /**
-         * <p>Custom validators for filtering article clusters.</p>
+         * <p>Custom validators for filtering web page clusters.</p>
          * <p>If not provided, validators are generated automatically based on the query.</p>
          */
         _FinalStage validators(Optional<List<ValidatorSchema>> validators);
@@ -218,8 +201,6 @@ public final class SubmitRequestDto {
 
         private Optional<String> context = Optional.empty();
 
-        private Optional<String> schema = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -228,7 +209,6 @@ public final class SubmitRequestDto {
         @java.lang.Override
         public Builder from(SubmitRequestDto other) {
             query(other.getQuery());
-            schema(other.getSchema());
             context(other.getContext());
             limit(other.getLimit());
             startDate(other.getStartDate());
@@ -268,7 +248,7 @@ public final class SubmitRequestDto {
         }
 
         /**
-         * <p>Custom validators for filtering article clusters.</p>
+         * <p>Custom validators for filtering web page clusters.</p>
          * <p>If not provided, validators are generated automatically based on the query.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -279,7 +259,7 @@ public final class SubmitRequestDto {
         }
 
         /**
-         * <p>Custom validators for filtering article clusters.</p>
+         * <p>Custom validators for filtering web page clusters.</p>
          * <p>If not provided, validators are generated automatically based on the query.</p>
          */
         @java.lang.Override
@@ -342,22 +322,21 @@ public final class SubmitRequestDto {
         }
 
         @java.lang.Override
-        public _FinalStage schema(String schema) {
-            this.schema = Optional.ofNullable(schema);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "schema", nulls = Nulls.SKIP)
-        public _FinalStage schema(Optional<String> schema) {
-            this.schema = schema;
-            return this;
-        }
-
-        @java.lang.Override
         public SubmitRequestDto build() {
             return new SubmitRequestDto(
-                    query, schema, context, limit, startDate, endDate, validators, enrichments, additionalProperties);
+                    query, context, limit, startDate, endDate, validators, enrichments, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

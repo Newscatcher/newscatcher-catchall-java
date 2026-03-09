@@ -4,7 +4,6 @@
 package com.newscatcher.catchall.resources.jobs;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.newscatcher.catchall.core.CatchAllApiApiException;
 import com.newscatcher.catchall.core.CatchAllApiException;
 import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
@@ -29,10 +28,9 @@ import com.newscatcher.catchall.types.InitializeResponseDto;
 import com.newscatcher.catchall.types.ListUserJobsResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
 import com.newscatcher.catchall.types.StatusResponseDto;
-import com.newscatcher.catchall.types.SubmitResponseBody;
+import com.newscatcher.catchall.types.SubmitResponseDto;
 import com.newscatcher.catchall.types.ValidationErrorResponse;
 import java.io.IOException;
-import java.util.List;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -49,16 +47,14 @@ public class RawJobsClient {
     }
 
     /**
-     * Get suggested validators, enrichments, and date ranges for a query before submitting a job.
-     * <p>Returns LLM-generated suggestions based on query analysis and validates against plan limits.</p>
+     * Get suggested validators, enrichments, and date ranges for a query.
      */
     public CatchAllApiHttpResponse<InitializeResponseDto> initialize(InitializeRequestDto request) {
         return initialize(request, null);
     }
 
     /**
-     * Get suggested validators, enrichments, and date ranges for a query before submitting a job.
-     * <p>Returns LLM-generated suggestions based on query analysis and validates against plan limits.</p>
+     * Get suggested validators, enrichments, and date ranges for a query.
      */
     public CatchAllApiHttpResponse<InitializeResponseDto> initialize(
             InitializeRequestDto request, RequestOptions requestOptions) {
@@ -117,20 +113,16 @@ public class RawJobsClient {
     }
 
     /**
-     * Submit a natural language query to create a new processing job.
-     * <p>Optionally specify context, date ranges, limit, custom validators, and enrichments.
-     * If dates exceed plan limits, returns 400 error.</p>
+     * Submit a query to create a new processing job.
      */
-    public CatchAllApiHttpResponse<SubmitResponseBody> createJob(SubmitRequestDto request) {
+    public CatchAllApiHttpResponse<SubmitResponseDto> createJob(SubmitRequestDto request) {
         return createJob(request, null);
     }
 
     /**
-     * Submit a natural language query to create a new processing job.
-     * <p>Optionally specify context, date ranges, limit, custom validators, and enrichments.
-     * If dates exceed plan limits, returns 400 error.</p>
+     * Submit a query to create a new processing job.
      */
-    public CatchAllApiHttpResponse<SubmitResponseBody> createJob(
+    public CatchAllApiHttpResponse<SubmitResponseDto> createJob(
             SubmitRequestDto request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -163,7 +155,7 @@ public class RawJobsClient {
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new CatchAllApiHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, SubmitResponseBody.class), response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, SubmitResponseDto.class), response);
             }
             try {
                 switch (response.code()) {
@@ -333,28 +325,28 @@ public class RawJobsClient {
     /**
      * Returns all jobs created by the authenticated user.
      */
-    public CatchAllApiHttpResponse<List<ListUserJobsResponseDto>> getUserJobs() {
+    public CatchAllApiHttpResponse<ListUserJobsResponseDto> getUserJobs() {
         return getUserJobs(GetUserJobsRequest.builder().build());
     }
 
     /**
      * Returns all jobs created by the authenticated user.
      */
-    public CatchAllApiHttpResponse<List<ListUserJobsResponseDto>> getUserJobs(RequestOptions requestOptions) {
+    public CatchAllApiHttpResponse<ListUserJobsResponseDto> getUserJobs(RequestOptions requestOptions) {
         return getUserJobs(GetUserJobsRequest.builder().build(), requestOptions);
     }
 
     /**
      * Returns all jobs created by the authenticated user.
      */
-    public CatchAllApiHttpResponse<List<ListUserJobsResponseDto>> getUserJobs(GetUserJobsRequest request) {
+    public CatchAllApiHttpResponse<ListUserJobsResponseDto> getUserJobs(GetUserJobsRequest request) {
         return getUserJobs(request, null);
     }
 
     /**
      * Returns all jobs created by the authenticated user.
      */
-    public CatchAllApiHttpResponse<List<ListUserJobsResponseDto>> getUserJobs(
+    public CatchAllApiHttpResponse<ListUserJobsResponseDto> getUserJobs(
             GetUserJobsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -387,8 +379,7 @@ public class RawJobsClient {
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new CatchAllApiHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(
-                                responseBodyString, new TypeReference<List<ListUserJobsResponseDto>>() {}),
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListUserJobsResponseDto.class),
                         response);
             }
             try {

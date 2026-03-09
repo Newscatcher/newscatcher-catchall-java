@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Citation.Builder.class)
-public final class Citation {
+public final class Citation implements ICitation {
     private final String title;
 
     private final String link;
@@ -37,25 +37,28 @@ public final class Citation {
     }
 
     /**
-     * @return Article title
+     * @return The title of the source document.
      */
     @JsonProperty("title")
+    @java.lang.Override
     public String getTitle() {
         return title;
     }
 
     /**
-     * @return URL to the source article
+     * @return URL to the source document.
      */
     @JsonProperty("link")
+    @java.lang.Override
     public String getLink() {
         return link;
     }
 
     /**
-     * @return Article publication date in ISO 8601 format with UTC timezone.
+     * @return The publication date of the source document in ISO 8601 format (UTC timezone).
      */
     @JsonProperty("published_date")
+    @java.lang.Override
     public OffsetDateTime getPublishedDate() {
         return publishedDate;
     }
@@ -91,7 +94,7 @@ public final class Citation {
 
     public interface TitleStage {
         /**
-         * <p>Article title</p>
+         * <p>The title of the source document.</p>
          */
         LinkStage title(@NotNull String title);
 
@@ -100,20 +103,24 @@ public final class Citation {
 
     public interface LinkStage {
         /**
-         * <p>URL to the source article</p>
+         * <p>URL to the source document.</p>
          */
         PublishedDateStage link(@NotNull String link);
     }
 
     public interface PublishedDateStage {
         /**
-         * <p>Article publication date in ISO 8601 format with UTC timezone.</p>
+         * <p>The publication date of the source document in ISO 8601 format (UTC timezone).</p>
          */
         _FinalStage publishedDate(@NotNull OffsetDateTime publishedDate);
     }
 
     public interface _FinalStage {
         Citation build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -138,8 +145,8 @@ public final class Citation {
         }
 
         /**
-         * <p>Article title</p>
-         * <p>Article title</p>
+         * <p>The title of the source document.</p>
+         * <p>The title of the source document.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -150,8 +157,8 @@ public final class Citation {
         }
 
         /**
-         * <p>URL to the source article</p>
-         * <p>URL to the source article</p>
+         * <p>URL to the source document.</p>
+         * <p>URL to the source document.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -162,8 +169,8 @@ public final class Citation {
         }
 
         /**
-         * <p>Article publication date in ISO 8601 format with UTC timezone.</p>
-         * <p>Article publication date in ISO 8601 format with UTC timezone.</p>
+         * <p>The publication date of the source document in ISO 8601 format (UTC timezone).</p>
+         * <p>The publication date of the source document in ISO 8601 format (UTC timezone).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -176,6 +183,18 @@ public final class Citation {
         @java.lang.Override
         public Citation build() {
             return new Citation(title, link, publishedDate, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

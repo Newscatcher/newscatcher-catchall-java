@@ -1,9 +1,9 @@
-# Newscatcher Java Library
+# Newscatcher CatchAll Java Library
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2FNewscatcher%2Fnewscatcher-catchall-java)
 [![Maven Central](https://img.shields.io/maven-central/v/com.newscatcherapi/newscatcher-catchall-sdk)](https://central.sonatype.com/artifact/com.newscatcherapi/newscatcher-catchall-sdk)
 
-The Newscatcher Java library provides convenient access to the Newscatcher APIs from Java.
+The Newscatcher CatchAll Java library provides convenient access to the Web Search APIs from Java.
 
 ## Table of Contents
 
@@ -20,13 +20,12 @@ The Newscatcher Java library provides convenient access to the Newscatcher APIs 
   - [Timeouts](#timeouts)
   - [Custom Headers](#custom-headers)
   - [Access Raw Response Data](#access-raw-response-data)
-- [Beta Status](#beta-status)
 - [Contributing](#contributing)
 - [Support](#support)
 
 ## Documentation
 
-API reference documentation is available [here](https://www.newscatcherapi.com/docs/v3/catch-all/endpoints/create-job).
+API reference documentation is available [here](https://www.newscatcherapi.com/docs/web-search-api/api-reference/jobs/initialize-job).
 
 ## Installation
 
@@ -48,7 +47,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.newscatcherapi</groupId>
   <artifactId>newscatcher-catchall-sdk</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.2</version>
 </dependency>
 ```
 
@@ -77,11 +76,11 @@ public class Example {
         client.jobs().createJob(
             SubmitRequestDto
                 .builder()
-                .query("AI company acquisitions")
-                .context("Focus on deal size and acquiring company details")
+                .query("Series B funding rounds for SaaS startups")
+                .context("Focus on funding amount and company name")
                 .limit(10)
-                .startDate(OffsetDateTime.parse("2026-01-30T00:00:00Z"))
-                .endDate(OffsetDateTime.parse("2026-02-05T00:00:00Z"))
+                .startDate(OffsetDateTime.parse("2026-02-18T00:00:00Z"))
+                .endDate(OffsetDateTime.parse("2026-02-23T00:00:00Z"))
                 .build()
         );
     }
@@ -235,10 +234,6 @@ System.out.println(response.body());
 System.out.println(response.headers().get("X-My-Header"));
 ```
 
-## Beta status
-
-CatchAll API is in beta. Breaking changes may occur in minor version updates. See the [Changelog](https://www.newscatcherapi.com/docs/v3/catch-all/overview/changelog) for updates.
-
 ## Contributing
 
 While we value open-source contributions to this SDK, this library is generated programmatically.
@@ -250,5 +245,6 @@ an issue first to discuss with us!
 On the other hand, contributions to the README are always very welcome!
 ## Support
 
-- Documentation: [https://www.newscatcherapi.com/docs/v3/catch-all](https://www.newscatcherapi.com/docs/v3/catch-all)
+- Documentation: [www.newscatcherapi.com/docs/web-search-api](https://www.newscatcherapi.com/docs/web-search-api/get-started/introduction)
 - Support: <support@newscatcherapi.com>
+
