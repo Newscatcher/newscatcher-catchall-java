@@ -15,7 +15,6 @@ import com.newscatcher.catchall.core.ObjectMappers;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,12 +23,12 @@ import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = MonitorRecord.Builder.class)
-public final class MonitorRecord {
+public final class MonitorRecord implements IBaseRecord {
     private final String recordId;
 
     private final String recordTitle;
 
-    private final Map<String, Object> enrichment;
+    private final BaseRecordEnrichment enrichment;
 
     private final List<MonitorCitation> citations;
 
@@ -42,7 +41,7 @@ public final class MonitorRecord {
     private MonitorRecord(
             String recordId,
             String recordTitle,
-            Map<String, Object> enrichment,
+            BaseRecordEnrichment enrichment,
             List<MonitorCitation> citations,
             Optional<OffsetDateTime> addedOn,
             Optional<OffsetDateTime> updatedOn,
@@ -60,6 +59,7 @@ public final class MonitorRecord {
      * @return Unique identifier for the record.
      */
     @JsonProperty("record_id")
+    @java.lang.Override
     public String getRecordId() {
         return recordId;
     }
@@ -68,21 +68,23 @@ public final class MonitorRecord {
      * @return Short title summarizing the record.
      */
     @JsonProperty("record_title")
+    @java.lang.Override
     public String getRecordTitle() {
         return recordTitle;
     }
 
     /**
-     * @return Structured data extracted from articles. Schema is dynamically generated per job. Field names are chosen semantically to match the content.
-     * <p>See <a href="https://www.newscatcherapi.com/docs/v3/catch-all/overview/dynamic-schemas">Understanding dynamic schemas</a> for integration guidance.</p>
+     * @return Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.
+     * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
+     * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
      */
     @JsonProperty("enrichment")
-    public Map<String, Object> getEnrichment() {
+    public BaseRecordEnrichment getEnrichment() {
         return enrichment;
     }
 
     /**
-     * @return Source articles with monitor-specific metadata (job_id, added_on timestamps).
+     * @return Source documents with monitor-specific metadata (job_id, added_on timestamps).
      */
     @JsonProperty("citations")
     public List<MonitorCitation> getCitations() {
@@ -153,24 +155,27 @@ public final class MonitorRecord {
         /**
          * <p>Short title summarizing the record.</p>
          */
-        _FinalStage recordTitle(@NotNull String recordTitle);
+        EnrichmentStage recordTitle(@NotNull String recordTitle);
+    }
+
+    public interface EnrichmentStage {
+        /**
+         * <p>Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
+         * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
+         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
+         */
+        _FinalStage enrichment(@NotNull BaseRecordEnrichment enrichment);
     }
 
     public interface _FinalStage {
         MonitorRecord build();
 
-        /**
-         * <p>Structured data extracted from articles. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
-         * <p>See <a href="https://www.newscatcherapi.com/docs/v3/catch-all/overview/dynamic-schemas">Understanding dynamic schemas</a> for integration guidance.</p>
-         */
-        _FinalStage enrichment(Map<String, Object> enrichment);
+        _FinalStage additionalProperty(String key, Object value);
 
-        _FinalStage putAllEnrichment(Map<String, Object> enrichment);
-
-        _FinalStage enrichment(String key, Object value);
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Source articles with monitor-specific metadata (job_id, added_on timestamps).</p>
+         * <p>Source documents with monitor-specific metadata (job_id, added_on timestamps).</p>
          */
         _FinalStage citations(List<MonitorCitation> citations);
 
@@ -194,18 +199,18 @@ public final class MonitorRecord {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements RecordIdStage, RecordTitleStage, _FinalStage {
+    public static final class Builder implements RecordIdStage, RecordTitleStage, EnrichmentStage, _FinalStage {
         private String recordId;
 
         private String recordTitle;
+
+        private BaseRecordEnrichment enrichment;
 
         private Optional<OffsetDateTime> updatedOn = Optional.empty();
 
         private Optional<OffsetDateTime> addedOn = Optional.empty();
 
         private List<MonitorCitation> citations = new ArrayList<>();
-
-        private Map<String, Object> enrichment = new LinkedHashMap<>();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -242,8 +247,24 @@ public final class MonitorRecord {
          */
         @java.lang.Override
         @JsonSetter("record_title")
-        public _FinalStage recordTitle(@NotNull String recordTitle) {
+        public EnrichmentStage recordTitle(@NotNull String recordTitle) {
             this.recordTitle = Objects.requireNonNull(recordTitle, "recordTitle must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
+         * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
+         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
+         * <p>Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
+         * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
+         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("enrichment")
+        public _FinalStage enrichment(@NotNull BaseRecordEnrichment enrichment) {
+            this.enrichment = Objects.requireNonNull(enrichment, "enrichment must not be null");
             return this;
         }
 
@@ -288,7 +309,7 @@ public final class MonitorRecord {
         }
 
         /**
-         * <p>Source articles with monitor-specific metadata (job_id, added_on timestamps).</p>
+         * <p>Source documents with monitor-specific metadata (job_id, added_on timestamps).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -300,7 +321,7 @@ public final class MonitorRecord {
         }
 
         /**
-         * <p>Source articles with monitor-specific metadata (job_id, added_on timestamps).</p>
+         * <p>Source documents with monitor-specific metadata (job_id, added_on timestamps).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -310,7 +331,7 @@ public final class MonitorRecord {
         }
 
         /**
-         * <p>Source articles with monitor-specific metadata (job_id, added_on timestamps).</p>
+         * <p>Source documents with monitor-specific metadata (job_id, added_on timestamps).</p>
          */
         @java.lang.Override
         @JsonSetter(value = "citations", nulls = Nulls.SKIP)
@@ -322,48 +343,22 @@ public final class MonitorRecord {
             return this;
         }
 
-        /**
-         * <p>Structured data extracted from articles. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
-         * <p>See <a href="https://www.newscatcherapi.com/docs/v3/catch-all/overview/dynamic-schemas">Understanding dynamic schemas</a> for integration guidance.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage enrichment(String key, Object value) {
-            this.enrichment.put(key, value);
-            return this;
-        }
-
-        /**
-         * <p>Structured data extracted from articles. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
-         * <p>See <a href="https://www.newscatcherapi.com/docs/v3/catch-all/overview/dynamic-schemas">Understanding dynamic schemas</a> for integration guidance.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage putAllEnrichment(Map<String, Object> enrichment) {
-            if (enrichment != null) {
-                this.enrichment.putAll(enrichment);
-            }
-            return this;
-        }
-
-        /**
-         * <p>Structured data extracted from articles. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
-         * <p>See <a href="https://www.newscatcherapi.com/docs/v3/catch-all/overview/dynamic-schemas">Understanding dynamic schemas</a> for integration guidance.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "enrichment", nulls = Nulls.SKIP)
-        public _FinalStage enrichment(Map<String, Object> enrichment) {
-            this.enrichment.clear();
-            if (enrichment != null) {
-                this.enrichment.putAll(enrichment);
-            }
-            return this;
-        }
-
         @java.lang.Override
         public MonitorRecord build() {
             return new MonitorRecord(
                     recordId, recordTitle, enrichment, citations, addedOn, updatedOn, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -17,8 +17,9 @@ import com.newscatcher.catchall.errors.NotFoundError;
 import com.newscatcher.catchall.errors.UnprocessableEntityError;
 import com.newscatcher.catchall.resources.monitors.requests.CreateMonitorRequestDto;
 import com.newscatcher.catchall.resources.monitors.requests.DisableMonitorRequest;
-import com.newscatcher.catchall.resources.monitors.requests.EnableMonitorRequest;
+import com.newscatcher.catchall.resources.monitors.requests.EnableMonitorRequestDto;
 import com.newscatcher.catchall.resources.monitors.requests.ListMonitorJobsRequest;
+import com.newscatcher.catchall.resources.monitors.requests.ListMonitorsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.PullMonitorResultsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.UpdateMonitorRequestDto;
 import com.newscatcher.catchall.resources.monitors.types.DisableMonitorResponse;
@@ -47,46 +48,14 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Create a monitor that runs jobs based on a reference job with a specified schedule.
-     * <p><strong>Reference job requirements:</strong></p>
-     * <ul>
-     * <li>Job's <code>end_date</code> must be within the last 7 days</li>
-     * </ul>
-     * <p><strong>Schedule requirements:</strong></p>
-     * <ul>
-     * <li>Minimum 24-hour interval between executions</li>
-     * <li>Natural language format (e.g., &quot;every day at 12 PM UTC&quot;, &quot;every 48 hours&quot;)</li>
-     * </ul>
-     * <p><strong>Validation:</strong></p>
-     * <ul>
-     * <li>Reference jobs older than 7 days return 400 Bad Request.</li>
-     * <li>Schedules below minimum frequency return error with descriptive message.</li>
-     * <li>Invalid job IDs return 400 Bad Request.</li>
-     * <li>Duplicate monitors (same job already monitored) return error.</li>
-     * </ul>
+     * Create a scheduled monitor based on a reference job.
      */
     public CatchAllApiHttpResponse<CreateMonitorResponseDto> createMonitor(CreateMonitorRequestDto request) {
         return createMonitor(request, null);
     }
 
     /**
-     * Create a monitor that runs jobs based on a reference job with a specified schedule.
-     * <p><strong>Reference job requirements:</strong></p>
-     * <ul>
-     * <li>Job's <code>end_date</code> must be within the last 7 days</li>
-     * </ul>
-     * <p><strong>Schedule requirements:</strong></p>
-     * <ul>
-     * <li>Minimum 24-hour interval between executions</li>
-     * <li>Natural language format (e.g., &quot;every day at 12 PM UTC&quot;, &quot;every 48 hours&quot;)</li>
-     * </ul>
-     * <p><strong>Validation:</strong></p>
-     * <ul>
-     * <li>Reference jobs older than 7 days return 400 Bad Request.</li>
-     * <li>Schedules below minimum frequency return error with descriptive message.</li>
-     * <li>Invalid job IDs return 400 Bad Request.</li>
-     * <li>Duplicate monitors (same job already monitored) return error.</li>
-     * </ul>
+     * Create a scheduled monitor based on a reference job.
      */
     public CatchAllApiHttpResponse<CreateMonitorResponseDto> createMonitor(
             CreateMonitorRequestDto request, RequestOptions requestOptions) {
@@ -142,30 +111,14 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Update webhook configuration for an existing monitor without recreating it.
-     * <p><strong>Supported updates:</strong></p>
-     * <ul>
-     * <li>Webhook URL</li>
-     * <li>HTTP method (POST/PUT)</li>
-     * <li>Headers and authentication</li>
-     * <li>Query parameters</li>
-     * </ul>
-     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     * Update the webhook configuration for an existing monitor.
      */
     public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(String monitorId) {
         return updateMonitor(monitorId, UpdateMonitorRequestDto.builder().build());
     }
 
     /**
-     * Update webhook configuration for an existing monitor without recreating it.
-     * <p><strong>Supported updates:</strong></p>
-     * <ul>
-     * <li>Webhook URL</li>
-     * <li>HTTP method (POST/PUT)</li>
-     * <li>Headers and authentication</li>
-     * <li>Query parameters</li>
-     * </ul>
-     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     * Update the webhook configuration for an existing monitor.
      */
     public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(
             String monitorId, RequestOptions requestOptions) {
@@ -173,15 +126,7 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Update webhook configuration for an existing monitor without recreating it.
-     * <p><strong>Supported updates:</strong></p>
-     * <ul>
-     * <li>Webhook URL</li>
-     * <li>HTTP method (POST/PUT)</li>
-     * <li>Headers and authentication</li>
-     * <li>Query parameters</li>
-     * </ul>
-     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     * Update the webhook configuration for an existing monitor.
      */
     public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(
             String monitorId, UpdateMonitorRequestDto request) {
@@ -189,15 +134,7 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Update webhook configuration for an existing monitor without recreating it.
-     * <p><strong>Supported updates:</strong></p>
-     * <ul>
-     * <li>Webhook URL</li>
-     * <li>HTTP method (POST/PUT)</li>
-     * <li>Headers and authentication</li>
-     * <li>Query parameters</li>
-     * </ul>
-     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     * Update the webhook configuration for an existing monitor.
      */
     public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(
             String monitorId, UpdateMonitorRequestDto request, RequestOptions requestOptions) {
@@ -261,16 +198,14 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Returns all jobs associated with a monitor, sorted by start_date.
-     * Each job includes job_id, start_date, and end_date.
+     * Return all jobs executed by a monitor.
      */
     public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(String monitorId) {
         return listMonitorJobs(monitorId, ListMonitorJobsRequest.builder().build());
     }
 
     /**
-     * Returns all jobs associated with a monitor, sorted by start_date.
-     * Each job includes job_id, start_date, and end_date.
+     * Return all jobs executed by a monitor.
      */
     public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(
             String monitorId, RequestOptions requestOptions) {
@@ -278,8 +213,7 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Returns all jobs associated with a monitor, sorted by start_date.
-     * Each job includes job_id, start_date, and end_date.
+     * Return all jobs executed by a monitor.
      */
     public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(
             String monitorId, ListMonitorJobsRequest request) {
@@ -287,8 +221,7 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Returns all jobs associated with a monitor, sorted by start_date.
-     * Each job includes job_id, start_date, and end_date.
+     * Return all jobs executed by a monitor.
      */
     public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(
             String monitorId, ListMonitorJobsRequest request, RequestOptions requestOptions) {
@@ -346,16 +279,14 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Retrieve aggregated results from all jobs executed by this monitor.
-     * Includes monitor configuration, execution history, and all records collected.
+     * Retrieve aggregated results from all jobs executed by a monitor.
      */
     public CatchAllApiHttpResponse<PullMonitorResponseDto> pullMonitorResults(String monitorId) {
         return pullMonitorResults(monitorId, PullMonitorResultsRequest.builder().build());
     }
 
     /**
-     * Retrieve aggregated results from all jobs executed by this monitor.
-     * Includes monitor configuration, execution history, and all records collected.
+     * Retrieve aggregated results from all jobs executed by a monitor.
      */
     public CatchAllApiHttpResponse<PullMonitorResponseDto> pullMonitorResults(
             String monitorId, RequestOptions requestOptions) {
@@ -363,8 +294,7 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Retrieve aggregated results from all jobs executed by this monitor.
-     * Includes monitor configuration, execution history, and all records collected.
+     * Retrieve aggregated results from all jobs executed by a monitor.
      */
     public CatchAllApiHttpResponse<PullMonitorResponseDto> pullMonitorResults(
             String monitorId, PullMonitorResultsRequest request) {
@@ -372,8 +302,7 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Retrieve aggregated results from all jobs executed by this monitor.
-     * Includes monitor configuration, execution history, and all records collected.
+     * Retrieve aggregated results from all jobs executed by a monitor.
      */
     public CatchAllApiHttpResponse<PullMonitorResponseDto> pullMonitorResults(
             String monitorId, PullMonitorResultsRequest request, RequestOptions requestOptions) {
@@ -426,16 +355,14 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Disables a monitor to stop executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Stop scheduled job execution for a monitor.
      */
     public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(String monitorId) {
         return disableMonitor(monitorId, DisableMonitorRequest.builder().build());
     }
 
     /**
-     * Disables a monitor to stop executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Stop scheduled job execution for a monitor.
      */
     public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(
             String monitorId, RequestOptions requestOptions) {
@@ -443,8 +370,7 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Disables a monitor to stop executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Stop scheduled job execution for a monitor.
      */
     public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(
             String monitorId, DisableMonitorRequest request) {
@@ -452,8 +378,7 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Disables a monitor to stop executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Stop scheduled job execution for a monitor.
      */
     public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(
             String monitorId, DisableMonitorRequest request, RequestOptions requestOptions) {
@@ -510,37 +435,33 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Enables a monitor to resume executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Resume scheduled job execution for a monitor.
      */
     public CatchAllApiHttpResponse<EnableMonitorResponse> enableMonitor(String monitorId) {
-        return enableMonitor(monitorId, EnableMonitorRequest.builder().build());
+        return enableMonitor(monitorId, EnableMonitorRequestDto.builder().build());
     }
 
     /**
-     * Enables a monitor to resume executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Resume scheduled job execution for a monitor.
      */
     public CatchAllApiHttpResponse<EnableMonitorResponse> enableMonitor(
             String monitorId, RequestOptions requestOptions) {
-        return enableMonitor(monitorId, EnableMonitorRequest.builder().build(), requestOptions);
+        return enableMonitor(monitorId, EnableMonitorRequestDto.builder().build(), requestOptions);
     }
 
     /**
-     * Enables a monitor to resume executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Resume scheduled job execution for a monitor.
      */
     public CatchAllApiHttpResponse<EnableMonitorResponse> enableMonitor(
-            String monitorId, EnableMonitorRequest request) {
+            String monitorId, EnableMonitorRequestDto request) {
         return enableMonitor(monitorId, request, null);
     }
 
     /**
-     * Enables a monitor to resume executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Resume scheduled job execution for a monitor.
      */
     public CatchAllApiHttpResponse<EnableMonitorResponse> enableMonitor(
-            String monitorId, EnableMonitorRequest request, RequestOptions requestOptions) {
+            String monitorId, EnableMonitorRequestDto request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors")
@@ -551,12 +472,20 @@ public class RawMonitorsClient {
                 httpUrl.addQueryParameter(_key, _value);
             });
         }
-        Request.Builder _requestBuilder = new Request.Builder()
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
@@ -596,27 +525,50 @@ public class RawMonitorsClient {
      * Returns all monitors created by the authenticated user.
      */
     public CatchAllApiHttpResponse<ListMonitorsResponseDto> listMonitors() {
-        return listMonitors(null);
+        return listMonitors(ListMonitorsRequest.builder().build());
     }
 
     /**
      * Returns all monitors created by the authenticated user.
      */
     public CatchAllApiHttpResponse<ListMonitorsResponseDto> listMonitors(RequestOptions requestOptions) {
+        return listMonitors(ListMonitorsRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public CatchAllApiHttpResponse<ListMonitorsResponseDto> listMonitors(ListMonitorsRequest request) {
+        return listMonitors(request, null);
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public CatchAllApiHttpResponse<ListMonitorsResponseDto> listMonitors(
+            ListMonitorsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors");
+        if (request.getPage().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page", request.getPage().get(), false);
+        }
+        if (request.getPageSize().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page_size", request.getPageSize().get(), false);
+        }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
             });
         }
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);

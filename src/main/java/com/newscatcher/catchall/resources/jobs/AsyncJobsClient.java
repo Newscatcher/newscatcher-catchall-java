@@ -16,8 +16,7 @@ import com.newscatcher.catchall.types.InitializeResponseDto;
 import com.newscatcher.catchall.types.ListUserJobsResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
 import com.newscatcher.catchall.types.StatusResponseDto;
-import com.newscatcher.catchall.types.SubmitResponseBody;
-import java.util.List;
+import com.newscatcher.catchall.types.SubmitResponseDto;
 import java.util.concurrent.CompletableFuture;
 
 public class AsyncJobsClient {
@@ -38,16 +37,14 @@ public class AsyncJobsClient {
     }
 
     /**
-     * Get suggested validators, enrichments, and date ranges for a query before submitting a job.
-     * <p>Returns LLM-generated suggestions based on query analysis and validates against plan limits.</p>
+     * Get suggested validators, enrichments, and date ranges for a query.
      */
     public CompletableFuture<InitializeResponseDto> initialize(InitializeRequestDto request) {
         return this.rawClient.initialize(request).thenApply(response -> response.body());
     }
 
     /**
-     * Get suggested validators, enrichments, and date ranges for a query before submitting a job.
-     * <p>Returns LLM-generated suggestions based on query analysis and validates against plan limits.</p>
+     * Get suggested validators, enrichments, and date ranges for a query.
      */
     public CompletableFuture<InitializeResponseDto> initialize(
             InitializeRequestDto request, RequestOptions requestOptions) {
@@ -55,20 +52,16 @@ public class AsyncJobsClient {
     }
 
     /**
-     * Submit a natural language query to create a new processing job.
-     * <p>Optionally specify context, date ranges, limit, custom validators, and enrichments.
-     * If dates exceed plan limits, returns 400 error.</p>
+     * Submit a query to create a new processing job.
      */
-    public CompletableFuture<SubmitResponseBody> createJob(SubmitRequestDto request) {
+    public CompletableFuture<SubmitResponseDto> createJob(SubmitRequestDto request) {
         return this.rawClient.createJob(request).thenApply(response -> response.body());
     }
 
     /**
-     * Submit a natural language query to create a new processing job.
-     * <p>Optionally specify context, date ranges, limit, custom validators, and enrichments.
-     * If dates exceed plan limits, returns 400 error.</p>
+     * Submit a query to create a new processing job.
      */
-    public CompletableFuture<SubmitResponseBody> createJob(SubmitRequestDto request, RequestOptions requestOptions) {
+    public CompletableFuture<SubmitResponseDto> createJob(SubmitRequestDto request, RequestOptions requestOptions) {
         return this.rawClient.createJob(request, requestOptions).thenApply(response -> response.body());
     }
 
@@ -119,28 +112,28 @@ public class AsyncJobsClient {
     /**
      * Returns all jobs created by the authenticated user.
      */
-    public CompletableFuture<List<ListUserJobsResponseDto>> getUserJobs() {
+    public CompletableFuture<ListUserJobsResponseDto> getUserJobs() {
         return this.rawClient.getUserJobs().thenApply(response -> response.body());
     }
 
     /**
      * Returns all jobs created by the authenticated user.
      */
-    public CompletableFuture<List<ListUserJobsResponseDto>> getUserJobs(RequestOptions requestOptions) {
+    public CompletableFuture<ListUserJobsResponseDto> getUserJobs(RequestOptions requestOptions) {
         return this.rawClient.getUserJobs(requestOptions).thenApply(response -> response.body());
     }
 
     /**
      * Returns all jobs created by the authenticated user.
      */
-    public CompletableFuture<List<ListUserJobsResponseDto>> getUserJobs(GetUserJobsRequest request) {
+    public CompletableFuture<ListUserJobsResponseDto> getUserJobs(GetUserJobsRequest request) {
         return this.rawClient.getUserJobs(request).thenApply(response -> response.body());
     }
 
     /**
      * Returns all jobs created by the authenticated user.
      */
-    public CompletableFuture<List<ListUserJobsResponseDto>> getUserJobs(
+    public CompletableFuture<ListUserJobsResponseDto> getUserJobs(
             GetUserJobsRequest request, RequestOptions requestOptions) {
         return this.rawClient.getUserJobs(request, requestOptions).thenApply(response -> response.body());
     }

@@ -82,7 +82,7 @@ public final class MonitorListItemDto {
     }
 
     /**
-     * @return Natural language query from the reference job.
+     * @return Plain text query from the reference job.
      */
     @JsonProperty("reference_job_query")
     public String getReferenceJobQuery() {
@@ -106,7 +106,7 @@ public final class MonitorListItemDto {
     }
 
     /**
-     * @return Natural language description of the monitor schedule.
+     * @return The monitor schedule in a plain text format.
      */
     @JsonProperty("schedule_human_readable")
     public Optional<String> getScheduleHumanReadable() {
@@ -201,7 +201,7 @@ public final class MonitorListItemDto {
 
     public interface ReferenceJobQueryStage {
         /**
-         * <p>Natural language query from the reference job.</p>
+         * <p>Plain text query from the reference job.</p>
          */
         EnabledStage referenceJobQuery(@NotNull String referenceJobQuery);
     }
@@ -216,6 +216,10 @@ public final class MonitorListItemDto {
     public interface _FinalStage {
         MonitorListItemDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Cron expression for monitor schedule.</p>
          */
@@ -224,7 +228,7 @@ public final class MonitorListItemDto {
         _FinalStage schedule(String schedule);
 
         /**
-         * <p>Natural language description of the monitor schedule.</p>
+         * <p>The monitor schedule in a plain text format.</p>
          */
         _FinalStage scheduleHumanReadable(Optional<String> scheduleHumanReadable);
 
@@ -317,8 +321,8 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Natural language query from the reference job.</p>
-         * <p>Natural language query from the reference job.</p>
+         * <p>Plain text query from the reference job.</p>
+         * <p>Plain text query from the reference job.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -401,7 +405,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Natural language description of the monitor schedule.</p>
+         * <p>The monitor schedule in a plain text format.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -411,7 +415,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Natural language description of the monitor schedule.</p>
+         * <p>The monitor schedule in a plain text format.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "schedule_human_readable", nulls = Nulls.SKIP)
@@ -453,6 +457,18 @@ public final class MonitorListItemDto {
                     createdAt,
                     webhook,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

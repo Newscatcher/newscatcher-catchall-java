@@ -19,14 +19,14 @@ import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = MonitorCitation.Builder.class)
-public final class MonitorCitation {
-    private final String id;
-
+public final class MonitorCitation implements ICitation {
     private final String title;
 
     private final String link;
 
     private final OffsetDateTime publishedDate;
+
+    private final String id;
 
     private final String jobId;
 
@@ -35,52 +35,55 @@ public final class MonitorCitation {
     private final Map<String, Object> additionalProperties;
 
     private MonitorCitation(
-            String id,
             String title,
             String link,
             OffsetDateTime publishedDate,
+            String id,
             String jobId,
             OffsetDateTime addedOn,
             Map<String, Object> additionalProperties) {
-        this.id = id;
         this.title = title;
         this.link = link;
         this.publishedDate = publishedDate;
+        this.id = id;
         this.jobId = jobId;
         this.addedOn = addedOn;
         this.additionalProperties = additionalProperties;
     }
 
     /**
-     * @return Article identifier from News API
-     */
-    @JsonProperty("id")
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @return Article title
+     * @return The title of the source document.
      */
     @JsonProperty("title")
+    @java.lang.Override
     public String getTitle() {
         return title;
     }
 
     /**
-     * @return URL to the source article
+     * @return URL to the source document.
      */
     @JsonProperty("link")
+    @java.lang.Override
     public String getLink() {
         return link;
     }
 
     /**
-     * @return Article publication date in ISO 8601 format with UTC timezone.
+     * @return The publication date of the source document in ISO 8601 format (UTC timezone).
      */
     @JsonProperty("published_date")
+    @java.lang.Override
     public OffsetDateTime getPublishedDate() {
         return publishedDate;
+    }
+
+    /**
+     * @return Unique identifier of the document in the search index.
+     */
+    @JsonProperty("id")
+    public String getId() {
+        return id;
     }
 
     /**
@@ -111,17 +114,17 @@ public final class MonitorCitation {
     }
 
     private boolean equalTo(MonitorCitation other) {
-        return id.equals(other.id)
-                && title.equals(other.title)
+        return title.equals(other.title)
                 && link.equals(other.link)
                 && publishedDate.equals(other.publishedDate)
+                && id.equals(other.id)
                 && jobId.equals(other.jobId)
                 && addedOn.equals(other.addedOn);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.title, this.link, this.publishedDate, this.jobId, this.addedOn);
+        return Objects.hash(this.title, this.link, this.publishedDate, this.id, this.jobId, this.addedOn);
     }
 
     @java.lang.Override
@@ -129,38 +132,38 @@ public final class MonitorCitation {
         return ObjectMappers.stringify(this);
     }
 
-    public static IdStage builder() {
+    public static TitleStage builder() {
         return new Builder();
-    }
-
-    public interface IdStage {
-        /**
-         * <p>Article identifier from News API</p>
-         */
-        TitleStage id(@NotNull String id);
-
-        Builder from(MonitorCitation other);
     }
 
     public interface TitleStage {
         /**
-         * <p>Article title</p>
+         * <p>The title of the source document.</p>
          */
         LinkStage title(@NotNull String title);
+
+        Builder from(MonitorCitation other);
     }
 
     public interface LinkStage {
         /**
-         * <p>URL to the source article</p>
+         * <p>URL to the source document.</p>
          */
         PublishedDateStage link(@NotNull String link);
     }
 
     public interface PublishedDateStage {
         /**
-         * <p>Article publication date in ISO 8601 format with UTC timezone.</p>
+         * <p>The publication date of the source document in ISO 8601 format (UTC timezone).</p>
          */
-        JobIdStage publishedDate(@NotNull OffsetDateTime publishedDate);
+        IdStage publishedDate(@NotNull OffsetDateTime publishedDate);
+    }
+
+    public interface IdStage {
+        /**
+         * <p>Unique identifier of the document in the search index.</p>
+         */
+        JobIdStage id(@NotNull String id);
     }
 
     public interface JobIdStage {
@@ -179,18 +182,22 @@ public final class MonitorCitation {
 
     public interface _FinalStage {
         MonitorCitation build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder
-            implements IdStage, TitleStage, LinkStage, PublishedDateStage, JobIdStage, AddedOnStage, _FinalStage {
-        private String id;
-
+            implements TitleStage, LinkStage, PublishedDateStage, IdStage, JobIdStage, AddedOnStage, _FinalStage {
         private String title;
 
         private String link;
 
         private OffsetDateTime publishedDate;
+
+        private String id;
 
         private String jobId;
 
@@ -203,30 +210,18 @@ public final class MonitorCitation {
 
         @java.lang.Override
         public Builder from(MonitorCitation other) {
-            id(other.getId());
             title(other.getTitle());
             link(other.getLink());
             publishedDate(other.getPublishedDate());
+            id(other.getId());
             jobId(other.getJobId());
             addedOn(other.getAddedOn());
             return this;
         }
 
         /**
-         * <p>Article identifier from News API</p>
-         * <p>Article identifier from News API</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("id")
-        public TitleStage id(@NotNull String id) {
-            this.id = Objects.requireNonNull(id, "id must not be null");
-            return this;
-        }
-
-        /**
-         * <p>Article title</p>
-         * <p>Article title</p>
+         * <p>The title of the source document.</p>
+         * <p>The title of the source document.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -237,8 +232,8 @@ public final class MonitorCitation {
         }
 
         /**
-         * <p>URL to the source article</p>
-         * <p>URL to the source article</p>
+         * <p>URL to the source document.</p>
+         * <p>URL to the source document.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -249,14 +244,26 @@ public final class MonitorCitation {
         }
 
         /**
-         * <p>Article publication date in ISO 8601 format with UTC timezone.</p>
-         * <p>Article publication date in ISO 8601 format with UTC timezone.</p>
+         * <p>The publication date of the source document in ISO 8601 format (UTC timezone).</p>
+         * <p>The publication date of the source document in ISO 8601 format (UTC timezone).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
         @JsonSetter("published_date")
-        public JobIdStage publishedDate(@NotNull OffsetDateTime publishedDate) {
+        public IdStage publishedDate(@NotNull OffsetDateTime publishedDate) {
             this.publishedDate = Objects.requireNonNull(publishedDate, "publishedDate must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Unique identifier of the document in the search index.</p>
+         * <p>Unique identifier of the document in the search index.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("id")
+        public JobIdStage id(@NotNull String id) {
+            this.id = Objects.requireNonNull(id, "id must not be null");
             return this;
         }
 
@@ -286,7 +293,19 @@ public final class MonitorCitation {
 
         @java.lang.Override
         public MonitorCitation build() {
-            return new MonitorCitation(id, title, link, publishedDate, jobId, addedOn, additionalProperties);
+            return new MonitorCitation(title, link, publishedDate, id, jobId, addedOn, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

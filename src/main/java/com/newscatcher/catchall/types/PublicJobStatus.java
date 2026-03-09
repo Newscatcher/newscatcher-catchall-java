@@ -6,26 +6,26 @@ package com.newscatcher.catchall.types;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public final class JobStatus {
-    public static final JobStatus FAILED = new JobStatus(Value.FAILED, "failed");
+public final class PublicJobStatus {
+    public static final PublicJobStatus FAILED = new PublicJobStatus(Value.FAILED, "failed");
 
-    public static final JobStatus COMPLETED = new JobStatus(Value.COMPLETED, "completed");
+    public static final PublicJobStatus COMPLETED = new PublicJobStatus(Value.COMPLETED, "completed");
 
-    public static final JobStatus CLUSTERING = new JobStatus(Value.CLUSTERING, "clustering");
+    public static final PublicJobStatus CLUSTERING = new PublicJobStatus(Value.CLUSTERING, "clustering");
 
-    public static final JobStatus SUBMITTED = new JobStatus(Value.SUBMITTED, "submitted");
+    public static final PublicJobStatus SUBMITTED = new PublicJobStatus(Value.SUBMITTED, "submitted");
 
-    public static final JobStatus ENRICHING = new JobStatus(Value.ENRICHING, "enriching");
+    public static final PublicJobStatus ENRICHING = new PublicJobStatus(Value.ENRICHING, "enriching");
 
-    public static final JobStatus ANALYZING = new JobStatus(Value.ANALYZING, "analyzing");
+    public static final PublicJobStatus ANALYZING = new PublicJobStatus(Value.ANALYZING, "analyzing");
 
-    public static final JobStatus FETCHING = new JobStatus(Value.FETCHING, "fetching");
+    public static final PublicJobStatus FETCHING = new PublicJobStatus(Value.FETCHING, "fetching");
 
     private final Value value;
 
     private final String string;
 
-    JobStatus(Value value, String string) {
+    PublicJobStatus(Value value, String string) {
         this.value = value;
         this.string = string;
     }
@@ -42,7 +42,8 @@ public final class JobStatus {
 
     @java.lang.Override
     public boolean equals(Object other) {
-        return (this == other) || (other instanceof JobStatus && this.string.equals(((JobStatus) other).string));
+        return (this == other)
+                || (other instanceof PublicJobStatus && this.string.equals(((PublicJobStatus) other).string));
     }
 
     @java.lang.Override
@@ -73,7 +74,7 @@ public final class JobStatus {
     }
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static JobStatus valueOf(String value) {
+    public static PublicJobStatus valueOf(String value) {
         switch (value) {
             case "failed":
                 return FAILED;
@@ -90,7 +91,7 @@ public final class JobStatus {
             case "fetching":
                 return FETCHING;
             default:
-                return new JobStatus(Value.UNKNOWN, value);
+                return new PublicJobStatus(Value.UNKNOWN, value);
         }
     }
 

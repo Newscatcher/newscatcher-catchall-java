@@ -26,7 +26,7 @@ The Newscatcher Java library provides convenient access to the Newscatcher APIs 
 
 ## Documentation
 
-API reference documentation is available [here](https://www.newscatcherapi.com/docs/v3/catch-all/endpoints/create-job).
+API reference documentation is available [here](https://www.newscatcherapi.com/docs/web-search-api/api-reference/jobs/initialize-job).
 
 ## Installation
 
@@ -48,7 +48,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.newscatcherapi</groupId>
   <artifactId>newscatcher-catchall-sdk</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
@@ -77,11 +77,11 @@ public class Example {
         client.jobs().createJob(
             SubmitRequestDto
                 .builder()
-                .query("AI company acquisitions")
-                .context("Focus on deal size and acquiring company details")
+                .query("Series B funding rounds for SaaS startups")
+                .context("Focus on funding amount and company name")
                 .limit(10)
-                .startDate(OffsetDateTime.parse("2026-01-30T00:00:00Z"))
-                .endDate(OffsetDateTime.parse("2026-02-05T00:00:00Z"))
+                .startDate(OffsetDateTime.parse("2026-02-18T00:00:00Z"))
+                .endDate(OffsetDateTime.parse("2026-02-23T00:00:00Z"))
                 .build()
         );
     }
@@ -252,3 +252,4 @@ On the other hand, contributions to the README are always very welcome!
 
 - Documentation: [https://www.newscatcherapi.com/docs/v3/catch-all](https://www.newscatcherapi.com/docs/v3/catch-all)
 - Support: <support@newscatcherapi.com>
+
