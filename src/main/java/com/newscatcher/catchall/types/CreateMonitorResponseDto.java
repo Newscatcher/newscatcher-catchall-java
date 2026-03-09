@@ -5,12 +5,15 @@ package com.newscatcher.catchall.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.newscatcher.catchall.core.Nullable;
+import com.newscatcher.catchall.core.NullableNonemptyFilter;
 import com.newscatcher.catchall.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,8 +40,11 @@ public final class CreateMonitorResponseDto {
     /**
      * @return Monitor ID if successful, null if error.
      */
-    @JsonProperty("monitor_id")
+    @JsonIgnore
     public Optional<String> getMonitorId() {
+        if (monitorId == null) {
+            return Optional.empty();
+        }
         return monitorId;
     }
 
@@ -48,6 +54,12 @@ public final class CreateMonitorResponseDto {
     @JsonProperty("status")
     public String getStatus() {
         return status;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("monitor_id")
+    private Optional<String> _getMonitorId() {
+        return monitorId;
     }
 
     @java.lang.Override
@@ -91,12 +103,18 @@ public final class CreateMonitorResponseDto {
     public interface _FinalStage {
         CreateMonitorResponseDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Monitor ID if successful, null if error.</p>
          */
         _FinalStage monitorId(Optional<String> monitorId);
 
         _FinalStage monitorId(String monitorId);
+
+        _FinalStage monitorId(Nullable<String> monitorId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -134,6 +152,22 @@ public final class CreateMonitorResponseDto {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage monitorId(Nullable<String> monitorId) {
+            if (monitorId.isNull()) {
+                this.monitorId = null;
+            } else if (monitorId.isEmpty()) {
+                this.monitorId = Optional.empty();
+            } else {
+                this.monitorId = Optional.of(monitorId.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Monitor ID if successful, null if error.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage monitorId(String monitorId) {
             this.monitorId = Optional.ofNullable(monitorId);
             return this;
@@ -152,6 +186,18 @@ public final class CreateMonitorResponseDto {
         @java.lang.Override
         public CreateMonitorResponseDto build() {
             return new CreateMonitorResponseDto(monitorId, status, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

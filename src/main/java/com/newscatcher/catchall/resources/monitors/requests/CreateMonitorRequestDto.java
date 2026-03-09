@@ -28,22 +28,30 @@ public final class CreateMonitorRequestDto {
 
     private final Optional<WebhookDto> webhook;
 
+    private final Optional<Integer> limit;
+
+    private final Optional<Boolean> backfill;
+
     private final Map<String, Object> additionalProperties;
 
     private CreateMonitorRequestDto(
             String referenceJobId,
             String schedule,
             Optional<WebhookDto> webhook,
+            Optional<Integer> limit,
+            Optional<Boolean> backfill,
             Map<String, Object> additionalProperties) {
         this.referenceJobId = referenceJobId;
         this.schedule = schedule;
         this.webhook = webhook;
+        this.limit = limit;
+        this.backfill = backfill;
         this.additionalProperties = additionalProperties;
     }
 
     /**
-     * @return Job ID to use as template for scheduled runs.
-     * <p>Job's <code>end_date</code> must be within the last 7 days.</p>
+     * @return Job ID to use as template for scheduled runs. Defines the query, validators, and enrichments used for each scheduled run.
+     * <p>If <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/monitors/create-monitor#body-backfill"><code>backfill</code></a> is true, the job's <code>end_date</code> must be within the last 7 days.</p>
      */
     @JsonProperty("reference_job_id")
     public String getReferenceJobId() {
@@ -51,8 +59,8 @@ public final class CreateMonitorRequestDto {
     }
 
     /**
-     * @return Natural language schedule (e.g. 'every day at 12 AM EST').
-     * <p><strong>Minimum frequency:</strong> Monitors must be scheduled at least 24 hours apart.</p>
+     * @return Monitor schedule in plain text format (e.g. 'every day at 12 PM UTC', 'every 48 hours').
+     * <p>Minimum frequency depends on your plan.</p>
      */
     @JsonProperty("schedule")
     public String getSchedule() {
@@ -65,6 +73,23 @@ public final class CreateMonitorRequestDto {
     @JsonProperty("webhook")
     public Optional<WebhookDto> getWebhook() {
         return webhook;
+    }
+
+    /**
+     * @return Maximum number of records per monitor run. If not provided, defaults to the plan limit.
+     */
+    @JsonProperty("limit")
+    public Optional<Integer> getLimit() {
+        return limit;
+    }
+
+    /**
+     * @return If true, fills the data gap between the reference job's <code>end_date</code> and the first scheduled run. The reference job's <code>end_date</code> must be within the last 7 days.
+     * <p>If false, no gap filling occurs and the first run uses the current cron window only — the reference job's age does not matter.</p>
+     */
+    @JsonProperty("backfill")
+    public Optional<Boolean> getBackfill() {
+        return backfill;
     }
 
     @java.lang.Override
@@ -81,12 +106,14 @@ public final class CreateMonitorRequestDto {
     private boolean equalTo(CreateMonitorRequestDto other) {
         return referenceJobId.equals(other.referenceJobId)
                 && schedule.equals(other.schedule)
-                && webhook.equals(other.webhook);
+                && webhook.equals(other.webhook)
+                && limit.equals(other.limit)
+                && backfill.equals(other.backfill);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.referenceJobId, this.schedule, this.webhook);
+        return Objects.hash(this.referenceJobId, this.schedule, this.webhook, this.limit, this.backfill);
     }
 
     @java.lang.Override
@@ -100,8 +127,8 @@ public final class CreateMonitorRequestDto {
 
     public interface ReferenceJobIdStage {
         /**
-         * <p>Job ID to use as template for scheduled runs.</p>
-         * <p>Job's <code>end_date</code> must be within the last 7 days.</p>
+         * <p>Job ID to use as template for scheduled runs. Defines the query, validators, and enrichments used for each scheduled run.</p>
+         * <p>If <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/monitors/create-monitor#body-backfill"><code>backfill</code></a> is true, the job's <code>end_date</code> must be within the last 7 days.</p>
          */
         ScheduleStage referenceJobId(@NotNull String referenceJobId);
 
@@ -110,8 +137,8 @@ public final class CreateMonitorRequestDto {
 
     public interface ScheduleStage {
         /**
-         * <p>Natural language schedule (e.g. 'every day at 12 AM EST').</p>
-         * <p><strong>Minimum frequency:</strong> Monitors must be scheduled at least 24 hours apart.</p>
+         * <p>Monitor schedule in plain text format (e.g. 'every day at 12 PM UTC', 'every 48 hours').</p>
+         * <p>Minimum frequency depends on your plan.</p>
          */
         _FinalStage schedule(@NotNull String schedule);
     }
@@ -119,12 +146,31 @@ public final class CreateMonitorRequestDto {
     public interface _FinalStage {
         CreateMonitorRequestDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Optional webhook to receive notifications when jobs complete.</p>
          */
         _FinalStage webhook(Optional<WebhookDto> webhook);
 
         _FinalStage webhook(WebhookDto webhook);
+
+        /**
+         * <p>Maximum number of records per monitor run. If not provided, defaults to the plan limit.</p>
+         */
+        _FinalStage limit(Optional<Integer> limit);
+
+        _FinalStage limit(Integer limit);
+
+        /**
+         * <p>If true, fills the data gap between the reference job's <code>end_date</code> and the first scheduled run. The reference job's <code>end_date</code> must be within the last 7 days.</p>
+         * <p>If false, no gap filling occurs and the first run uses the current cron window only — the reference job's age does not matter.</p>
+         */
+        _FinalStage backfill(Optional<Boolean> backfill);
+
+        _FinalStage backfill(Boolean backfill);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -132,6 +178,10 @@ public final class CreateMonitorRequestDto {
         private String referenceJobId;
 
         private String schedule;
+
+        private Optional<Boolean> backfill = Optional.empty();
+
+        private Optional<Integer> limit = Optional.empty();
 
         private Optional<WebhookDto> webhook = Optional.empty();
 
@@ -145,14 +195,16 @@ public final class CreateMonitorRequestDto {
             referenceJobId(other.getReferenceJobId());
             schedule(other.getSchedule());
             webhook(other.getWebhook());
+            limit(other.getLimit());
+            backfill(other.getBackfill());
             return this;
         }
 
         /**
-         * <p>Job ID to use as template for scheduled runs.</p>
-         * <p>Job's <code>end_date</code> must be within the last 7 days.</p>
-         * <p>Job ID to use as template for scheduled runs.</p>
-         * <p>Job's <code>end_date</code> must be within the last 7 days.</p>
+         * <p>Job ID to use as template for scheduled runs. Defines the query, validators, and enrichments used for each scheduled run.</p>
+         * <p>If <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/monitors/create-monitor#body-backfill"><code>backfill</code></a> is true, the job's <code>end_date</code> must be within the last 7 days.</p>
+         * <p>Job ID to use as template for scheduled runs. Defines the query, validators, and enrichments used for each scheduled run.</p>
+         * <p>If <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/monitors/create-monitor#body-backfill"><code>backfill</code></a> is true, the job's <code>end_date</code> must be within the last 7 days.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -163,16 +215,58 @@ public final class CreateMonitorRequestDto {
         }
 
         /**
-         * <p>Natural language schedule (e.g. 'every day at 12 AM EST').</p>
-         * <p><strong>Minimum frequency:</strong> Monitors must be scheduled at least 24 hours apart.</p>
-         * <p>Natural language schedule (e.g. 'every day at 12 AM EST').</p>
-         * <p><strong>Minimum frequency:</strong> Monitors must be scheduled at least 24 hours apart.</p>
+         * <p>Monitor schedule in plain text format (e.g. 'every day at 12 PM UTC', 'every 48 hours').</p>
+         * <p>Minimum frequency depends on your plan.</p>
+         * <p>Monitor schedule in plain text format (e.g. 'every day at 12 PM UTC', 'every 48 hours').</p>
+         * <p>Minimum frequency depends on your plan.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
         @JsonSetter("schedule")
         public _FinalStage schedule(@NotNull String schedule) {
             this.schedule = Objects.requireNonNull(schedule, "schedule must not be null");
+            return this;
+        }
+
+        /**
+         * <p>If true, fills the data gap between the reference job's <code>end_date</code> and the first scheduled run. The reference job's <code>end_date</code> must be within the last 7 days.</p>
+         * <p>If false, no gap filling occurs and the first run uses the current cron window only — the reference job's age does not matter.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage backfill(Boolean backfill) {
+            this.backfill = Optional.ofNullable(backfill);
+            return this;
+        }
+
+        /**
+         * <p>If true, fills the data gap between the reference job's <code>end_date</code> and the first scheduled run. The reference job's <code>end_date</code> must be within the last 7 days.</p>
+         * <p>If false, no gap filling occurs and the first run uses the current cron window only — the reference job's age does not matter.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "backfill", nulls = Nulls.SKIP)
+        public _FinalStage backfill(Optional<Boolean> backfill) {
+            this.backfill = backfill;
+            return this;
+        }
+
+        /**
+         * <p>Maximum number of records per monitor run. If not provided, defaults to the plan limit.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage limit(Integer limit) {
+            this.limit = Optional.ofNullable(limit);
+            return this;
+        }
+
+        /**
+         * <p>Maximum number of records per monitor run. If not provided, defaults to the plan limit.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "limit", nulls = Nulls.SKIP)
+        public _FinalStage limit(Optional<Integer> limit) {
+            this.limit = limit;
             return this;
         }
 
@@ -198,7 +292,20 @@ public final class CreateMonitorRequestDto {
 
         @java.lang.Override
         public CreateMonitorRequestDto build() {
-            return new CreateMonitorRequestDto(referenceJobId, schedule, webhook, additionalProperties);
+            return new CreateMonitorRequestDto(
+                    referenceJobId, schedule, webhook, limit, backfill, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -7,8 +7,9 @@ import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.monitors.requests.CreateMonitorRequestDto;
 import com.newscatcher.catchall.resources.monitors.requests.DisableMonitorRequest;
-import com.newscatcher.catchall.resources.monitors.requests.EnableMonitorRequest;
+import com.newscatcher.catchall.resources.monitors.requests.EnableMonitorRequestDto;
 import com.newscatcher.catchall.resources.monitors.requests.ListMonitorJobsRequest;
+import com.newscatcher.catchall.resources.monitors.requests.ListMonitorsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.PullMonitorResultsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.UpdateMonitorRequestDto;
 import com.newscatcher.catchall.resources.monitors.types.DisableMonitorResponse;
@@ -37,106 +38,42 @@ public class MonitorsClient {
     }
 
     /**
-     * Create a monitor that runs jobs based on a reference job with a specified schedule.
-     * <p><strong>Reference job requirements:</strong></p>
-     * <ul>
-     * <li>Job's <code>end_date</code> must be within the last 7 days</li>
-     * </ul>
-     * <p><strong>Schedule requirements:</strong></p>
-     * <ul>
-     * <li>Minimum 24-hour interval between executions</li>
-     * <li>Natural language format (e.g., &quot;every day at 12 PM UTC&quot;, &quot;every 48 hours&quot;)</li>
-     * </ul>
-     * <p><strong>Validation:</strong></p>
-     * <ul>
-     * <li>Reference jobs older than 7 days return 400 Bad Request.</li>
-     * <li>Schedules below minimum frequency return error with descriptive message.</li>
-     * <li>Invalid job IDs return 400 Bad Request.</li>
-     * <li>Duplicate monitors (same job already monitored) return error.</li>
-     * </ul>
+     * Create a scheduled monitor based on a reference job.
      */
     public CreateMonitorResponseDto createMonitor(CreateMonitorRequestDto request) {
         return this.rawClient.createMonitor(request).body();
     }
 
     /**
-     * Create a monitor that runs jobs based on a reference job with a specified schedule.
-     * <p><strong>Reference job requirements:</strong></p>
-     * <ul>
-     * <li>Job's <code>end_date</code> must be within the last 7 days</li>
-     * </ul>
-     * <p><strong>Schedule requirements:</strong></p>
-     * <ul>
-     * <li>Minimum 24-hour interval between executions</li>
-     * <li>Natural language format (e.g., &quot;every day at 12 PM UTC&quot;, &quot;every 48 hours&quot;)</li>
-     * </ul>
-     * <p><strong>Validation:</strong></p>
-     * <ul>
-     * <li>Reference jobs older than 7 days return 400 Bad Request.</li>
-     * <li>Schedules below minimum frequency return error with descriptive message.</li>
-     * <li>Invalid job IDs return 400 Bad Request.</li>
-     * <li>Duplicate monitors (same job already monitored) return error.</li>
-     * </ul>
+     * Create a scheduled monitor based on a reference job.
      */
     public CreateMonitorResponseDto createMonitor(CreateMonitorRequestDto request, RequestOptions requestOptions) {
         return this.rawClient.createMonitor(request, requestOptions).body();
     }
 
     /**
-     * Update webhook configuration for an existing monitor without recreating it.
-     * <p><strong>Supported updates:</strong></p>
-     * <ul>
-     * <li>Webhook URL</li>
-     * <li>HTTP method (POST/PUT)</li>
-     * <li>Headers and authentication</li>
-     * <li>Query parameters</li>
-     * </ul>
-     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     * Update the webhook configuration for an existing monitor.
      */
     public UpdateMonitorResponseDto updateMonitor(String monitorId) {
         return this.rawClient.updateMonitor(monitorId).body();
     }
 
     /**
-     * Update webhook configuration for an existing monitor without recreating it.
-     * <p><strong>Supported updates:</strong></p>
-     * <ul>
-     * <li>Webhook URL</li>
-     * <li>HTTP method (POST/PUT)</li>
-     * <li>Headers and authentication</li>
-     * <li>Query parameters</li>
-     * </ul>
-     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     * Update the webhook configuration for an existing monitor.
      */
     public UpdateMonitorResponseDto updateMonitor(String monitorId, RequestOptions requestOptions) {
         return this.rawClient.updateMonitor(monitorId, requestOptions).body();
     }
 
     /**
-     * Update webhook configuration for an existing monitor without recreating it.
-     * <p><strong>Supported updates:</strong></p>
-     * <ul>
-     * <li>Webhook URL</li>
-     * <li>HTTP method (POST/PUT)</li>
-     * <li>Headers and authentication</li>
-     * <li>Query parameters</li>
-     * </ul>
-     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     * Update the webhook configuration for an existing monitor.
      */
     public UpdateMonitorResponseDto updateMonitor(String monitorId, UpdateMonitorRequestDto request) {
         return this.rawClient.updateMonitor(monitorId, request).body();
     }
 
     /**
-     * Update webhook configuration for an existing monitor without recreating it.
-     * <p><strong>Supported updates:</strong></p>
-     * <ul>
-     * <li>Webhook URL</li>
-     * <li>HTTP method (POST/PUT)</li>
-     * <li>Headers and authentication</li>
-     * <li>Query parameters</li>
-     * </ul>
-     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     * Update the webhook configuration for an existing monitor.
      */
     public UpdateMonitorResponseDto updateMonitor(
             String monitorId, UpdateMonitorRequestDto request, RequestOptions requestOptions) {
@@ -144,32 +81,28 @@ public class MonitorsClient {
     }
 
     /**
-     * Returns all jobs associated with a monitor, sorted by start_date.
-     * Each job includes job_id, start_date, and end_date.
+     * Return all jobs executed by a monitor.
      */
     public ListMonitorJobsResponse listMonitorJobs(String monitorId) {
         return this.rawClient.listMonitorJobs(monitorId).body();
     }
 
     /**
-     * Returns all jobs associated with a monitor, sorted by start_date.
-     * Each job includes job_id, start_date, and end_date.
+     * Return all jobs executed by a monitor.
      */
     public ListMonitorJobsResponse listMonitorJobs(String monitorId, RequestOptions requestOptions) {
         return this.rawClient.listMonitorJobs(monitorId, requestOptions).body();
     }
 
     /**
-     * Returns all jobs associated with a monitor, sorted by start_date.
-     * Each job includes job_id, start_date, and end_date.
+     * Return all jobs executed by a monitor.
      */
     public ListMonitorJobsResponse listMonitorJobs(String monitorId, ListMonitorJobsRequest request) {
         return this.rawClient.listMonitorJobs(monitorId, request).body();
     }
 
     /**
-     * Returns all jobs associated with a monitor, sorted by start_date.
-     * Each job includes job_id, start_date, and end_date.
+     * Return all jobs executed by a monitor.
      */
     public ListMonitorJobsResponse listMonitorJobs(
             String monitorId, ListMonitorJobsRequest request, RequestOptions requestOptions) {
@@ -179,32 +112,28 @@ public class MonitorsClient {
     }
 
     /**
-     * Retrieve aggregated results from all jobs executed by this monitor.
-     * Includes monitor configuration, execution history, and all records collected.
+     * Retrieve aggregated results from all jobs executed by a monitor.
      */
     public PullMonitorResponseDto pullMonitorResults(String monitorId) {
         return this.rawClient.pullMonitorResults(monitorId).body();
     }
 
     /**
-     * Retrieve aggregated results from all jobs executed by this monitor.
-     * Includes monitor configuration, execution history, and all records collected.
+     * Retrieve aggregated results from all jobs executed by a monitor.
      */
     public PullMonitorResponseDto pullMonitorResults(String monitorId, RequestOptions requestOptions) {
         return this.rawClient.pullMonitorResults(monitorId, requestOptions).body();
     }
 
     /**
-     * Retrieve aggregated results from all jobs executed by this monitor.
-     * Includes monitor configuration, execution history, and all records collected.
+     * Retrieve aggregated results from all jobs executed by a monitor.
      */
     public PullMonitorResponseDto pullMonitorResults(String monitorId, PullMonitorResultsRequest request) {
         return this.rawClient.pullMonitorResults(monitorId, request).body();
     }
 
     /**
-     * Retrieve aggregated results from all jobs executed by this monitor.
-     * Includes monitor configuration, execution history, and all records collected.
+     * Retrieve aggregated results from all jobs executed by a monitor.
      */
     public PullMonitorResponseDto pullMonitorResults(
             String monitorId, PullMonitorResultsRequest request, RequestOptions requestOptions) {
@@ -214,32 +143,28 @@ public class MonitorsClient {
     }
 
     /**
-     * Disables a monitor to stop executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Stop scheduled job execution for a monitor.
      */
     public DisableMonitorResponse disableMonitor(String monitorId) {
         return this.rawClient.disableMonitor(monitorId).body();
     }
 
     /**
-     * Disables a monitor to stop executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Stop scheduled job execution for a monitor.
      */
     public DisableMonitorResponse disableMonitor(String monitorId, RequestOptions requestOptions) {
         return this.rawClient.disableMonitor(monitorId, requestOptions).body();
     }
 
     /**
-     * Disables a monitor to stop executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Stop scheduled job execution for a monitor.
      */
     public DisableMonitorResponse disableMonitor(String monitorId, DisableMonitorRequest request) {
         return this.rawClient.disableMonitor(monitorId, request).body();
     }
 
     /**
-     * Disables a monitor to stop executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Stop scheduled job execution for a monitor.
      */
     public DisableMonitorResponse disableMonitor(
             String monitorId, DisableMonitorRequest request, RequestOptions requestOptions) {
@@ -247,35 +172,31 @@ public class MonitorsClient {
     }
 
     /**
-     * Enables a monitor to resume executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Resume scheduled job execution for a monitor.
      */
     public EnableMonitorResponse enableMonitor(String monitorId) {
         return this.rawClient.enableMonitor(monitorId).body();
     }
 
     /**
-     * Enables a monitor to resume executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Resume scheduled job execution for a monitor.
      */
     public EnableMonitorResponse enableMonitor(String monitorId, RequestOptions requestOptions) {
         return this.rawClient.enableMonitor(monitorId, requestOptions).body();
     }
 
     /**
-     * Enables a monitor to resume executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Resume scheduled job execution for a monitor.
      */
-    public EnableMonitorResponse enableMonitor(String monitorId, EnableMonitorRequest request) {
+    public EnableMonitorResponse enableMonitor(String monitorId, EnableMonitorRequestDto request) {
         return this.rawClient.enableMonitor(monitorId, request).body();
     }
 
     /**
-     * Enables a monitor to resume executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Resume scheduled job execution for a monitor.
      */
     public EnableMonitorResponse enableMonitor(
-            String monitorId, EnableMonitorRequest request, RequestOptions requestOptions) {
+            String monitorId, EnableMonitorRequestDto request, RequestOptions requestOptions) {
         return this.rawClient.enableMonitor(monitorId, request, requestOptions).body();
     }
 
@@ -291,5 +212,19 @@ public class MonitorsClient {
      */
     public ListMonitorsResponseDto listMonitors(RequestOptions requestOptions) {
         return this.rawClient.listMonitors(requestOptions).body();
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public ListMonitorsResponseDto listMonitors(ListMonitorsRequest request) {
+        return this.rawClient.listMonitors(request).body();
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public ListMonitorsResponseDto listMonitors(ListMonitorsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.listMonitors(request, requestOptions).body();
     }
 }

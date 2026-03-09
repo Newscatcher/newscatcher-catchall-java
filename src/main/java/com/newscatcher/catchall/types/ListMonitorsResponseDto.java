@@ -21,15 +21,29 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ListMonitorsResponseDto.Builder.class)
 public final class ListMonitorsResponseDto {
-    private final int totalMonitors;
+    private final int total;
+
+    private final int page;
+
+    private final int pageSize;
+
+    private final int totalPages;
 
     private final List<MonitorListItemDto> monitors;
 
     private final Map<String, Object> additionalProperties;
 
     private ListMonitorsResponseDto(
-            int totalMonitors, List<MonitorListItemDto> monitors, Map<String, Object> additionalProperties) {
-        this.totalMonitors = totalMonitors;
+            int total,
+            int page,
+            int pageSize,
+            int totalPages,
+            List<MonitorListItemDto> monitors,
+            Map<String, Object> additionalProperties) {
+        this.total = total;
+        this.page = page;
+        this.pageSize = pageSize;
+        this.totalPages = totalPages;
         this.monitors = monitors;
         this.additionalProperties = additionalProperties;
     }
@@ -37,9 +51,33 @@ public final class ListMonitorsResponseDto {
     /**
      * @return Total number of monitors for this user.
      */
-    @JsonProperty("total_monitors")
-    public int getTotalMonitors() {
-        return totalMonitors;
+    @JsonProperty("total")
+    public int getTotal() {
+        return total;
+    }
+
+    /**
+     * @return Current page number.
+     */
+    @JsonProperty("page")
+    public int getPage() {
+        return page;
+    }
+
+    /**
+     * @return Number of monitors per page.
+     */
+    @JsonProperty("page_size")
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    /**
+     * @return Total number of pages available.
+     */
+    @JsonProperty("total_pages")
+    public int getTotalPages() {
+        return totalPages;
     }
 
     /**
@@ -62,12 +100,16 @@ public final class ListMonitorsResponseDto {
     }
 
     private boolean equalTo(ListMonitorsResponseDto other) {
-        return totalMonitors == other.totalMonitors && monitors.equals(other.monitors);
+        return total == other.total
+                && page == other.page
+                && pageSize == other.pageSize
+                && totalPages == other.totalPages
+                && monitors.equals(other.monitors);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.totalMonitors, this.monitors);
+        return Objects.hash(this.total, this.page, this.pageSize, this.totalPages, this.monitors);
     }
 
     @java.lang.Override
@@ -75,21 +117,46 @@ public final class ListMonitorsResponseDto {
         return ObjectMappers.stringify(this);
     }
 
-    public static TotalMonitorsStage builder() {
+    public static TotalStage builder() {
         return new Builder();
     }
 
-    public interface TotalMonitorsStage {
+    public interface TotalStage {
         /**
          * <p>Total number of monitors for this user.</p>
          */
-        _FinalStage totalMonitors(int totalMonitors);
+        PageStage total(int total);
 
         Builder from(ListMonitorsResponseDto other);
     }
 
+    public interface PageStage {
+        /**
+         * <p>Current page number.</p>
+         */
+        PageSizeStage page(int page);
+    }
+
+    public interface PageSizeStage {
+        /**
+         * <p>Number of monitors per page.</p>
+         */
+        TotalPagesStage pageSize(int pageSize);
+    }
+
+    public interface TotalPagesStage {
+        /**
+         * <p>Total number of pages available.</p>
+         */
+        _FinalStage totalPages(int totalPages);
+    }
+
     public interface _FinalStage {
         ListMonitorsResponseDto build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
          * <p>Array of monitor summaries.</p>
@@ -102,8 +169,14 @@ public final class ListMonitorsResponseDto {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements TotalMonitorsStage, _FinalStage {
-        private int totalMonitors;
+    public static final class Builder implements TotalStage, PageStage, PageSizeStage, TotalPagesStage, _FinalStage {
+        private int total;
+
+        private int page;
+
+        private int pageSize;
+
+        private int totalPages;
 
         private List<MonitorListItemDto> monitors = new ArrayList<>();
 
@@ -114,7 +187,10 @@ public final class ListMonitorsResponseDto {
 
         @java.lang.Override
         public Builder from(ListMonitorsResponseDto other) {
-            totalMonitors(other.getTotalMonitors());
+            total(other.getTotal());
+            page(other.getPage());
+            pageSize(other.getPageSize());
+            totalPages(other.getTotalPages());
             monitors(other.getMonitors());
             return this;
         }
@@ -125,9 +201,45 @@ public final class ListMonitorsResponseDto {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        @JsonSetter("total_monitors")
-        public _FinalStage totalMonitors(int totalMonitors) {
-            this.totalMonitors = totalMonitors;
+        @JsonSetter("total")
+        public PageStage total(int total) {
+            this.total = total;
+            return this;
+        }
+
+        /**
+         * <p>Current page number.</p>
+         * <p>Current page number.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("page")
+        public PageSizeStage page(int page) {
+            this.page = page;
+            return this;
+        }
+
+        /**
+         * <p>Number of monitors per page.</p>
+         * <p>Number of monitors per page.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("page_size")
+        public TotalPagesStage pageSize(int pageSize) {
+            this.pageSize = pageSize;
+            return this;
+        }
+
+        /**
+         * <p>Total number of pages available.</p>
+         * <p>Total number of pages available.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("total_pages")
+        public _FinalStage totalPages(int totalPages) {
+            this.totalPages = totalPages;
             return this;
         }
 
@@ -168,7 +280,19 @@ public final class ListMonitorsResponseDto {
 
         @java.lang.Override
         public ListMonitorsResponseDto build() {
-            return new ListMonitorsResponseDto(totalMonitors, monitors, additionalProperties);
+            return new ListMonitorsResponseDto(total, page, pageSize, totalPages, monitors, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

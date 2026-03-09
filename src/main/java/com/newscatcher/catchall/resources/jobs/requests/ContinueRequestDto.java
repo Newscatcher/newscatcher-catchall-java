@@ -9,11 +9,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
@@ -21,11 +23,11 @@ import org.jetbrains.annotations.NotNull;
 public final class ContinueRequestDto {
     private final String jobId;
 
-    private final int newLimit;
+    private final Optional<Integer> newLimit;
 
     private final Map<String, Object> additionalProperties;
 
-    private ContinueRequestDto(String jobId, int newLimit, Map<String, Object> additionalProperties) {
+    private ContinueRequestDto(String jobId, Optional<Integer> newLimit, Map<String, Object> additionalProperties) {
         this.jobId = jobId;
         this.newLimit = newLimit;
         this.additionalProperties = additionalProperties;
@@ -40,10 +42,10 @@ public final class ContinueRequestDto {
     }
 
     /**
-     * @return New record limit for continued processing. Must be greater than the previous limit.
+     * @return New record limit for continued processing. Must be greater than the previous limit. If not provided, defaults to the plan maximum.
      */
     @JsonProperty("new_limit")
-    public int getNewLimit() {
+    public Optional<Integer> getNewLimit() {
         return newLimit;
     }
 
@@ -59,7 +61,7 @@ public final class ContinueRequestDto {
     }
 
     private boolean equalTo(ContinueRequestDto other) {
-        return jobId.equals(other.jobId) && newLimit == other.newLimit;
+        return jobId.equals(other.jobId) && newLimit.equals(other.newLimit);
     }
 
     @java.lang.Override
@@ -80,27 +82,31 @@ public final class ContinueRequestDto {
         /**
          * <p>Job identifier of the completed job to continue.</p>
          */
-        NewLimitStage jobId(@NotNull String jobId);
+        _FinalStage jobId(@NotNull String jobId);
 
         Builder from(ContinueRequestDto other);
     }
 
-    public interface NewLimitStage {
-        /**
-         * <p>New record limit for continued processing. Must be greater than the previous limit.</p>
-         */
-        _FinalStage newLimit(int newLimit);
-    }
-
     public interface _FinalStage {
         ContinueRequestDto build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>New record limit for continued processing. Must be greater than the previous limit. If not provided, defaults to the plan maximum.</p>
+         */
+        _FinalStage newLimit(Optional<Integer> newLimit);
+
+        _FinalStage newLimit(Integer newLimit);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements JobIdStage, NewLimitStage, _FinalStage {
+    public static final class Builder implements JobIdStage, _FinalStage {
         private String jobId;
 
-        private int newLimit;
+        private Optional<Integer> newLimit = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -121,19 +127,27 @@ public final class ContinueRequestDto {
          */
         @java.lang.Override
         @JsonSetter("job_id")
-        public NewLimitStage jobId(@NotNull String jobId) {
+        public _FinalStage jobId(@NotNull String jobId) {
             this.jobId = Objects.requireNonNull(jobId, "jobId must not be null");
             return this;
         }
 
         /**
-         * <p>New record limit for continued processing. Must be greater than the previous limit.</p>
-         * <p>New record limit for continued processing. Must be greater than the previous limit.</p>
+         * <p>New record limit for continued processing. Must be greater than the previous limit. If not provided, defaults to the plan maximum.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        @JsonSetter("new_limit")
-        public _FinalStage newLimit(int newLimit) {
+        public _FinalStage newLimit(Integer newLimit) {
+            this.newLimit = Optional.ofNullable(newLimit);
+            return this;
+        }
+
+        /**
+         * <p>New record limit for continued processing. Must be greater than the previous limit. If not provided, defaults to the plan maximum.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "new_limit", nulls = Nulls.SKIP)
+        public _FinalStage newLimit(Optional<Integer> newLimit) {
             this.newLimit = newLimit;
             return this;
         }
@@ -141,6 +155,18 @@ public final class ContinueRequestDto {
         @java.lang.Override
         public ContinueRequestDto build() {
             return new ContinueRequestDto(jobId, newLimit, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

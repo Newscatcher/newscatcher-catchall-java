@@ -136,6 +136,10 @@ public final class ListMonitorJobsResponse {
     public interface _FinalStage {
         ListMonitorJobsResponse build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Array of job executions for this monitor.</p>
          */
@@ -244,6 +248,18 @@ public final class ListMonitorJobsResponse {
         @java.lang.Override
         public ListMonitorJobsResponse build() {
             return new ListMonitorJobsResponse(monitorId, sortOrder, totalJobs, jobs, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

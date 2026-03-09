@@ -33,7 +33,7 @@ public final class ReferenceJob {
     }
 
     /**
-     * @return Natural language query from the reference job.
+     * @return Plain text query from the reference job.
      */
     @JsonProperty("query")
     public Optional<String> getQuery() {
@@ -95,7 +95,7 @@ public final class ReferenceJob {
         }
 
         /**
-         * <p>Natural language query from the reference job.</p>
+         * <p>Plain text query from the reference job.</p>
          */
         @JsonSetter(value = "query", nulls = Nulls.SKIP)
         public Builder query(Optional<String> query) {
@@ -124,6 +124,16 @@ public final class ReferenceJob {
 
         public ReferenceJob build() {
             return new ReferenceJob(query, context, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

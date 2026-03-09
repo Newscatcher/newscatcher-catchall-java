@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +24,17 @@ import org.jetbrains.annotations.NotNull;
 public final class StatusResponseDto {
     private final String jobId;
 
-    private final Optional<JobStatus> status;
+    private final Optional<PublicJobStatus> status;
 
-    private final List<JobStep> steps;
+    private final Optional<List<JobStep>> steps;
 
     private final Map<String, Object> additionalProperties;
 
     private StatusResponseDto(
-            String jobId, Optional<JobStatus> status, List<JobStep> steps, Map<String, Object> additionalProperties) {
+            String jobId,
+            Optional<PublicJobStatus> status,
+            Optional<List<JobStep>> steps,
+            Map<String, Object> additionalProperties) {
         this.jobId = jobId;
         this.status = status;
         this.steps = steps;
@@ -51,7 +53,7 @@ public final class StatusResponseDto {
      * @return Current job processing status.
      */
     @JsonProperty("status")
-    public Optional<JobStatus> getStatus() {
+    public Optional<PublicJobStatus> getStatus() {
         return status;
     }
 
@@ -59,7 +61,7 @@ public final class StatusResponseDto {
      * @return Detailed progress tracking for each processing stage. Steps progress sequentially from order 1 (submitted) through 5 (enriching), ending at order 6 (completed) or 7 (failed).
      */
     @JsonProperty("steps")
-    public List<JobStep> getSteps() {
+    public Optional<List<JobStep>> getSteps() {
         return steps;
     }
 
@@ -104,30 +106,32 @@ public final class StatusResponseDto {
     public interface _FinalStage {
         StatusResponseDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Current job processing status.</p>
          */
-        _FinalStage status(Optional<JobStatus> status);
+        _FinalStage status(Optional<PublicJobStatus> status);
 
-        _FinalStage status(JobStatus status);
+        _FinalStage status(PublicJobStatus status);
 
         /**
          * <p>Detailed progress tracking for each processing stage. Steps progress sequentially from order 1 (submitted) through 5 (enriching), ending at order 6 (completed) or 7 (failed).</p>
          */
+        _FinalStage steps(Optional<List<JobStep>> steps);
+
         _FinalStage steps(List<JobStep> steps);
-
-        _FinalStage addSteps(JobStep steps);
-
-        _FinalStage addAllSteps(List<JobStep> steps);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements JobIdStage, _FinalStage {
         private String jobId;
 
-        private List<JobStep> steps = new ArrayList<>();
+        private Optional<List<JobStep>> steps = Optional.empty();
 
-        private Optional<JobStatus> status = Optional.empty();
+        private Optional<PublicJobStatus> status = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -159,20 +163,8 @@ public final class StatusResponseDto {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage addAllSteps(List<JobStep> steps) {
-            if (steps != null) {
-                this.steps.addAll(steps);
-            }
-            return this;
-        }
-
-        /**
-         * <p>Detailed progress tracking for each processing stage. Steps progress sequentially from order 1 (submitted) through 5 (enriching), ending at order 6 (completed) or 7 (failed).</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage addSteps(JobStep steps) {
-            this.steps.add(steps);
+        public _FinalStage steps(List<JobStep> steps) {
+            this.steps = Optional.ofNullable(steps);
             return this;
         }
 
@@ -181,11 +173,8 @@ public final class StatusResponseDto {
          */
         @java.lang.Override
         @JsonSetter(value = "steps", nulls = Nulls.SKIP)
-        public _FinalStage steps(List<JobStep> steps) {
-            this.steps.clear();
-            if (steps != null) {
-                this.steps.addAll(steps);
-            }
+        public _FinalStage steps(Optional<List<JobStep>> steps) {
+            this.steps = steps;
             return this;
         }
 
@@ -194,7 +183,7 @@ public final class StatusResponseDto {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage status(JobStatus status) {
+        public _FinalStage status(PublicJobStatus status) {
             this.status = Optional.ofNullable(status);
             return this;
         }
@@ -204,7 +193,7 @@ public final class StatusResponseDto {
          */
         @java.lang.Override
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
-        public _FinalStage status(Optional<JobStatus> status) {
+        public _FinalStage status(Optional<PublicJobStatus> status) {
             this.status = status;
             return this;
         }
@@ -212,6 +201,18 @@ public final class StatusResponseDto {
         @java.lang.Override
         public StatusResponseDto build() {
             return new StatusResponseDto(jobId, status, steps, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -5,12 +5,15 @@ package com.newscatcher.catchall.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.newscatcher.catchall.core.Nullable;
+import com.newscatcher.catchall.core.NullableNonemptyFilter;
 import com.newscatcher.catchall.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +41,8 @@ public final class PullMonitorResponseDto {
 
     private final Optional<List<MonitorRecord>> allRecords;
 
+    private final Optional<Integer> limit;
+
     private final Map<String, Object> additionalProperties;
 
     private PullMonitorResponseDto(
@@ -49,6 +54,7 @@ public final class PullMonitorResponseDto {
             Optional<Integer> records,
             String status,
             Optional<List<MonitorRecord>> allRecords,
+            Optional<Integer> limit,
             Map<String, Object> additionalProperties) {
         this.monitorId = monitorId;
         this.cronExpression = cronExpression;
@@ -58,6 +64,7 @@ public final class PullMonitorResponseDto {
         this.records = records;
         this.status = status;
         this.allRecords = allRecords;
+        this.limit = limit;
         this.additionalProperties = additionalProperties;
     }
 
@@ -70,8 +77,8 @@ public final class PullMonitorResponseDto {
     }
 
     /**
-     * @return Parsed cron expression from the natural language schedule.
-     * Standard cron format (minute hour day month day-of-week).
+     * @return The cron expression for a monitor schedule parsed from the text schedule you provide.
+     * <p>Standard cron format (minute hour day month day-of-week).</p>
      */
     @JsonProperty("cron_expression")
     public Optional<String> getCronExpression() {
@@ -116,12 +123,28 @@ public final class PullMonitorResponseDto {
     }
 
     /**
-     * @return Aggregated records from all jobs executed by this monitor.
-     * Each record includes structured data extracted from web sources with citations.
+     * @return Aggregated records from all jobs executed by this monitor. Each record includes structured data extracted from web sources with citations.
      */
     @JsonProperty("all_records")
     public Optional<List<MonitorRecord>> getAllRecords() {
         return allRecords;
+    }
+
+    /**
+     * @return Record limit applied to this monitor's jobs.
+     */
+    @JsonIgnore
+    public Optional<Integer> getLimit() {
+        if (limit == null) {
+            return Optional.empty();
+        }
+        return limit;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("limit")
+    private Optional<Integer> _getLimit() {
+        return limit;
     }
 
     @java.lang.Override
@@ -143,7 +166,8 @@ public final class PullMonitorResponseDto {
                 && runInfo.equals(other.runInfo)
                 && records.equals(other.records)
                 && status.equals(other.status)
-                && allRecords.equals(other.allRecords);
+                && allRecords.equals(other.allRecords)
+                && limit.equals(other.limit);
     }
 
     @java.lang.Override
@@ -156,7 +180,8 @@ public final class PullMonitorResponseDto {
                 this.runInfo,
                 this.records,
                 this.status,
-                this.allRecords);
+                this.allRecords,
+                this.limit);
     }
 
     @java.lang.Override
@@ -191,9 +216,13 @@ public final class PullMonitorResponseDto {
     public interface _FinalStage {
         PullMonitorResponseDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
-         * <p>Parsed cron expression from the natural language schedule.
-         * Standard cron format (minute hour day month day-of-week).</p>
+         * <p>The cron expression for a monitor schedule parsed from the text schedule you provide.</p>
+         * <p>Standard cron format (minute hour day month day-of-week).</p>
          */
         _FinalStage cronExpression(Optional<String> cronExpression);
 
@@ -221,12 +250,20 @@ public final class PullMonitorResponseDto {
         _FinalStage records(Integer records);
 
         /**
-         * <p>Aggregated records from all jobs executed by this monitor.
-         * Each record includes structured data extracted from web sources with citations.</p>
+         * <p>Aggregated records from all jobs executed by this monitor. Each record includes structured data extracted from web sources with citations.</p>
          */
         _FinalStage allRecords(Optional<List<MonitorRecord>> allRecords);
 
         _FinalStage allRecords(List<MonitorRecord> allRecords);
+
+        /**
+         * <p>Record limit applied to this monitor's jobs.</p>
+         */
+        _FinalStage limit(Optional<Integer> limit);
+
+        _FinalStage limit(Integer limit);
+
+        _FinalStage limit(Nullable<Integer> limit);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -236,6 +273,8 @@ public final class PullMonitorResponseDto {
         private ReferenceJob referenceJob;
 
         private String status;
+
+        private Optional<Integer> limit = Optional.empty();
 
         private Optional<List<MonitorRecord>> allRecords = Optional.empty();
 
@@ -262,6 +301,7 @@ public final class PullMonitorResponseDto {
             records(other.getRecords());
             status(other.getStatus());
             allRecords(other.getAllRecords());
+            limit(other.getLimit());
             return this;
         }
 
@@ -297,8 +337,43 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Aggregated records from all jobs executed by this monitor.
-         * Each record includes structured data extracted from web sources with citations.</p>
+         * <p>Record limit applied to this monitor's jobs.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage limit(Nullable<Integer> limit) {
+            if (limit.isNull()) {
+                this.limit = null;
+            } else if (limit.isEmpty()) {
+                this.limit = Optional.empty();
+            } else {
+                this.limit = Optional.of(limit.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Record limit applied to this monitor's jobs.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage limit(Integer limit) {
+            this.limit = Optional.ofNullable(limit);
+            return this;
+        }
+
+        /**
+         * <p>Record limit applied to this monitor's jobs.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "limit", nulls = Nulls.SKIP)
+        public _FinalStage limit(Optional<Integer> limit) {
+            this.limit = limit;
+            return this;
+        }
+
+        /**
+         * <p>Aggregated records from all jobs executed by this monitor. Each record includes structured data extracted from web sources with citations.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -308,8 +383,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Aggregated records from all jobs executed by this monitor.
-         * Each record includes structured data extracted from web sources with citations.</p>
+         * <p>Aggregated records from all jobs executed by this monitor. Each record includes structured data extracted from web sources with citations.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "all_records", nulls = Nulls.SKIP)
@@ -379,8 +453,8 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Parsed cron expression from the natural language schedule.
-         * Standard cron format (minute hour day month day-of-week).</p>
+         * <p>The cron expression for a monitor schedule parsed from the text schedule you provide.</p>
+         * <p>Standard cron format (minute hour day month day-of-week).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -390,8 +464,8 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Parsed cron expression from the natural language schedule.
-         * Standard cron format (minute hour day month day-of-week).</p>
+         * <p>The cron expression for a monitor schedule parsed from the text schedule you provide.</p>
+         * <p>Standard cron format (minute hour day month day-of-week).</p>
          */
         @java.lang.Override
         @JsonSetter(value = "cron_expression", nulls = Nulls.SKIP)
@@ -411,7 +485,20 @@ public final class PullMonitorResponseDto {
                     records,
                     status,
                     allRecords,
+                    limit,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

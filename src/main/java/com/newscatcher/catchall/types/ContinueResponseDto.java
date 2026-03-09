@@ -27,7 +27,7 @@ public final class ContinueResponseDto {
 
     private final int newLimit;
 
-    private final Optional<String> status;
+    private final String status;
 
     private final Map<String, Object> additionalProperties;
 
@@ -35,7 +35,7 @@ public final class ContinueResponseDto {
             String jobId,
             Optional<Integer> previousLimit,
             int newLimit,
-            Optional<String> status,
+            String status,
             Map<String, Object> additionalProperties) {
         this.jobId = jobId;
         this.previousLimit = previousLimit;
@@ -72,7 +72,7 @@ public final class ContinueResponseDto {
      * @return Confirmation that the continuation request was accepted.
      */
     @JsonProperty("status")
-    public Optional<String> getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -121,11 +121,22 @@ public final class ContinueResponseDto {
         /**
          * <p>New record limit after continuation.</p>
          */
-        _FinalStage newLimit(int newLimit);
+        StatusStage newLimit(int newLimit);
+    }
+
+    public interface StatusStage {
+        /**
+         * <p>Confirmation that the continuation request was accepted.</p>
+         */
+        _FinalStage status(@NotNull String status);
     }
 
     public interface _FinalStage {
         ContinueResponseDto build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
          * <p>Previous record limit before continuation.</p>
@@ -133,22 +144,15 @@ public final class ContinueResponseDto {
         _FinalStage previousLimit(Optional<Integer> previousLimit);
 
         _FinalStage previousLimit(Integer previousLimit);
-
-        /**
-         * <p>Confirmation that the continuation request was accepted.</p>
-         */
-        _FinalStage status(Optional<String> status);
-
-        _FinalStage status(String status);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements JobIdStage, NewLimitStage, _FinalStage {
+    public static final class Builder implements JobIdStage, NewLimitStage, StatusStage, _FinalStage {
         private String jobId;
 
         private int newLimit;
 
-        private Optional<String> status = Optional.empty();
+        private String status;
 
         private Optional<Integer> previousLimit = Optional.empty();
 
@@ -185,28 +189,20 @@ public final class ContinueResponseDto {
          */
         @java.lang.Override
         @JsonSetter("new_limit")
-        public _FinalStage newLimit(int newLimit) {
+        public StatusStage newLimit(int newLimit) {
             this.newLimit = newLimit;
             return this;
         }
 
         /**
          * <p>Confirmation that the continuation request was accepted.</p>
+         * <p>Confirmation that the continuation request was accepted.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage status(String status) {
-            this.status = Optional.ofNullable(status);
-            return this;
-        }
-
-        /**
-         * <p>Confirmation that the continuation request was accepted.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "status", nulls = Nulls.SKIP)
-        public _FinalStage status(Optional<String> status) {
-            this.status = status;
+        @JsonSetter("status")
+        public _FinalStage status(@NotNull String status) {
+            this.status = Objects.requireNonNull(status, "status must not be null");
             return this;
         }
 
@@ -233,6 +229,18 @@ public final class ContinueResponseDto {
         @java.lang.Override
         public ContinueResponseDto build() {
             return new ContinueResponseDto(jobId, previousLimit, newLimit, status, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

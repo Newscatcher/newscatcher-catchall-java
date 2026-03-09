@@ -4,7 +4,6 @@
 package com.newscatcher.catchall.resources.jobs;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.newscatcher.catchall.core.CatchAllApiApiException;
 import com.newscatcher.catchall.core.CatchAllApiException;
 import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
@@ -29,10 +28,9 @@ import com.newscatcher.catchall.types.InitializeResponseDto;
 import com.newscatcher.catchall.types.ListUserJobsResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
 import com.newscatcher.catchall.types.StatusResponseDto;
-import com.newscatcher.catchall.types.SubmitResponseBody;
+import com.newscatcher.catchall.types.SubmitResponseDto;
 import com.newscatcher.catchall.types.ValidationErrorResponse;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -53,16 +51,14 @@ public class AsyncRawJobsClient {
     }
 
     /**
-     * Get suggested validators, enrichments, and date ranges for a query before submitting a job.
-     * <p>Returns LLM-generated suggestions based on query analysis and validates against plan limits.</p>
+     * Get suggested validators, enrichments, and date ranges for a query.
      */
     public CompletableFuture<CatchAllApiHttpResponse<InitializeResponseDto>> initialize(InitializeRequestDto request) {
         return initialize(request, null);
     }
 
     /**
-     * Get suggested validators, enrichments, and date ranges for a query before submitting a job.
-     * <p>Returns LLM-generated suggestions based on query analysis and validates against plan limits.</p>
+     * Get suggested validators, enrichments, and date ranges for a query.
      */
     public CompletableFuture<CatchAllApiHttpResponse<InitializeResponseDto>> initialize(
             InitializeRequestDto request, RequestOptions requestOptions) {
@@ -139,20 +135,16 @@ public class AsyncRawJobsClient {
     }
 
     /**
-     * Submit a natural language query to create a new processing job.
-     * <p>Optionally specify context, date ranges, limit, custom validators, and enrichments.
-     * If dates exceed plan limits, returns 400 error.</p>
+     * Submit a query to create a new processing job.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<SubmitResponseBody>> createJob(SubmitRequestDto request) {
+    public CompletableFuture<CatchAllApiHttpResponse<SubmitResponseDto>> createJob(SubmitRequestDto request) {
         return createJob(request, null);
     }
 
     /**
-     * Submit a natural language query to create a new processing job.
-     * <p>Optionally specify context, date ranges, limit, custom validators, and enrichments.
-     * If dates exceed plan limits, returns 400 error.</p>
+     * Submit a query to create a new processing job.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<SubmitResponseBody>> createJob(
+    public CompletableFuture<CatchAllApiHttpResponse<SubmitResponseDto>> createJob(
             SubmitRequestDto request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -180,7 +172,7 @@ public class AsyncRawJobsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<CatchAllApiHttpResponse<SubmitResponseBody>> future = new CompletableFuture<>();
+        CompletableFuture<CatchAllApiHttpResponse<SubmitResponseDto>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -188,7 +180,7 @@ public class AsyncRawJobsClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new CatchAllApiHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, SubmitResponseBody.class),
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, SubmitResponseDto.class),
                                 response));
                         return;
                     }
@@ -415,14 +407,14 @@ public class AsyncRawJobsClient {
     /**
      * Returns all jobs created by the authenticated user.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<List<ListUserJobsResponseDto>>> getUserJobs() {
+    public CompletableFuture<CatchAllApiHttpResponse<ListUserJobsResponseDto>> getUserJobs() {
         return getUserJobs(GetUserJobsRequest.builder().build());
     }
 
     /**
      * Returns all jobs created by the authenticated user.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<List<ListUserJobsResponseDto>>> getUserJobs(
+    public CompletableFuture<CatchAllApiHttpResponse<ListUserJobsResponseDto>> getUserJobs(
             RequestOptions requestOptions) {
         return getUserJobs(GetUserJobsRequest.builder().build(), requestOptions);
     }
@@ -430,15 +422,14 @@ public class AsyncRawJobsClient {
     /**
      * Returns all jobs created by the authenticated user.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<List<ListUserJobsResponseDto>>> getUserJobs(
-            GetUserJobsRequest request) {
+    public CompletableFuture<CatchAllApiHttpResponse<ListUserJobsResponseDto>> getUserJobs(GetUserJobsRequest request) {
         return getUserJobs(request, null);
     }
 
     /**
      * Returns all jobs created by the authenticated user.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<List<ListUserJobsResponseDto>>> getUserJobs(
+    public CompletableFuture<CatchAllApiHttpResponse<ListUserJobsResponseDto>> getUserJobs(
             GetUserJobsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -466,7 +457,7 @@ public class AsyncRawJobsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<CatchAllApiHttpResponse<List<ListUserJobsResponseDto>>> future = new CompletableFuture<>();
+        CompletableFuture<CatchAllApiHttpResponse<ListUserJobsResponseDto>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -474,8 +465,7 @@ public class AsyncRawJobsClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new CatchAllApiHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(
-                                        responseBodyString, new TypeReference<List<ListUserJobsResponseDto>>() {}),
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListUserJobsResponseDto.class),
                                 response));
                         return;
                     }

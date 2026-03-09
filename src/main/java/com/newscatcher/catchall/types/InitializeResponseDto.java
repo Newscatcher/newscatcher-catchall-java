@@ -5,12 +5,15 @@ package com.newscatcher.catchall.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.newscatcher.catchall.core.Nullable;
+import com.newscatcher.catchall.core.NullableNonemptyFilter;
 import com.newscatcher.catchall.core.ObjectMappers;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -24,25 +27,33 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = InitializeResponseDto.Builder.class)
 public final class InitializeResponseDto {
+    private final String query;
+
+    private final Optional<String> context;
+
     private final List<ValidatorSchema> validators;
 
     private final List<EnrichmentSchema> enrichments;
 
-    private final OffsetDateTime startDate;
+    private final Optional<OffsetDateTime> startDate;
 
-    private final OffsetDateTime endDate;
+    private final Optional<OffsetDateTime> endDate;
 
     private final Optional<List<String>> dateModificationMessage;
 
     private final Map<String, Object> additionalProperties;
 
     private InitializeResponseDto(
+            String query,
+            Optional<String> context,
             List<ValidatorSchema> validators,
             List<EnrichmentSchema> enrichments,
-            OffsetDateTime startDate,
-            OffsetDateTime endDate,
+            Optional<OffsetDateTime> startDate,
+            Optional<OffsetDateTime> endDate,
             Optional<List<String>> dateModificationMessage,
             Map<String, Object> additionalProperties) {
+        this.query = query;
+        this.context = context;
         this.validators = validators;
         this.enrichments = enrichments;
         this.startDate = startDate;
@@ -52,7 +63,26 @@ public final class InitializeResponseDto {
     }
 
     /**
-     * @return Suggested validators for filtering relevant articles.
+     * @return Echo of the query from the request.
+     */
+    @JsonProperty("query")
+    public String getQuery() {
+        return query;
+    }
+
+    /**
+     * @return Echo of the context from the request. Null if not provided.
+     */
+    @JsonIgnore
+    public Optional<String> getContext() {
+        if (context == null) {
+            return Optional.empty();
+        }
+        return context;
+    }
+
+    /**
+     * @return Suggested validators for filtering relevant web pages.
      */
     @JsonProperty("validators")
     public List<ValidatorSchema> getValidators() {
@@ -68,12 +98,12 @@ public final class InitializeResponseDto {
     }
 
     @JsonProperty("start_date")
-    public OffsetDateTime getStartDate() {
+    public Optional<OffsetDateTime> getStartDate() {
         return startDate;
     }
 
     @JsonProperty("end_date")
-    public OffsetDateTime getEndDate() {
+    public Optional<OffsetDateTime> getEndDate() {
         return endDate;
     }
 
@@ -84,6 +114,12 @@ public final class InitializeResponseDto {
     @JsonProperty("date_modification_message")
     public Optional<List<String>> getDateModificationMessage() {
         return dateModificationMessage;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("context")
+    private Optional<String> _getContext() {
+        return context;
     }
 
     @java.lang.Override
@@ -98,7 +134,9 @@ public final class InitializeResponseDto {
     }
 
     private boolean equalTo(InitializeResponseDto other) {
-        return validators.equals(other.validators)
+        return query.equals(other.query)
+                && context.equals(other.context)
+                && validators.equals(other.validators)
                 && enrichments.equals(other.enrichments)
                 && startDate.equals(other.startDate)
                 && endDate.equals(other.endDate)
@@ -108,7 +146,13 @@ public final class InitializeResponseDto {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.validators, this.enrichments, this.startDate, this.endDate, this.dateModificationMessage);
+                this.query,
+                this.context,
+                this.validators,
+                this.enrichments,
+                this.startDate,
+                this.endDate,
+                this.dateModificationMessage);
     }
 
     @java.lang.Override
@@ -116,25 +160,37 @@ public final class InitializeResponseDto {
         return ObjectMappers.stringify(this);
     }
 
-    public static StartDateStage builder() {
+    public static QueryStage builder() {
         return new Builder();
     }
 
-    public interface StartDateStage {
-        EndDateStage startDate(@NotNull OffsetDateTime startDate);
+    public interface QueryStage {
+        /**
+         * <p>Echo of the query from the request.</p>
+         */
+        _FinalStage query(@NotNull String query);
 
         Builder from(InitializeResponseDto other);
-    }
-
-    public interface EndDateStage {
-        _FinalStage endDate(@NotNull OffsetDateTime endDate);
     }
 
     public interface _FinalStage {
         InitializeResponseDto build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
-         * <p>Suggested validators for filtering relevant articles.</p>
+         * <p>Echo of the context from the request. Null if not provided.</p>
+         */
+        _FinalStage context(Optional<String> context);
+
+        _FinalStage context(String context);
+
+        _FinalStage context(Nullable<String> context);
+
+        /**
+         * <p>Suggested validators for filtering relevant web pages.</p>
          */
         _FinalStage validators(List<ValidatorSchema> validators);
 
@@ -151,6 +207,14 @@ public final class InitializeResponseDto {
 
         _FinalStage addAllEnrichments(List<EnrichmentSchema> enrichments);
 
+        _FinalStage startDate(Optional<OffsetDateTime> startDate);
+
+        _FinalStage startDate(OffsetDateTime startDate);
+
+        _FinalStage endDate(Optional<OffsetDateTime> endDate);
+
+        _FinalStage endDate(OffsetDateTime endDate);
+
         /**
          * <p>Messages explaining date adjustments due to plan limits.</p>
          * <p>Empty array if no modifications were needed. Contains human-readable messages when requested dates exceed plan's allowed lookback period.</p>
@@ -161,16 +225,20 @@ public final class InitializeResponseDto {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements StartDateStage, EndDateStage, _FinalStage {
-        private OffsetDateTime startDate;
-
-        private OffsetDateTime endDate;
+    public static final class Builder implements QueryStage, _FinalStage {
+        private String query;
 
         private Optional<List<String>> dateModificationMessage = Optional.empty();
+
+        private Optional<OffsetDateTime> endDate = Optional.empty();
+
+        private Optional<OffsetDateTime> startDate = Optional.empty();
 
         private List<EnrichmentSchema> enrichments = new ArrayList<>();
 
         private List<ValidatorSchema> validators = new ArrayList<>();
+
+        private Optional<String> context = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -179,6 +247,8 @@ public final class InitializeResponseDto {
 
         @java.lang.Override
         public Builder from(InitializeResponseDto other) {
+            query(other.getQuery());
+            context(other.getContext());
             validators(other.getValidators());
             enrichments(other.getEnrichments());
             startDate(other.getStartDate());
@@ -187,17 +257,15 @@ public final class InitializeResponseDto {
             return this;
         }
 
+        /**
+         * <p>Echo of the query from the request.</p>
+         * <p>Echo of the query from the request.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
-        @JsonSetter("start_date")
-        public EndDateStage startDate(@NotNull OffsetDateTime startDate) {
-            this.startDate = Objects.requireNonNull(startDate, "startDate must not be null");
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter("end_date")
-        public _FinalStage endDate(@NotNull OffsetDateTime endDate) {
-            this.endDate = Objects.requireNonNull(endDate, "endDate must not be null");
+        @JsonSetter("query")
+        public _FinalStage query(@NotNull String query) {
+            this.query = Objects.requireNonNull(query, "query must not be null");
             return this;
         }
 
@@ -220,6 +288,32 @@ public final class InitializeResponseDto {
         @JsonSetter(value = "date_modification_message", nulls = Nulls.SKIP)
         public _FinalStage dateModificationMessage(Optional<List<String>> dateModificationMessage) {
             this.dateModificationMessage = dateModificationMessage;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage endDate(OffsetDateTime endDate) {
+            this.endDate = Optional.ofNullable(endDate);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "end_date", nulls = Nulls.SKIP)
+        public _FinalStage endDate(Optional<OffsetDateTime> endDate) {
+            this.endDate = endDate;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage startDate(OffsetDateTime startDate) {
+            this.startDate = Optional.ofNullable(startDate);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "start_date", nulls = Nulls.SKIP)
+        public _FinalStage startDate(Optional<OffsetDateTime> startDate) {
+            this.startDate = startDate;
             return this;
         }
 
@@ -259,7 +353,7 @@ public final class InitializeResponseDto {
         }
 
         /**
-         * <p>Suggested validators for filtering relevant articles.</p>
+         * <p>Suggested validators for filtering relevant web pages.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -271,7 +365,7 @@ public final class InitializeResponseDto {
         }
 
         /**
-         * <p>Suggested validators for filtering relevant articles.</p>
+         * <p>Suggested validators for filtering relevant web pages.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -281,7 +375,7 @@ public final class InitializeResponseDto {
         }
 
         /**
-         * <p>Suggested validators for filtering relevant articles.</p>
+         * <p>Suggested validators for filtering relevant web pages.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "validators", nulls = Nulls.SKIP)
@@ -293,10 +387,65 @@ public final class InitializeResponseDto {
             return this;
         }
 
+        /**
+         * <p>Echo of the context from the request. Null if not provided.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage context(Nullable<String> context) {
+            if (context.isNull()) {
+                this.context = null;
+            } else if (context.isEmpty()) {
+                this.context = Optional.empty();
+            } else {
+                this.context = Optional.of(context.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Echo of the context from the request. Null if not provided.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage context(String context) {
+            this.context = Optional.ofNullable(context);
+            return this;
+        }
+
+        /**
+         * <p>Echo of the context from the request. Null if not provided.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "context", nulls = Nulls.SKIP)
+        public _FinalStage context(Optional<String> context) {
+            this.context = context;
+            return this;
+        }
+
         @java.lang.Override
         public InitializeResponseDto build() {
             return new InitializeResponseDto(
-                    validators, enrichments, startDate, endDate, dateModificationMessage, additionalProperties);
+                    query,
+                    context,
+                    validators,
+                    enrichments,
+                    startDate,
+                    endDate,
+                    dateModificationMessage,
+                    additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }
