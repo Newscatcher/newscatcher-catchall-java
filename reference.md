@@ -12,9 +12,7 @@
 <dl>
 <dd>
 
-Get suggested validators, enrichments, and date ranges for a query before submitting a job.
-
-Returns LLM-generated suggestions based on query analysis and validates against plan limits.
+Get suggested validators, enrichments, and date ranges for a query.
 </dd>
 </dl>
 </dd>
@@ -32,7 +30,8 @@ Returns LLM-generated suggestions based on query analysis and validates against 
 client.jobs().initialize(
     InitializeRequestDto
         .builder()
-        .query("AI company acquisitions in fintech last week")
+        .query("Series B funding rounds for SaaS startups")
+        .context("Focus on funding amount and company name")
         .build()
 );
 ```
@@ -69,7 +68,7 @@ client.jobs().initialize(
 </dl>
 </details>
 
-<details><summary><code>client.jobs.createJob(request) -> SubmitResponseBody</code></summary>
+<details><summary><code>client.jobs.createJob(request) -> SubmitResponseDto</code></summary>
 <dl>
 <dd>
 
@@ -81,10 +80,7 @@ client.jobs().initialize(
 <dl>
 <dd>
 
-Submit a natural language query to create a new processing job.
-
-Optionally specify context, date ranges, limit, custom validators, and enrichments. 
-If dates exceed plan limits, returns 400 error.
+Submit a query to create a new processing job.
 </dd>
 </dl>
 </dd>
@@ -102,11 +98,11 @@ If dates exceed plan limits, returns 400 error.
 client.jobs().createJob(
     SubmitRequestDto
         .builder()
-        .query("AI company acquisitions")
-        .context("Focus on deal size and acquiring company details")
+        .query("Series B funding rounds for SaaS startups")
+        .context("Focus on funding amount and company name")
         .limit(10)
-        .startDate(OffsetDateTime.parse("2026-01-30T00:00:00Z"))
-        .endDate(OffsetDateTime.parse("2026-02-05T00:00:00Z"))
+        .startDate(OffsetDateTime.parse("2026-02-18T00:00:00Z"))
+        .endDate(OffsetDateTime.parse("2026-02-23T00:00:00Z"))
         .build()
 );
 ```
@@ -124,14 +120,6 @@ client.jobs().createJob(
 <dd>
 
 **query:** `String` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**schema:** `Optional<String>` 
     
 </dd>
 </dl>
@@ -173,7 +161,7 @@ client.jobs().createJob(
 
 **validators:** `Optional<List<ValidatorSchema>>` 
 
-Custom validators for filtering article clusters.
+Custom validators for filtering web page clusters.
 
 If not provided, validators are generated automatically based on the query.
     
@@ -229,7 +217,7 @@ Continue an existing job to process more records beyond the initial limit.
 client.jobs().continueJob(
     ContinueRequestDto
         .builder()
-        .jobId("af7a26d6-cf0b-458c-a6ed-4b6318c74da3")
+        .jobId("5f0c9087-85cb-4917-b3c7-e5a5eff73a0c")
         .newLimit(100)
         .build()
 );
@@ -255,7 +243,7 @@ client.jobs().continueJob(
 <dl>
 <dd>
 
-**newLimit:** `Integer` — New record limit for continued processing. Must be greater than the previous limit.
+**newLimit:** `Optional<Integer>` — New record limit for continued processing. Must be greater than the previous limit. If not provided, defaults to the plan maximum.
     
 </dd>
 </dl>
@@ -295,7 +283,7 @@ Retrieve the current processing status of a job.
 
 ```java
 client.jobs().getJobStatus(
-    "af7a26d6-cf0b-458c-a6ed-4b6318c74da3",
+    "5f0c9087-85cb-4917-b3c7-e5a5eff73a0c",
     GetJobStatusRequest
         .builder()
         .build()
@@ -314,7 +302,7 @@ client.jobs().getJobStatus(
 <dl>
 <dd>
 
-**jobId:** `String` — Unique job identifier returned from the [`POST /catchAll/submit`](https://www.newscatcherapi.com/docs/v3/catch-all/endpoints/create-job) endpoint.
+**jobId:** `String` — Unique job identifier returned from [`POST /catchAll/submit`](https://www.newscatcherapi.com/docs/web-search-api/api-reference/jobs/create-job).
     
 </dd>
 </dl>
@@ -326,7 +314,7 @@ client.jobs().getJobStatus(
 </dl>
 </details>
 
-<details><summary><code>client.jobs.getUserJobs() -> List&amp;lt;ListUserJobsResponseDto&amp;gt;</code></summary>
+<details><summary><code>client.jobs.getUserJobs() -> ListUserJobsResponseDto</code></summary>
 <dl>
 <dd>
 
@@ -420,7 +408,7 @@ Retrieve the final results for a completed job.
 
 ```java
 client.jobs().getJobResults(
-    "af7a26d6-cf0b-458c-a6ed-4b6318c74da3",
+    "5f0c9087-85cb-4917-b3c7-e5a5eff73a0c",
     GetJobResultsRequest
         .builder()
         .build()
@@ -439,7 +427,7 @@ client.jobs().getJobResults(
 <dl>
 <dd>
 
-**jobId:** `String` — Unique job identifier returned from the [`POST /catchAll/submit`](https://www.newscatcherapi.com/docs/v3/catch-all/endpoints/create-job) endpoint.
+**jobId:** `String` — Unique job identifier returned from [`POST /catchAll/submit`](https://www.newscatcherapi.com/docs/web-search-api/api-reference/jobs/create-job).
     
 </dd>
 </dl>
@@ -480,20 +468,7 @@ client.jobs().getJobResults(
 <dl>
 <dd>
 
-Create a monitor that runs jobs based on a reference job with a specified schedule.
-
-**Reference job requirements:**
-- Job's `end_date` must be within the last 7 days
-
-**Schedule requirements:**
-- Minimum 24-hour interval between executions
-- Natural language format (e.g., "every day at 12 PM UTC", "every 48 hours")
-
-**Validation:**
-- Reference jobs older than 7 days return 400 Bad Request.
-- Schedules below minimum frequency return error with descriptive message.
-- Invalid job IDs return 400 Bad Request.
-- Duplicate monitors (same job already monitored) return error.
+Create a scheduled monitor based on a reference job.
 </dd>
 </dl>
 </dd>
@@ -511,8 +486,22 @@ Create a monitor that runs jobs based on a reference job with a specified schedu
 client.monitors().createMonitor(
     CreateMonitorRequestDto
         .builder()
-        .referenceJobId("reference_job_id")
+        .referenceJobId("5f0c9087-85cb-4917-b3c7-e5a5eff73a0c")
         .schedule("every day at 12 PM UTC")
+        .webhook(
+            WebhookDto
+                .builder()
+                .url("https://your-endpoint.com/webhook")
+                .method(WebhookDtoMethod.POST)
+                .headers(
+                    new HashMap<String, String>() {{
+                        put("Authorization", "Bearer your_token_here");
+                    }}
+                )
+                .build()
+        )
+        .limit(10)
+        .backfill(true)
         .build()
 );
 ```
@@ -531,9 +520,9 @@ client.monitors().createMonitor(
 
 **referenceJobId:** `String` 
 
-Job ID to use as template for scheduled runs.
+Job ID to use as template for scheduled runs. Defines the query, validators, and enrichments used for each scheduled run.
 
-Job's `end_date` must be within the last 7 days.
+If [`backfill`](https://www.newscatcherapi.com/docs/web-search-api/api-reference/monitors/create-monitor#body-backfill) is true, the job's `end_date` must be within the last 7 days.
     
 </dd>
 </dl>
@@ -543,9 +532,9 @@ Job's `end_date` must be within the last 7 days.
 
 **schedule:** `String` 
 
-Natural language schedule (e.g. 'every day at 12 AM EST').
+Monitor schedule in plain text format (e.g. 'every day at 12 PM UTC', 'every 48 hours').
 
-**Minimum frequency:** Monitors must be scheduled at least 24 hours apart.
+Minimum frequency depends on your plan.
     
 </dd>
 </dl>
@@ -554,6 +543,26 @@ Natural language schedule (e.g. 'every day at 12 AM EST').
 <dd>
 
 **webhook:** `Optional<WebhookDto>` — Optional webhook to receive notifications when jobs complete.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Maximum number of records per monitor run. If not provided, defaults to the plan limit.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**backfill:** `Optional<Boolean>` 
+
+If true, fills the data gap between the reference job's `end_date` and the first scheduled run. The reference job's `end_date` must be within the last 7 days. 
+
+If false, no gap filling occurs and the first run uses the current cron window only — the reference job's age does not matter.
     
 </dd>
 </dl>
@@ -577,15 +586,7 @@ Natural language schedule (e.g. 'every day at 12 AM EST').
 <dl>
 <dd>
 
-Update webhook configuration for an existing monitor without recreating it.
-
-**Supported updates:**
-- Webhook URL
-- HTTP method (POST/PUT)
-- Headers and authentication
-- Query parameters
-
-**Note:** Schedule and reference job cannot be modified. To change these, create a new monitor.
+Update the webhook configuration for an existing monitor.
 </dd>
 </dl>
 </dd>
@@ -644,6 +645,14 @@ client.monitors().updateMonitor(
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Updated maximum number of records per monitor run.
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
@@ -664,8 +673,7 @@ client.monitors().updateMonitor(
 <dl>
 <dd>
 
-Returns all jobs associated with a monitor, sorted by start_date.
-Each job includes job_id, start_date, and end_date.
+Return all jobs executed by a monitor.
 </dd>
 </dl>
 </dd>
@@ -732,8 +740,7 @@ client.monitors().listMonitorJobs(
 <dl>
 <dd>
 
-Retrieve aggregated results from all jobs executed by this monitor.
-Includes monitor configuration, execution history, and all records collected.
+Retrieve aggregated results from all jobs executed by a monitor.
 </dd>
 </dl>
 </dd>
@@ -792,8 +799,7 @@ client.monitors().pullMonitorResults(
 <dl>
 <dd>
 
-Disables a monitor to stop executing scheduled jobs.
-Validates that the provided API key is associated with the monitor.
+Stop scheduled job execution for a monitor.
 </dd>
 </dl>
 </dd>
@@ -840,7 +846,7 @@ client.monitors().disableMonitor(
 </dl>
 </details>
 
-<details><summary><code>client.monitors.enableMonitor(monitorId) -> EnableMonitorResponse</code></summary>
+<details><summary><code>client.monitors.enableMonitor(monitorId, request) -> EnableMonitorResponse</code></summary>
 <dl>
 <dd>
 
@@ -852,8 +858,7 @@ client.monitors().disableMonitor(
 <dl>
 <dd>
 
-Enables a monitor to resume executing scheduled jobs.
-Validates that the provided API key is associated with the monitor.
+Resume scheduled job execution for a monitor.
 </dd>
 </dl>
 </dd>
@@ -870,8 +875,9 @@ Validates that the provided API key is associated with the monitor.
 ```java
 client.monitors().enableMonitor(
     "monitor_id",
-    EnableMonitorRequest
+    EnableMonitorRequestDto
         .builder()
+        .backfill(true)
         .build()
 );
 ```
@@ -889,6 +895,18 @@ client.monitors().enableMonitor(
 <dd>
 
 **monitorId:** `String` — Monitor identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**backfill:** `Optional<Boolean>` 
+
+If true, fills the data gap between the last job's `end_date` and the first scheduled run after enabling. The last job's `end_date` must be within the last 7 days. 
+
+If false, no gap filling occurs and the first run uses the current cron window only — the last job's age does not matter.
     
 </dd>
 </dl>
@@ -927,8 +945,35 @@ Returns all monitors created by the authenticated user.
 <dd>
 
 ```java
-client.monitors().listMonitors();
+client.monitors().listMonitors(
+    ListMonitorsRequest
+        .builder()
+        .build()
+);
 ```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**page:** `Optional<Integer>` — Page number to retrieve.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageSize:** `Optional<Integer>` — Number of records per page.
+    
 </dd>
 </dl>
 </dd>
@@ -1017,3 +1062,4 @@ client.meta().getVersion();
 </dd>
 </dl>
 </details>
+

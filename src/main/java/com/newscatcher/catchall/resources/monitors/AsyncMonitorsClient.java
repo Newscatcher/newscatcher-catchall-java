@@ -7,8 +7,9 @@ import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.monitors.requests.CreateMonitorRequestDto;
 import com.newscatcher.catchall.resources.monitors.requests.DisableMonitorRequest;
-import com.newscatcher.catchall.resources.monitors.requests.EnableMonitorRequest;
+import com.newscatcher.catchall.resources.monitors.requests.EnableMonitorRequestDto;
 import com.newscatcher.catchall.resources.monitors.requests.ListMonitorJobsRequest;
+import com.newscatcher.catchall.resources.monitors.requests.ListMonitorsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.PullMonitorResultsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.UpdateMonitorRequestDto;
 import com.newscatcher.catchall.resources.monitors.types.DisableMonitorResponse;
@@ -38,46 +39,14 @@ public class AsyncMonitorsClient {
     }
 
     /**
-     * Create a monitor that runs jobs based on a reference job with a specified schedule.
-     * <p><strong>Reference job requirements:</strong></p>
-     * <ul>
-     * <li>Job's <code>end_date</code> must be within the last 7 days</li>
-     * </ul>
-     * <p><strong>Schedule requirements:</strong></p>
-     * <ul>
-     * <li>Minimum 24-hour interval between executions</li>
-     * <li>Natural language format (e.g., &quot;every day at 12 PM UTC&quot;, &quot;every 48 hours&quot;)</li>
-     * </ul>
-     * <p><strong>Validation:</strong></p>
-     * <ul>
-     * <li>Reference jobs older than 7 days return 400 Bad Request.</li>
-     * <li>Schedules below minimum frequency return error with descriptive message.</li>
-     * <li>Invalid job IDs return 400 Bad Request.</li>
-     * <li>Duplicate monitors (same job already monitored) return error.</li>
-     * </ul>
+     * Create a scheduled monitor based on a reference job.
      */
     public CompletableFuture<CreateMonitorResponseDto> createMonitor(CreateMonitorRequestDto request) {
         return this.rawClient.createMonitor(request).thenApply(response -> response.body());
     }
 
     /**
-     * Create a monitor that runs jobs based on a reference job with a specified schedule.
-     * <p><strong>Reference job requirements:</strong></p>
-     * <ul>
-     * <li>Job's <code>end_date</code> must be within the last 7 days</li>
-     * </ul>
-     * <p><strong>Schedule requirements:</strong></p>
-     * <ul>
-     * <li>Minimum 24-hour interval between executions</li>
-     * <li>Natural language format (e.g., &quot;every day at 12 PM UTC&quot;, &quot;every 48 hours&quot;)</li>
-     * </ul>
-     * <p><strong>Validation:</strong></p>
-     * <ul>
-     * <li>Reference jobs older than 7 days return 400 Bad Request.</li>
-     * <li>Schedules below minimum frequency return error with descriptive message.</li>
-     * <li>Invalid job IDs return 400 Bad Request.</li>
-     * <li>Duplicate monitors (same job already monitored) return error.</li>
-     * </ul>
+     * Create a scheduled monitor based on a reference job.
      */
     public CompletableFuture<CreateMonitorResponseDto> createMonitor(
             CreateMonitorRequestDto request, RequestOptions requestOptions) {
@@ -85,45 +54,21 @@ public class AsyncMonitorsClient {
     }
 
     /**
-     * Update webhook configuration for an existing monitor without recreating it.
-     * <p><strong>Supported updates:</strong></p>
-     * <ul>
-     * <li>Webhook URL</li>
-     * <li>HTTP method (POST/PUT)</li>
-     * <li>Headers and authentication</li>
-     * <li>Query parameters</li>
-     * </ul>
-     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     * Update the webhook configuration for an existing monitor.
      */
     public CompletableFuture<UpdateMonitorResponseDto> updateMonitor(String monitorId) {
         return this.rawClient.updateMonitor(monitorId).thenApply(response -> response.body());
     }
 
     /**
-     * Update webhook configuration for an existing monitor without recreating it.
-     * <p><strong>Supported updates:</strong></p>
-     * <ul>
-     * <li>Webhook URL</li>
-     * <li>HTTP method (POST/PUT)</li>
-     * <li>Headers and authentication</li>
-     * <li>Query parameters</li>
-     * </ul>
-     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     * Update the webhook configuration for an existing monitor.
      */
     public CompletableFuture<UpdateMonitorResponseDto> updateMonitor(String monitorId, RequestOptions requestOptions) {
         return this.rawClient.updateMonitor(monitorId, requestOptions).thenApply(response -> response.body());
     }
 
     /**
-     * Update webhook configuration for an existing monitor without recreating it.
-     * <p><strong>Supported updates:</strong></p>
-     * <ul>
-     * <li>Webhook URL</li>
-     * <li>HTTP method (POST/PUT)</li>
-     * <li>Headers and authentication</li>
-     * <li>Query parameters</li>
-     * </ul>
-     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     * Update the webhook configuration for an existing monitor.
      */
     public CompletableFuture<UpdateMonitorResponseDto> updateMonitor(
             String monitorId, UpdateMonitorRequestDto request) {
@@ -131,15 +76,7 @@ public class AsyncMonitorsClient {
     }
 
     /**
-     * Update webhook configuration for an existing monitor without recreating it.
-     * <p><strong>Supported updates:</strong></p>
-     * <ul>
-     * <li>Webhook URL</li>
-     * <li>HTTP method (POST/PUT)</li>
-     * <li>Headers and authentication</li>
-     * <li>Query parameters</li>
-     * </ul>
-     * <p><strong>Note:</strong> Schedule and reference job cannot be modified. To change these, create a new monitor.</p>
+     * Update the webhook configuration for an existing monitor.
      */
     public CompletableFuture<UpdateMonitorResponseDto> updateMonitor(
             String monitorId, UpdateMonitorRequestDto request, RequestOptions requestOptions) {
@@ -147,24 +84,21 @@ public class AsyncMonitorsClient {
     }
 
     /**
-     * Returns all jobs associated with a monitor, sorted by start_date.
-     * Each job includes job_id, start_date, and end_date.
+     * Return all jobs executed by a monitor.
      */
     public CompletableFuture<ListMonitorJobsResponse> listMonitorJobs(String monitorId) {
         return this.rawClient.listMonitorJobs(monitorId).thenApply(response -> response.body());
     }
 
     /**
-     * Returns all jobs associated with a monitor, sorted by start_date.
-     * Each job includes job_id, start_date, and end_date.
+     * Return all jobs executed by a monitor.
      */
     public CompletableFuture<ListMonitorJobsResponse> listMonitorJobs(String monitorId, RequestOptions requestOptions) {
         return this.rawClient.listMonitorJobs(monitorId, requestOptions).thenApply(response -> response.body());
     }
 
     /**
-     * Returns all jobs associated with a monitor, sorted by start_date.
-     * Each job includes job_id, start_date, and end_date.
+     * Return all jobs executed by a monitor.
      */
     public CompletableFuture<ListMonitorJobsResponse> listMonitorJobs(
             String monitorId, ListMonitorJobsRequest request) {
@@ -172,8 +106,7 @@ public class AsyncMonitorsClient {
     }
 
     /**
-     * Returns all jobs associated with a monitor, sorted by start_date.
-     * Each job includes job_id, start_date, and end_date.
+     * Return all jobs executed by a monitor.
      */
     public CompletableFuture<ListMonitorJobsResponse> listMonitorJobs(
             String monitorId, ListMonitorJobsRequest request, RequestOptions requestOptions) {
@@ -183,16 +116,14 @@ public class AsyncMonitorsClient {
     }
 
     /**
-     * Retrieve aggregated results from all jobs executed by this monitor.
-     * Includes monitor configuration, execution history, and all records collected.
+     * Retrieve aggregated results from all jobs executed by a monitor.
      */
     public CompletableFuture<PullMonitorResponseDto> pullMonitorResults(String monitorId) {
         return this.rawClient.pullMonitorResults(monitorId).thenApply(response -> response.body());
     }
 
     /**
-     * Retrieve aggregated results from all jobs executed by this monitor.
-     * Includes monitor configuration, execution history, and all records collected.
+     * Retrieve aggregated results from all jobs executed by a monitor.
      */
     public CompletableFuture<PullMonitorResponseDto> pullMonitorResults(
             String monitorId, RequestOptions requestOptions) {
@@ -200,8 +131,7 @@ public class AsyncMonitorsClient {
     }
 
     /**
-     * Retrieve aggregated results from all jobs executed by this monitor.
-     * Includes monitor configuration, execution history, and all records collected.
+     * Retrieve aggregated results from all jobs executed by a monitor.
      */
     public CompletableFuture<PullMonitorResponseDto> pullMonitorResults(
             String monitorId, PullMonitorResultsRequest request) {
@@ -209,8 +139,7 @@ public class AsyncMonitorsClient {
     }
 
     /**
-     * Retrieve aggregated results from all jobs executed by this monitor.
-     * Includes monitor configuration, execution history, and all records collected.
+     * Retrieve aggregated results from all jobs executed by a monitor.
      */
     public CompletableFuture<PullMonitorResponseDto> pullMonitorResults(
             String monitorId, PullMonitorResultsRequest request, RequestOptions requestOptions) {
@@ -220,32 +149,28 @@ public class AsyncMonitorsClient {
     }
 
     /**
-     * Disables a monitor to stop executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Stop scheduled job execution for a monitor.
      */
     public CompletableFuture<DisableMonitorResponse> disableMonitor(String monitorId) {
         return this.rawClient.disableMonitor(monitorId).thenApply(response -> response.body());
     }
 
     /**
-     * Disables a monitor to stop executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Stop scheduled job execution for a monitor.
      */
     public CompletableFuture<DisableMonitorResponse> disableMonitor(String monitorId, RequestOptions requestOptions) {
         return this.rawClient.disableMonitor(monitorId, requestOptions).thenApply(response -> response.body());
     }
 
     /**
-     * Disables a monitor to stop executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Stop scheduled job execution for a monitor.
      */
     public CompletableFuture<DisableMonitorResponse> disableMonitor(String monitorId, DisableMonitorRequest request) {
         return this.rawClient.disableMonitor(monitorId, request).thenApply(response -> response.body());
     }
 
     /**
-     * Disables a monitor to stop executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Stop scheduled job execution for a monitor.
      */
     public CompletableFuture<DisableMonitorResponse> disableMonitor(
             String monitorId, DisableMonitorRequest request, RequestOptions requestOptions) {
@@ -253,35 +178,31 @@ public class AsyncMonitorsClient {
     }
 
     /**
-     * Enables a monitor to resume executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Resume scheduled job execution for a monitor.
      */
     public CompletableFuture<EnableMonitorResponse> enableMonitor(String monitorId) {
         return this.rawClient.enableMonitor(monitorId).thenApply(response -> response.body());
     }
 
     /**
-     * Enables a monitor to resume executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Resume scheduled job execution for a monitor.
      */
     public CompletableFuture<EnableMonitorResponse> enableMonitor(String monitorId, RequestOptions requestOptions) {
         return this.rawClient.enableMonitor(monitorId, requestOptions).thenApply(response -> response.body());
     }
 
     /**
-     * Enables a monitor to resume executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Resume scheduled job execution for a monitor.
      */
-    public CompletableFuture<EnableMonitorResponse> enableMonitor(String monitorId, EnableMonitorRequest request) {
+    public CompletableFuture<EnableMonitorResponse> enableMonitor(String monitorId, EnableMonitorRequestDto request) {
         return this.rawClient.enableMonitor(monitorId, request).thenApply(response -> response.body());
     }
 
     /**
-     * Enables a monitor to resume executing scheduled jobs.
-     * Validates that the provided API key is associated with the monitor.
+     * Resume scheduled job execution for a monitor.
      */
     public CompletableFuture<EnableMonitorResponse> enableMonitor(
-            String monitorId, EnableMonitorRequest request, RequestOptions requestOptions) {
+            String monitorId, EnableMonitorRequestDto request, RequestOptions requestOptions) {
         return this.rawClient.enableMonitor(monitorId, request, requestOptions).thenApply(response -> response.body());
     }
 
@@ -297,5 +218,20 @@ public class AsyncMonitorsClient {
      */
     public CompletableFuture<ListMonitorsResponseDto> listMonitors(RequestOptions requestOptions) {
         return this.rawClient.listMonitors(requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public CompletableFuture<ListMonitorsResponseDto> listMonitors(ListMonitorsRequest request) {
+        return this.rawClient.listMonitors(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public CompletableFuture<ListMonitorsResponseDto> listMonitors(
+            ListMonitorsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.listMonitors(request, requestOptions).thenApply(response -> response.body());
     }
 }

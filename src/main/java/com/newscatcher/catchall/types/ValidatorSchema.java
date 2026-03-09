@@ -46,7 +46,7 @@ public final class ValidatorSchema {
     }
 
     /**
-     * @return What this validator checks for in the article.
+     * @return What this validator checks for in the web page.
      */
     @JsonProperty("description")
     public String getDescription() {
@@ -101,13 +101,17 @@ public final class ValidatorSchema {
 
     public interface DescriptionStage {
         /**
-         * <p>What this validator checks for in the article.</p>
+         * <p>What this validator checks for in the web page.</p>
          */
         _FinalStage description(@NotNull String description);
     }
 
     public interface _FinalStage {
         ValidatorSchema build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
          * <p>Validator type (currently only boolean supported).</p>
@@ -151,8 +155,8 @@ public final class ValidatorSchema {
         }
 
         /**
-         * <p>What this validator checks for in the article.</p>
-         * <p>What this validator checks for in the article.</p>
+         * <p>What this validator checks for in the web page.</p>
+         * <p>What this validator checks for in the web page.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -185,6 +189,18 @@ public final class ValidatorSchema {
         @java.lang.Override
         public ValidatorSchema build() {
             return new ValidatorSchema(name, description, type, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -22,12 +21,12 @@ import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Record.Builder.class)
-public final class Record {
+public final class Record implements IBaseRecord {
     private final String recordId;
 
     private final String recordTitle;
 
-    private final Map<String, Object> enrichment;
+    private final BaseRecordEnrichment enrichment;
 
     private final List<Citation> citations;
 
@@ -36,7 +35,7 @@ public final class Record {
     private Record(
             String recordId,
             String recordTitle,
-            Map<String, Object> enrichment,
+            BaseRecordEnrichment enrichment,
             List<Citation> citations,
             Map<String, Object> additionalProperties) {
         this.recordId = recordId;
@@ -50,6 +49,7 @@ public final class Record {
      * @return Unique identifier for the record.
      */
     @JsonProperty("record_id")
+    @java.lang.Override
     public String getRecordId() {
         return recordId;
     }
@@ -58,21 +58,23 @@ public final class Record {
      * @return Short title summarizing the record.
      */
     @JsonProperty("record_title")
+    @java.lang.Override
     public String getRecordTitle() {
         return recordTitle;
     }
 
     /**
-     * @return Structured data extracted from articles. Schema is dynamically generated per job. Field names are chosen semantically to match the content.
-     * <p>See <a href="https://www.newscatcherapi.com/docs/v3/catch-all/overview/dynamic-schemas">Understanding dynamic schemas</a> for integration guidance.</p>
+     * @return Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.
+     * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
+     * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
      */
     @JsonProperty("enrichment")
-    public Map<String, Object> getEnrichment() {
+    public BaseRecordEnrichment getEnrichment() {
         return enrichment;
     }
 
     /**
-     * @return Source articles that were used to extract this record.
+     * @return Source documents that were used to extract this record.
      */
     @JsonProperty("citations")
     public List<Citation> getCitations() {
@@ -124,24 +126,27 @@ public final class Record {
         /**
          * <p>Short title summarizing the record.</p>
          */
-        _FinalStage recordTitle(@NotNull String recordTitle);
+        EnrichmentStage recordTitle(@NotNull String recordTitle);
+    }
+
+    public interface EnrichmentStage {
+        /**
+         * <p>Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
+         * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
+         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
+         */
+        _FinalStage enrichment(@NotNull BaseRecordEnrichment enrichment);
     }
 
     public interface _FinalStage {
         Record build();
 
-        /**
-         * <p>Structured data extracted from articles. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
-         * <p>See <a href="https://www.newscatcherapi.com/docs/v3/catch-all/overview/dynamic-schemas">Understanding dynamic schemas</a> for integration guidance.</p>
-         */
-        _FinalStage enrichment(Map<String, Object> enrichment);
+        _FinalStage additionalProperty(String key, Object value);
 
-        _FinalStage putAllEnrichment(Map<String, Object> enrichment);
-
-        _FinalStage enrichment(String key, Object value);
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Source articles that were used to extract this record.</p>
+         * <p>Source documents that were used to extract this record.</p>
          */
         _FinalStage citations(List<Citation> citations);
 
@@ -151,14 +156,14 @@ public final class Record {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements RecordIdStage, RecordTitleStage, _FinalStage {
+    public static final class Builder implements RecordIdStage, RecordTitleStage, EnrichmentStage, _FinalStage {
         private String recordId;
 
         private String recordTitle;
 
-        private List<Citation> citations = new ArrayList<>();
+        private BaseRecordEnrichment enrichment;
 
-        private Map<String, Object> enrichment = new LinkedHashMap<>();
+        private List<Citation> citations = new ArrayList<>();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -193,13 +198,29 @@ public final class Record {
          */
         @java.lang.Override
         @JsonSetter("record_title")
-        public _FinalStage recordTitle(@NotNull String recordTitle) {
+        public EnrichmentStage recordTitle(@NotNull String recordTitle) {
             this.recordTitle = Objects.requireNonNull(recordTitle, "recordTitle must not be null");
             return this;
         }
 
         /**
-         * <p>Source articles that were used to extract this record.</p>
+         * <p>Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
+         * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
+         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
+         * <p>Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
+         * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
+         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("enrichment")
+        public _FinalStage enrichment(@NotNull BaseRecordEnrichment enrichment) {
+            this.enrichment = Objects.requireNonNull(enrichment, "enrichment must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Source documents that were used to extract this record.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -211,7 +232,7 @@ public final class Record {
         }
 
         /**
-         * <p>Source articles that were used to extract this record.</p>
+         * <p>Source documents that were used to extract this record.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -221,7 +242,7 @@ public final class Record {
         }
 
         /**
-         * <p>Source articles that were used to extract this record.</p>
+         * <p>Source documents that were used to extract this record.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "citations", nulls = Nulls.SKIP)
@@ -233,47 +254,21 @@ public final class Record {
             return this;
         }
 
-        /**
-         * <p>Structured data extracted from articles. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
-         * <p>See <a href="https://www.newscatcherapi.com/docs/v3/catch-all/overview/dynamic-schemas">Understanding dynamic schemas</a> for integration guidance.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage enrichment(String key, Object value) {
-            this.enrichment.put(key, value);
-            return this;
-        }
-
-        /**
-         * <p>Structured data extracted from articles. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
-         * <p>See <a href="https://www.newscatcherapi.com/docs/v3/catch-all/overview/dynamic-schemas">Understanding dynamic schemas</a> for integration guidance.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage putAllEnrichment(Map<String, Object> enrichment) {
-            if (enrichment != null) {
-                this.enrichment.putAll(enrichment);
-            }
-            return this;
-        }
-
-        /**
-         * <p>Structured data extracted from articles. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
-         * <p>See <a href="https://www.newscatcherapi.com/docs/v3/catch-all/overview/dynamic-schemas">Understanding dynamic schemas</a> for integration guidance.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "enrichment", nulls = Nulls.SKIP)
-        public _FinalStage enrichment(Map<String, Object> enrichment) {
-            this.enrichment.clear();
-            if (enrichment != null) {
-                this.enrichment.putAll(enrichment);
-            }
-            return this;
-        }
-
         @java.lang.Override
         public Record build() {
             return new Record(recordId, recordTitle, enrichment, citations, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

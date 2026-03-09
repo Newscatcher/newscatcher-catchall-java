@@ -9,28 +9,25 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = JobStep.Builder.class)
 public final class JobStep {
-    private final JobStatus status;
+    private final PublicJobStatus status;
 
     private final int order;
 
-    private final Optional<Boolean> completed;
+    private final boolean completed;
 
     private final Map<String, Object> additionalProperties;
 
-    private JobStep(
-            JobStatus status, int order, Optional<Boolean> completed, Map<String, Object> additionalProperties) {
+    private JobStep(PublicJobStatus status, int order, boolean completed, Map<String, Object> additionalProperties) {
         this.status = status;
         this.order = order;
         this.completed = completed;
@@ -38,7 +35,7 @@ public final class JobStep {
     }
 
     @JsonProperty("status")
-    public JobStatus getStatus() {
+    public PublicJobStatus getStatus() {
         return status;
     }
 
@@ -54,7 +51,7 @@ public final class JobStep {
      * @return Whether this step has finished processing.
      */
     @JsonProperty("completed")
-    public Optional<Boolean> getCompleted() {
+    public boolean getCompleted() {
         return completed;
     }
 
@@ -70,7 +67,7 @@ public final class JobStep {
     }
 
     private boolean equalTo(JobStep other) {
-        return status.equals(other.status) && order == other.order && completed.equals(other.completed);
+        return status.equals(other.status) && order == other.order && completed == other.completed;
     }
 
     @java.lang.Override
@@ -88,7 +85,7 @@ public final class JobStep {
     }
 
     public interface StatusStage {
-        OrderStage status(@NotNull JobStatus status);
+        OrderStage status(@NotNull PublicJobStatus status);
 
         Builder from(JobStep other);
     }
@@ -97,27 +94,31 @@ public final class JobStep {
         /**
          * <p>Sequential position of this step in the pipeline (1-7).</p>
          */
-        _FinalStage order(int order);
+        CompletedStage order(int order);
+    }
+
+    public interface CompletedStage {
+        /**
+         * <p>Whether this step has finished processing.</p>
+         */
+        _FinalStage completed(boolean completed);
     }
 
     public interface _FinalStage {
         JobStep build();
 
-        /**
-         * <p>Whether this step has finished processing.</p>
-         */
-        _FinalStage completed(Optional<Boolean> completed);
+        _FinalStage additionalProperty(String key, Object value);
 
-        _FinalStage completed(Boolean completed);
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements StatusStage, OrderStage, _FinalStage {
-        private JobStatus status;
+    public static final class Builder implements StatusStage, OrderStage, CompletedStage, _FinalStage {
+        private PublicJobStatus status;
 
         private int order;
 
-        private Optional<Boolean> completed = Optional.empty();
+        private boolean completed;
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -134,7 +135,7 @@ public final class JobStep {
 
         @java.lang.Override
         @JsonSetter("status")
-        public OrderStage status(@NotNull JobStatus status) {
+        public OrderStage status(@NotNull PublicJobStatus status) {
             this.status = Objects.requireNonNull(status, "status must not be null");
             return this;
         }
@@ -146,27 +147,19 @@ public final class JobStep {
          */
         @java.lang.Override
         @JsonSetter("order")
-        public _FinalStage order(int order) {
+        public CompletedStage order(int order) {
             this.order = order;
             return this;
         }
 
         /**
          * <p>Whether this step has finished processing.</p>
+         * <p>Whether this step has finished processing.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage completed(Boolean completed) {
-            this.completed = Optional.ofNullable(completed);
-            return this;
-        }
-
-        /**
-         * <p>Whether this step has finished processing.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "completed", nulls = Nulls.SKIP)
-        public _FinalStage completed(Optional<Boolean> completed) {
+        @JsonSetter("completed")
+        public _FinalStage completed(boolean completed) {
             this.completed = completed;
             return this;
         }
@@ -174,6 +167,18 @@ public final class JobStep {
         @java.lang.Override
         public JobStep build() {
             return new JobStep(status, order, completed, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

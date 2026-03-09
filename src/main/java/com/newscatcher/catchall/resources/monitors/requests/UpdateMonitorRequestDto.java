@@ -23,10 +23,14 @@ import java.util.Optional;
 public final class UpdateMonitorRequestDto {
     private final Optional<WebhookDto> webhook;
 
+    private final Optional<Integer> limit;
+
     private final Map<String, Object> additionalProperties;
 
-    private UpdateMonitorRequestDto(Optional<WebhookDto> webhook, Map<String, Object> additionalProperties) {
+    private UpdateMonitorRequestDto(
+            Optional<WebhookDto> webhook, Optional<Integer> limit, Map<String, Object> additionalProperties) {
         this.webhook = webhook;
+        this.limit = limit;
         this.additionalProperties = additionalProperties;
     }
 
@@ -36,6 +40,14 @@ public final class UpdateMonitorRequestDto {
     @JsonProperty("webhook")
     public Optional<WebhookDto> getWebhook() {
         return webhook;
+    }
+
+    /**
+     * @return Updated maximum number of records per monitor run.
+     */
+    @JsonProperty("limit")
+    public Optional<Integer> getLimit() {
+        return limit;
     }
 
     @java.lang.Override
@@ -50,12 +62,12 @@ public final class UpdateMonitorRequestDto {
     }
 
     private boolean equalTo(UpdateMonitorRequestDto other) {
-        return webhook.equals(other.webhook);
+        return webhook.equals(other.webhook) && limit.equals(other.limit);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.webhook);
+        return Objects.hash(this.webhook, this.limit);
     }
 
     @java.lang.Override
@@ -71,6 +83,8 @@ public final class UpdateMonitorRequestDto {
     public static final class Builder {
         private Optional<WebhookDto> webhook = Optional.empty();
 
+        private Optional<Integer> limit = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -78,6 +92,7 @@ public final class UpdateMonitorRequestDto {
 
         public Builder from(UpdateMonitorRequestDto other) {
             webhook(other.getWebhook());
+            limit(other.getLimit());
             return this;
         }
 
@@ -95,8 +110,32 @@ public final class UpdateMonitorRequestDto {
             return this;
         }
 
+        /**
+         * <p>Updated maximum number of records per monitor run.</p>
+         */
+        @JsonSetter(value = "limit", nulls = Nulls.SKIP)
+        public Builder limit(Optional<Integer> limit) {
+            this.limit = limit;
+            return this;
+        }
+
+        public Builder limit(Integer limit) {
+            this.limit = Optional.ofNullable(limit);
+            return this;
+        }
+
         public UpdateMonitorRequestDto build() {
-            return new UpdateMonitorRequestDto(webhook, additionalProperties);
+            return new UpdateMonitorRequestDto(webhook, limit, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }
