@@ -7,6 +7,7 @@ import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.meta.types.GetVersionResponse;
 import com.newscatcher.catchall.resources.meta.types.HealthCheckResponse;
+import com.newscatcher.catchall.types.GetPlanLimitsResponseDto;
 
 public class MetaClient {
     protected final ClientOptions clientOptions;
@@ -51,5 +52,19 @@ public class MetaClient {
      */
     public GetVersionResponse getVersion(RequestOptions requestOptions) {
         return this.rawClient.getVersion(requestOptions).body();
+    }
+
+    /**
+     * Returns plan features and current usage for the authenticated organization.
+     */
+    public GetPlanLimitsResponseDto getPlanLimits() {
+        return this.rawClient.getPlanLimits().body();
+    }
+
+    /**
+     * Returns plan features and current usage for the authenticated organization.
+     */
+    public GetPlanLimitsResponseDto getPlanLimits(RequestOptions requestOptions) {
+        return this.rawClient.getPlanLimits(requestOptions).body();
     }
 }

@@ -103,6 +103,7 @@ client.jobs().createJob(
         .limit(10)
         .startDate(OffsetDateTime.parse("2026-02-18T00:00:00Z"))
         .endDate(OffsetDateTime.parse("2026-02-23T00:00:00Z"))
+        .mode(SubmitRequestDtoMode.BASE)
         .build()
 );
 ```
@@ -176,6 +177,19 @@ If not provided, validators are generated automatically based on the query.
 Custom enrichment fields for data extraction.
 
 If not provided, enrichments are generated automatically based on the query.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**mode:** `Optional<SubmitRequestDtoMode>` 
+
+Job processing mode.
+
+- `base`: Full pipeline with validation and enrichment.
+- `lite`: Lightweight extraction with faster processing. Returns titles and citations only.
     
 </dd>
 </dl>
@@ -1052,6 +1066,45 @@ Returns current API version.
 
 ```java
 client.meta().getVersion();
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.meta.getPlanLimits() -> GetPlanLimitsResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns plan features and current usage for the authenticated organization.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.meta().getPlanLimits();
 ```
 </dd>
 </dl>
