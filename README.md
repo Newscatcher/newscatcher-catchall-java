@@ -1,9 +1,9 @@
-# Newscatcher CatchAll Java Library
+# Newscatcher Java Library
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2FNewscatcher%2Fnewscatcher-catchall-java)
 [![Maven Central](https://img.shields.io/maven-central/v/com.newscatcherapi/newscatcher-catchall-sdk)](https://central.sonatype.com/artifact/com.newscatcherapi/newscatcher-catchall-sdk)
 
-The Newscatcher CatchAll Java library provides convenient access to the Web Search APIs from Java.
+The Newscatcher Java library provides convenient access to the Newscatcher APIs from Java.
 
 ## Table of Contents
 
@@ -47,7 +47,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.newscatcherapi</groupId>
   <artifactId>newscatcher-catchall-sdk</artifactId>
-  <version>1.1.2</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
@@ -64,6 +64,7 @@ package com.example.usage;
 
 import com.newscatcher.catchall.CatchAllApi;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
+import com.newscatcher.catchall.resources.jobs.types.SubmitRequestDtoMode;
 import java.time.OffsetDateTime;
 
 public class Example {
@@ -81,6 +82,7 @@ public class Example {
                 .limit(10)
                 .startDate(OffsetDateTime.parse("2026-02-18T00:00:00Z"))
                 .endDate(OffsetDateTime.parse("2026-02-23T00:00:00Z"))
+                .mode(SubmitRequestDtoMode.BASE)
                 .build()
         );
     }
@@ -228,7 +230,7 @@ The `withRawResponse()` method returns a raw client that wraps all responses wit
 (A normal client's `response` is identical to a raw client's `response.body()`.)
 
 ```java
-CreateJobHttpResponse response = client.jobs().withRawResponse().createJob(...);
+CatchAllApiHttpResponse response = client.jobs().withRawResponse().createJob(...);
 
 System.out.println(response.body());
 System.out.println(response.headers().get("X-My-Header"));
@@ -247,4 +249,5 @@ On the other hand, contributions to the README are always very welcome!
 
 - Documentation: [www.newscatcherapi.com/docs/web-search-api](https://www.newscatcherapi.com/docs/web-search-api/get-started/introduction)
 - Support: <support@newscatcherapi.com>
+
 

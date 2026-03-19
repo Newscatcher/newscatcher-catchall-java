@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
+import com.newscatcher.catchall.resources.jobs.types.SubmitRequestDtoMode;
 import com.newscatcher.catchall.types.EnrichmentSchema;
 import com.newscatcher.catchall.types.ValidatorSchema;
 import java.time.OffsetDateTime;
@@ -39,6 +40,8 @@ public final class SubmitRequestDto {
 
     private final Optional<List<EnrichmentSchema>> enrichments;
 
+    private final Optional<SubmitRequestDtoMode> mode;
+
     private final Map<String, Object> additionalProperties;
 
     private SubmitRequestDto(
@@ -49,6 +52,7 @@ public final class SubmitRequestDto {
             Optional<OffsetDateTime> endDate,
             Optional<List<ValidatorSchema>> validators,
             Optional<List<EnrichmentSchema>> enrichments,
+            Optional<SubmitRequestDtoMode> mode,
             Map<String, Object> additionalProperties) {
         this.query = query;
         this.context = context;
@@ -57,6 +61,7 @@ public final class SubmitRequestDto {
         this.endDate = endDate;
         this.validators = validators;
         this.enrichments = enrichments;
+        this.mode = mode;
         this.additionalProperties = additionalProperties;
     }
 
@@ -103,6 +108,18 @@ public final class SubmitRequestDto {
         return enrichments;
     }
 
+    /**
+     * @return Job processing mode.
+     * <ul>
+     * <li><code>base</code>: Full pipeline with validation and enrichment.</li>
+     * <li><code>lite</code>: Lightweight extraction with faster processing. Returns titles and citations only.</li>
+     * </ul>
+     */
+    @JsonProperty("mode")
+    public Optional<SubmitRequestDtoMode> getMode() {
+        return mode;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -121,13 +138,21 @@ public final class SubmitRequestDto {
                 && startDate.equals(other.startDate)
                 && endDate.equals(other.endDate)
                 && validators.equals(other.validators)
-                && enrichments.equals(other.enrichments);
+                && enrichments.equals(other.enrichments)
+                && mode.equals(other.mode);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.query, this.context, this.limit, this.startDate, this.endDate, this.validators, this.enrichments);
+                this.query,
+                this.context,
+                this.limit,
+                this.startDate,
+                this.endDate,
+                this.validators,
+                this.enrichments,
+                this.mode);
     }
 
     @java.lang.Override
@@ -183,11 +208,24 @@ public final class SubmitRequestDto {
         _FinalStage enrichments(Optional<List<EnrichmentSchema>> enrichments);
 
         _FinalStage enrichments(List<EnrichmentSchema> enrichments);
+
+        /**
+         * <p>Job processing mode.</p>
+         * <ul>
+         * <li><code>base</code>: Full pipeline with validation and enrichment.</li>
+         * <li><code>lite</code>: Lightweight extraction with faster processing. Returns titles and citations only.</li>
+         * </ul>
+         */
+        _FinalStage mode(Optional<SubmitRequestDtoMode> mode);
+
+        _FinalStage mode(SubmitRequestDtoMode mode);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements QueryStage, _FinalStage {
         private String query;
+
+        private Optional<SubmitRequestDtoMode> mode = Optional.empty();
 
         private Optional<List<EnrichmentSchema>> enrichments = Optional.empty();
 
@@ -215,6 +253,7 @@ public final class SubmitRequestDto {
             endDate(other.getEndDate());
             validators(other.getValidators());
             enrichments(other.getEnrichments());
+            mode(other.getMode());
             return this;
         }
 
@@ -222,6 +261,34 @@ public final class SubmitRequestDto {
         @JsonSetter("query")
         public _FinalStage query(@NotNull String query) {
             this.query = Objects.requireNonNull(query, "query must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Job processing mode.</p>
+         * <ul>
+         * <li><code>base</code>: Full pipeline with validation and enrichment.</li>
+         * <li><code>lite</code>: Lightweight extraction with faster processing. Returns titles and citations only.</li>
+         * </ul>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage mode(SubmitRequestDtoMode mode) {
+            this.mode = Optional.ofNullable(mode);
+            return this;
+        }
+
+        /**
+         * <p>Job processing mode.</p>
+         * <ul>
+         * <li><code>base</code>: Full pipeline with validation and enrichment.</li>
+         * <li><code>lite</code>: Lightweight extraction with faster processing. Returns titles and citations only.</li>
+         * </ul>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "mode", nulls = Nulls.SKIP)
+        public _FinalStage mode(Optional<SubmitRequestDtoMode> mode) {
+            this.mode = mode;
             return this;
         }
 
@@ -324,7 +391,7 @@ public final class SubmitRequestDto {
         @java.lang.Override
         public SubmitRequestDto build() {
             return new SubmitRequestDto(
-                    query, context, limit, startDate, endDate, validators, enrichments, additionalProperties);
+                    query, context, limit, startDate, endDate, validators, enrichments, mode, additionalProperties);
         }
 
         @java.lang.Override

@@ -7,6 +7,7 @@ import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.meta.types.GetVersionResponse;
 import com.newscatcher.catchall.resources.meta.types.HealthCheckResponse;
+import com.newscatcher.catchall.types.GetPlanLimitsResponseDto;
 import java.util.concurrent.CompletableFuture;
 
 public class AsyncMetaClient {
@@ -52,5 +53,19 @@ public class AsyncMetaClient {
      */
     public CompletableFuture<GetVersionResponse> getVersion(RequestOptions requestOptions) {
         return this.rawClient.getVersion(requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns plan features and current usage for the authenticated organization.
+     */
+    public CompletableFuture<GetPlanLimitsResponseDto> getPlanLimits() {
+        return this.rawClient.getPlanLimits().thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns plan features and current usage for the authenticated organization.
+     */
+    public CompletableFuture<GetPlanLimitsResponseDto> getPlanLimits(RequestOptions requestOptions) {
+        return this.rawClient.getPlanLimits(requestOptions).thenApply(response -> response.body());
     }
 }

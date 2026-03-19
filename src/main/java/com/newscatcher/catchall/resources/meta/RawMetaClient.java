@@ -3,19 +3,24 @@
  */
 package com.newscatcher.catchall.resources.meta;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.newscatcher.catchall.core.CatchAllApiApiException;
 import com.newscatcher.catchall.core.CatchAllApiException;
 import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.ObjectMappers;
 import com.newscatcher.catchall.core.RequestOptions;
+import com.newscatcher.catchall.errors.ForbiddenError;
 import com.newscatcher.catchall.resources.meta.types.GetVersionResponse;
 import com.newscatcher.catchall.resources.meta.types.HealthCheckResponse;
+import com.newscatcher.catchall.types.Error;
+import com.newscatcher.catchall.types.GetPlanLimitsResponseDto;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -105,6 +110,59 @@ public class RawMetaClient {
             if (response.isSuccessful()) {
                 return new CatchAllApiHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetVersionResponse.class), response);
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new CatchAllApiApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (IOException e) {
+            throw new CatchAllApiException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Returns plan features and current usage for the authenticated organization.
+     */
+    public CatchAllApiHttpResponse<GetPlanLimitsResponseDto> getPlanLimits() {
+        return getPlanLimits(null);
+    }
+
+    /**
+     * Returns plan features and current usage for the authenticated organization.
+     */
+    public CatchAllApiHttpResponse<GetPlanLimitsResponseDto> getPlanLimits(RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/user/limits");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", RequestBody.create("", null))
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new CatchAllApiHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetPlanLimitsResponseDto.class),
+                        response);
+            }
+            try {
+                if (response.code() == 403) {
+                    throw new ForbiddenError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
             }
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
