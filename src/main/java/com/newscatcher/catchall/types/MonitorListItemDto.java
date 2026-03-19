@@ -5,12 +5,15 @@ package com.newscatcher.catchall.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.newscatcher.catchall.core.Nullable;
+import com.newscatcher.catchall.core.NullableNonemptyFilter;
 import com.newscatcher.catchall.core.ObjectMappers;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -40,6 +43,8 @@ public final class MonitorListItemDto {
 
     private final Optional<WebhookDto> webhook;
 
+    private final Optional<String> userKey;
+
     private final Map<String, Object> additionalProperties;
 
     private MonitorListItemDto(
@@ -52,6 +57,7 @@ public final class MonitorListItemDto {
             Optional<String> timezone,
             Optional<OffsetDateTime> createdAt,
             Optional<WebhookDto> webhook,
+            Optional<String> userKey,
             Map<String, Object> additionalProperties) {
         this.monitorId = monitorId;
         this.referenceJobId = referenceJobId;
@@ -62,6 +68,7 @@ public final class MonitorListItemDto {
         this.timezone = timezone;
         this.createdAt = createdAt;
         this.webhook = webhook;
+        this.userKey = userKey;
         this.additionalProperties = additionalProperties;
     }
 
@@ -130,10 +137,27 @@ public final class MonitorListItemDto {
     }
 
     /**
-     * @return Webhook configuration for this monitor (if set).
+     * @return Webhook configuration for this monitor, or null if not set.
      */
-    @JsonProperty("webhook")
+    @JsonIgnore
     public Optional<WebhookDto> getWebhook() {
+        if (webhook == null) {
+            return Optional.empty();
+        }
+        return webhook;
+    }
+
+    /**
+     * @return Masked API key associated with this monitor.
+     */
+    @JsonProperty("user_key")
+    public Optional<String> getUserKey() {
+        return userKey;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("webhook")
+    private Optional<WebhookDto> _getWebhook() {
         return webhook;
     }
 
@@ -157,7 +181,8 @@ public final class MonitorListItemDto {
                 && scheduleHumanReadable.equals(other.scheduleHumanReadable)
                 && timezone.equals(other.timezone)
                 && createdAt.equals(other.createdAt)
-                && webhook.equals(other.webhook);
+                && webhook.equals(other.webhook)
+                && userKey.equals(other.userKey);
     }
 
     @java.lang.Override
@@ -171,7 +196,8 @@ public final class MonitorListItemDto {
                 this.scheduleHumanReadable,
                 this.timezone,
                 this.createdAt,
-                this.webhook);
+                this.webhook,
+                this.userKey);
     }
 
     @java.lang.Override
@@ -249,11 +275,20 @@ public final class MonitorListItemDto {
         _FinalStage createdAt(OffsetDateTime createdAt);
 
         /**
-         * <p>Webhook configuration for this monitor (if set).</p>
+         * <p>Webhook configuration for this monitor, or null if not set.</p>
          */
         _FinalStage webhook(Optional<WebhookDto> webhook);
 
         _FinalStage webhook(WebhookDto webhook);
+
+        _FinalStage webhook(Nullable<WebhookDto> webhook);
+
+        /**
+         * <p>Masked API key associated with this monitor.</p>
+         */
+        _FinalStage userKey(Optional<String> userKey);
+
+        _FinalStage userKey(String userKey);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -266,6 +301,8 @@ public final class MonitorListItemDto {
         private String referenceJobQuery;
 
         private boolean enabled;
+
+        private Optional<String> userKey = Optional.empty();
 
         private Optional<WebhookDto> webhook = Optional.empty();
 
@@ -293,6 +330,7 @@ public final class MonitorListItemDto {
             timezone(other.getTimezone());
             createdAt(other.getCreatedAt());
             webhook(other.getWebhook());
+            userKey(other.getUserKey());
             return this;
         }
 
@@ -345,7 +383,43 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Webhook configuration for this monitor (if set).</p>
+         * <p>Masked API key associated with this monitor.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage userKey(String userKey) {
+            this.userKey = Optional.ofNullable(userKey);
+            return this;
+        }
+
+        /**
+         * <p>Masked API key associated with this monitor.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "user_key", nulls = Nulls.SKIP)
+        public _FinalStage userKey(Optional<String> userKey) {
+            this.userKey = userKey;
+            return this;
+        }
+
+        /**
+         * <p>Webhook configuration for this monitor, or null if not set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage webhook(Nullable<WebhookDto> webhook) {
+            if (webhook.isNull()) {
+                this.webhook = null;
+            } else if (webhook.isEmpty()) {
+                this.webhook = Optional.empty();
+            } else {
+                this.webhook = Optional.of(webhook.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Webhook configuration for this monitor, or null if not set.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -355,7 +429,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Webhook configuration for this monitor (if set).</p>
+         * <p>Webhook configuration for this monitor, or null if not set.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "webhook", nulls = Nulls.SKIP)
@@ -456,6 +530,7 @@ public final class MonitorListItemDto {
                     timezone,
                     createdAt,
                     webhook,
+                    userKey,
                     additionalProperties);
         }
 

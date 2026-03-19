@@ -9,12 +9,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
@@ -28,6 +30,10 @@ public final class UserJob {
 
     private final String status;
 
+    private final Optional<UserJobMode> mode;
+
+    private final Optional<String> userKey;
+
     private final Map<String, Object> additionalProperties;
 
     private UserJob(
@@ -35,11 +41,15 @@ public final class UserJob {
             String query,
             OffsetDateTime createdAt,
             String status,
+            Optional<UserJobMode> mode,
+            Optional<String> userKey,
             Map<String, Object> additionalProperties) {
         this.jobId = jobId;
         this.query = query;
         this.createdAt = createdAt;
         this.status = status;
+        this.mode = mode;
+        this.userKey = userKey;
         this.additionalProperties = additionalProperties;
     }
 
@@ -75,6 +85,22 @@ public final class UserJob {
         return status;
     }
 
+    /**
+     * @return Processing mode used for this job.
+     */
+    @JsonProperty("mode")
+    public Optional<UserJobMode> getMode() {
+        return mode;
+    }
+
+    /**
+     * @return Masked API key that created this job.
+     */
+    @JsonProperty("user_key")
+    public Optional<String> getUserKey() {
+        return userKey;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -90,12 +116,14 @@ public final class UserJob {
         return jobId.equals(other.jobId)
                 && query.equals(other.query)
                 && createdAt.equals(other.createdAt)
-                && status.equals(other.status);
+                && status.equals(other.status)
+                && mode.equals(other.mode)
+                && userKey.equals(other.userKey);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.jobId, this.query, this.createdAt, this.status);
+        return Objects.hash(this.jobId, this.query, this.createdAt, this.status, this.mode, this.userKey);
     }
 
     @java.lang.Override
@@ -143,6 +171,20 @@ public final class UserJob {
         _FinalStage additionalProperty(String key, Object value);
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>Processing mode used for this job.</p>
+         */
+        _FinalStage mode(Optional<UserJobMode> mode);
+
+        _FinalStage mode(UserJobMode mode);
+
+        /**
+         * <p>Masked API key that created this job.</p>
+         */
+        _FinalStage userKey(Optional<String> userKey);
+
+        _FinalStage userKey(String userKey);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -155,6 +197,10 @@ public final class UserJob {
 
         private String status;
 
+        private Optional<String> userKey = Optional.empty();
+
+        private Optional<UserJobMode> mode = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -166,6 +212,8 @@ public final class UserJob {
             query(other.getQuery());
             createdAt(other.getCreatedAt());
             status(other.getStatus());
+            mode(other.getMode());
+            userKey(other.getUserKey());
             return this;
         }
 
@@ -217,9 +265,49 @@ public final class UserJob {
             return this;
         }
 
+        /**
+         * <p>Masked API key that created this job.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage userKey(String userKey) {
+            this.userKey = Optional.ofNullable(userKey);
+            return this;
+        }
+
+        /**
+         * <p>Masked API key that created this job.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "user_key", nulls = Nulls.SKIP)
+        public _FinalStage userKey(Optional<String> userKey) {
+            this.userKey = userKey;
+            return this;
+        }
+
+        /**
+         * <p>Processing mode used for this job.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage mode(UserJobMode mode) {
+            this.mode = Optional.ofNullable(mode);
+            return this;
+        }
+
+        /**
+         * <p>Processing mode used for this job.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "mode", nulls = Nulls.SKIP)
+        public _FinalStage mode(Optional<UserJobMode> mode) {
+            this.mode = mode;
+            return this;
+        }
+
         @java.lang.Override
         public UserJob build() {
-            return new UserJob(jobId, query, createdAt, status, additionalProperties);
+            return new UserJob(jobId, query, createdAt, status, mode, userKey, additionalProperties);
         }
 
         @java.lang.Override
