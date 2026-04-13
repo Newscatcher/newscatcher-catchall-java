@@ -36,6 +36,34 @@ public class JobsClient {
     }
 
     /**
+     * Returns all jobs created by the authenticated user.
+     */
+    public ListUserJobsResponseDto getUserJobs() {
+        return this.rawClient.getUserJobs().body();
+    }
+
+    /**
+     * Returns all jobs created by the authenticated user.
+     */
+    public ListUserJobsResponseDto getUserJobs(RequestOptions requestOptions) {
+        return this.rawClient.getUserJobs(requestOptions).body();
+    }
+
+    /**
+     * Returns all jobs created by the authenticated user.
+     */
+    public ListUserJobsResponseDto getUserJobs(GetUserJobsRequest request) {
+        return this.rawClient.getUserJobs(request).body();
+    }
+
+    /**
+     * Returns all jobs created by the authenticated user.
+     */
+    public ListUserJobsResponseDto getUserJobs(GetUserJobsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.getUserJobs(request, requestOptions).body();
+    }
+
+    /**
      * Get suggested validators, enrichments, and date ranges for a query.
      */
     public InitializeResponseDto initialize(InitializeRequestDto request) {
@@ -61,20 +89,6 @@ public class JobsClient {
      */
     public SubmitResponseDto createJob(SubmitRequestDto request, RequestOptions requestOptions) {
         return this.rawClient.createJob(request, requestOptions).body();
-    }
-
-    /**
-     * Continue an existing job to process more records beyond the initial limit.
-     */
-    public ContinueResponseDto continueJob(ContinueRequestDto request) {
-        return this.rawClient.continueJob(request).body();
-    }
-
-    /**
-     * Continue an existing job to process more records beyond the initial limit.
-     */
-    public ContinueResponseDto continueJob(ContinueRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.continueJob(request, requestOptions).body();
     }
 
     /**
@@ -106,34 +120,6 @@ public class JobsClient {
     }
 
     /**
-     * Returns all jobs created by the authenticated user.
-     */
-    public ListUserJobsResponseDto getUserJobs() {
-        return this.rawClient.getUserJobs().body();
-    }
-
-    /**
-     * Returns all jobs created by the authenticated user.
-     */
-    public ListUserJobsResponseDto getUserJobs(RequestOptions requestOptions) {
-        return this.rawClient.getUserJobs(requestOptions).body();
-    }
-
-    /**
-     * Returns all jobs created by the authenticated user.
-     */
-    public ListUserJobsResponseDto getUserJobs(GetUserJobsRequest request) {
-        return this.rawClient.getUserJobs(request).body();
-    }
-
-    /**
-     * Returns all jobs created by the authenticated user.
-     */
-    public ListUserJobsResponseDto getUserJobs(GetUserJobsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getUserJobs(request, requestOptions).body();
-    }
-
-    /**
      * Retrieve the final results for a completed job.
      */
     public PullJobResponseDto getJobResults(String jobId) {
@@ -159,5 +145,19 @@ public class JobsClient {
      */
     public PullJobResponseDto getJobResults(String jobId, GetJobResultsRequest request, RequestOptions requestOptions) {
         return this.rawClient.getJobResults(jobId, request, requestOptions).body();
+    }
+
+    /**
+     * Continue an existing job to process more records beyond the initial limit.
+     */
+    public ContinueResponseDto continueJob(ContinueRequestDto request) {
+        return this.rawClient.continueJob(request).body();
+    }
+
+    /**
+     * Continue an existing job to process more records beyond the initial limit.
+     */
+    public ContinueResponseDto continueJob(ContinueRequestDto request, RequestOptions requestOptions) {
+        return this.rawClient.continueJob(request, requestOptions).body();
     }
 }

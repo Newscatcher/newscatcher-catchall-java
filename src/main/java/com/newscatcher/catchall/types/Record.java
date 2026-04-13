@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
@@ -30,6 +31,8 @@ public final class Record implements IBaseRecord {
 
     private final List<Citation> citations;
 
+    private final Optional<List<ConnectedEntity>> connectedEntities;
+
     private final Map<String, Object> additionalProperties;
 
     private Record(
@@ -37,11 +40,13 @@ public final class Record implements IBaseRecord {
             String recordTitle,
             BaseRecordEnrichment enrichment,
             List<Citation> citations,
+            Optional<List<ConnectedEntity>> connectedEntities,
             Map<String, Object> additionalProperties) {
         this.recordId = recordId;
         this.recordTitle = recordTitle;
         this.enrichment = enrichment;
         this.citations = citations;
+        this.connectedEntities = connectedEntities;
         this.additionalProperties = additionalProperties;
     }
 
@@ -81,6 +86,15 @@ public final class Record implements IBaseRecord {
         return citations;
     }
 
+    /**
+     * @return Entities from the connected dataset that are relevant to this record.
+     * Only present when the job was submitted with <code>connected_dataset_ids</code>.
+     */
+    @JsonProperty("connected_entities")
+    public Optional<List<ConnectedEntity>> getConnectedEntities() {
+        return connectedEntities;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -96,12 +110,13 @@ public final class Record implements IBaseRecord {
         return recordId.equals(other.recordId)
                 && recordTitle.equals(other.recordTitle)
                 && enrichment.equals(other.enrichment)
-                && citations.equals(other.citations);
+                && citations.equals(other.citations)
+                && connectedEntities.equals(other.connectedEntities);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.recordId, this.recordTitle, this.enrichment, this.citations);
+        return Objects.hash(this.recordId, this.recordTitle, this.enrichment, this.citations, this.connectedEntities);
     }
 
     @java.lang.Override
@@ -153,6 +168,14 @@ public final class Record implements IBaseRecord {
         _FinalStage addCitations(Citation citations);
 
         _FinalStage addAllCitations(List<Citation> citations);
+
+        /**
+         * <p>Entities from the connected dataset that are relevant to this record.
+         * Only present when the job was submitted with <code>connected_dataset_ids</code>.</p>
+         */
+        _FinalStage connectedEntities(Optional<List<ConnectedEntity>> connectedEntities);
+
+        _FinalStage connectedEntities(List<ConnectedEntity> connectedEntities);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -162,6 +185,8 @@ public final class Record implements IBaseRecord {
         private String recordTitle;
 
         private BaseRecordEnrichment enrichment;
+
+        private Optional<List<ConnectedEntity>> connectedEntities = Optional.empty();
 
         private List<Citation> citations = new ArrayList<>();
 
@@ -176,6 +201,7 @@ public final class Record implements IBaseRecord {
             recordTitle(other.getRecordTitle());
             enrichment(other.getEnrichment());
             citations(other.getCitations());
+            connectedEntities(other.getConnectedEntities());
             return this;
         }
 
@@ -220,6 +246,28 @@ public final class Record implements IBaseRecord {
         }
 
         /**
+         * <p>Entities from the connected dataset that are relevant to this record.
+         * Only present when the job was submitted with <code>connected_dataset_ids</code>.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage connectedEntities(List<ConnectedEntity> connectedEntities) {
+            this.connectedEntities = Optional.ofNullable(connectedEntities);
+            return this;
+        }
+
+        /**
+         * <p>Entities from the connected dataset that are relevant to this record.
+         * Only present when the job was submitted with <code>connected_dataset_ids</code>.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "connected_entities", nulls = Nulls.SKIP)
+        public _FinalStage connectedEntities(Optional<List<ConnectedEntity>> connectedEntities) {
+            this.connectedEntities = connectedEntities;
+            return this;
+        }
+
+        /**
          * <p>Source documents that were used to extract this record.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -256,7 +304,7 @@ public final class Record implements IBaseRecord {
 
         @java.lang.Override
         public Record build() {
-            return new Record(recordId, recordTitle, enrichment, citations, additionalProperties);
+            return new Record(recordId, recordTitle, enrichment, citations, connectedEntities, additionalProperties);
         }
 
         @java.lang.Override
