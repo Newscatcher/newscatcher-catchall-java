@@ -52,6 +52,106 @@ public class AsyncRawMonitorsClient {
     }
 
     /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> listMonitors() {
+        return listMonitors(ListMonitorsRequest.builder().build());
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> listMonitors(
+            RequestOptions requestOptions) {
+        return listMonitors(ListMonitorsRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> listMonitors(
+            ListMonitorsRequest request) {
+        return listMonitors(request, null);
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> listMonitors(
+            ListMonitorsRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/monitors");
+        if (request.getPage().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page", request.getPage().get(), false);
+        }
+        if (request.getPageSize().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page_size", request.getPageSize().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new CatchAllApiHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListMonitorsResponseDto.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(
+                                                responseBodyString, ValidationErrorResponse.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new CatchAllApiApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (IOException e) {
+                    future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
      * Create a scheduled monitor based on a reference job.
      */
     public CompletableFuture<CatchAllApiHttpResponse<CreateMonitorResponseDto>> createMonitor(
@@ -109,210 +209,6 @@ public class AsyncRawMonitorsClient {
                                             responseBodyString, ValidationErrorResponse.class),
                                     response));
                             return;
-                        }
-                    } catch (JsonProcessingException ignored) {
-                        // unable to map error response, throwing generic error
-                    }
-                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
-                    future.completeExceptionally(new CatchAllApiApiException(
-                            "Error with status code " + response.code(), response.code(), errorBody, response));
-                    return;
-                } catch (IOException e) {
-                    future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
-            }
-        });
-        return future;
-    }
-
-    /**
-     * Update the webhook configuration for an existing monitor.
-     */
-    public CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> updateMonitor(String monitorId) {
-        return updateMonitor(monitorId, UpdateMonitorRequestDto.builder().build());
-    }
-
-    /**
-     * Update the webhook configuration for an existing monitor.
-     */
-    public CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> updateMonitor(
-            String monitorId, RequestOptions requestOptions) {
-        return updateMonitor(monitorId, UpdateMonitorRequestDto.builder().build(), requestOptions);
-    }
-
-    /**
-     * Update the webhook configuration for an existing monitor.
-     */
-    public CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> updateMonitor(
-            String monitorId, UpdateMonitorRequestDto request) {
-        return updateMonitor(monitorId, request, null);
-    }
-
-    /**
-     * Update the webhook configuration for an existing monitor.
-     */
-    public CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> updateMonitor(
-            String monitorId, UpdateMonitorRequestDto request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("catchAll/monitors")
-                .addPathSegment(monitorId);
-        if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((_key, _value) -> {
-                httpUrl.addQueryParameter(_key, _value);
-            });
-        }
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (JsonProcessingException e) {
-            throw new CatchAllApiException("Failed to serialize request", e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl.build())
-                .method("PATCH", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    if (response.isSuccessful()) {
-                        future.complete(new CatchAllApiHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, UpdateMonitorResponseDto.class),
-                                response));
-                        return;
-                    }
-                    try {
-                        switch (response.code()) {
-                            case 403:
-                                future.completeExceptionally(new ForbiddenError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
-                                        response));
-                                return;
-                            case 404:
-                                future.completeExceptionally(new NotFoundError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
-                                        response));
-                                return;
-                            case 422:
-                                future.completeExceptionally(new UnprocessableEntityError(
-                                        ObjectMappers.JSON_MAPPER.readValue(
-                                                responseBodyString, ValidationErrorResponse.class),
-                                        response));
-                                return;
-                        }
-                    } catch (JsonProcessingException ignored) {
-                        // unable to map error response, throwing generic error
-                    }
-                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
-                    future.completeExceptionally(new CatchAllApiApiException(
-                            "Error with status code " + response.code(), response.code(), errorBody, response));
-                    return;
-                } catch (IOException e) {
-                    future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
-            }
-        });
-        return future;
-    }
-
-    /**
-     * Return all jobs executed by a monitor.
-     */
-    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> listMonitorJobs(String monitorId) {
-        return listMonitorJobs(monitorId, ListMonitorJobsRequest.builder().build());
-    }
-
-    /**
-     * Return all jobs executed by a monitor.
-     */
-    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> listMonitorJobs(
-            String monitorId, RequestOptions requestOptions) {
-        return listMonitorJobs(monitorId, ListMonitorJobsRequest.builder().build(), requestOptions);
-    }
-
-    /**
-     * Return all jobs executed by a monitor.
-     */
-    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> listMonitorJobs(
-            String monitorId, ListMonitorJobsRequest request) {
-        return listMonitorJobs(monitorId, request, null);
-    }
-
-    /**
-     * Return all jobs executed by a monitor.
-     */
-    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> listMonitorJobs(
-            String monitorId, ListMonitorJobsRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("catchAll/monitors")
-                .addPathSegment(monitorId)
-                .addPathSegments("jobs");
-        if (request.getSort().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "sort", request.getSort().get(), false);
-        }
-        if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((_key, _value) -> {
-                httpUrl.addQueryParameter(_key, _value);
-            });
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    if (response.isSuccessful()) {
-                        future.complete(new CatchAllApiHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListMonitorJobsResponse.class),
-                                response));
-                        return;
-                    }
-                    try {
-                        switch (response.code()) {
-                            case 404:
-                                future.completeExceptionally(new NotFoundError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
-                                        response));
-                                return;
-                            case 422:
-                                future.completeExceptionally(new UnprocessableEntityError(
-                                        ObjectMappers.JSON_MAPPER.readValue(
-                                                responseBodyString, ValidationErrorResponse.class),
-                                        response));
-                                return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
@@ -428,38 +324,42 @@ public class AsyncRawMonitorsClient {
     }
 
     /**
-     * Stop scheduled job execution for a monitor.
+     * Return all jobs executed by a monitor.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> disableMonitor(String monitorId) {
-        return disableMonitor(monitorId, DisableMonitorRequest.builder().build());
+    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> listMonitorJobs(String monitorId) {
+        return listMonitorJobs(monitorId, ListMonitorJobsRequest.builder().build());
     }
 
     /**
-     * Stop scheduled job execution for a monitor.
+     * Return all jobs executed by a monitor.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> disableMonitor(
+    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> listMonitorJobs(
             String monitorId, RequestOptions requestOptions) {
-        return disableMonitor(monitorId, DisableMonitorRequest.builder().build(), requestOptions);
+        return listMonitorJobs(monitorId, ListMonitorJobsRequest.builder().build(), requestOptions);
     }
 
     /**
-     * Stop scheduled job execution for a monitor.
+     * Return all jobs executed by a monitor.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> disableMonitor(
-            String monitorId, DisableMonitorRequest request) {
-        return disableMonitor(monitorId, request, null);
+    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> listMonitorJobs(
+            String monitorId, ListMonitorJobsRequest request) {
+        return listMonitorJobs(monitorId, request, null);
     }
 
     /**
-     * Stop scheduled job execution for a monitor.
+     * Return all jobs executed by a monitor.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> disableMonitor(
-            String monitorId, DisableMonitorRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> listMonitorJobs(
+            String monitorId, ListMonitorJobsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors")
                 .addPathSegment(monitorId)
-                .addPathSegments("disable");
+                .addPathSegments("jobs");
+        if (request.getSort().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "sort", request.getSort().get(), false);
+        }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -467,7 +367,7 @@ public class AsyncRawMonitorsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -475,7 +375,7 @@ public class AsyncRawMonitorsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> future = new CompletableFuture<>();
+        CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -483,17 +383,12 @@ public class AsyncRawMonitorsClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new CatchAllApiHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, DisableMonitorResponse.class),
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListMonitorJobsResponse.class),
                                 response));
                         return;
                     }
                     try {
                         switch (response.code()) {
-                            case 403:
-                                future.completeExceptionally(new ForbiddenError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
-                                        response));
-                                return;
                             case 404:
                                 future.completeExceptionally(new NotFoundError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -634,44 +529,38 @@ public class AsyncRawMonitorsClient {
     }
 
     /**
-     * Returns all monitors created by the authenticated user.
+     * Stop scheduled job execution for a monitor.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> listMonitors() {
-        return listMonitors(ListMonitorsRequest.builder().build());
+    public CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> disableMonitor(String monitorId) {
+        return disableMonitor(monitorId, DisableMonitorRequest.builder().build());
     }
 
     /**
-     * Returns all monitors created by the authenticated user.
+     * Stop scheduled job execution for a monitor.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> listMonitors(
-            RequestOptions requestOptions) {
-        return listMonitors(ListMonitorsRequest.builder().build(), requestOptions);
+    public CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> disableMonitor(
+            String monitorId, RequestOptions requestOptions) {
+        return disableMonitor(monitorId, DisableMonitorRequest.builder().build(), requestOptions);
     }
 
     /**
-     * Returns all monitors created by the authenticated user.
+     * Stop scheduled job execution for a monitor.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> listMonitors(
-            ListMonitorsRequest request) {
-        return listMonitors(request, null);
+    public CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> disableMonitor(
+            String monitorId, DisableMonitorRequest request) {
+        return disableMonitor(monitorId, request, null);
     }
 
     /**
-     * Returns all monitors created by the authenticated user.
+     * Stop scheduled job execution for a monitor.
      */
-    public CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> listMonitors(
-            ListMonitorsRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> disableMonitor(
+            String monitorId, DisableMonitorRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
-                .addPathSegments("catchAll/monitors");
-        if (request.getPage().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "page", request.getPage().get(), false);
-        }
-        if (request.getPageSize().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "page_size", request.getPageSize().get(), false);
-        }
+                .addPathSegments("catchAll/monitors")
+                .addPathSegment(monitorId)
+                .addPathSegments("disable");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -679,7 +568,7 @@ public class AsyncRawMonitorsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("GET", null)
+                .method("POST", RequestBody.create("", null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -687,7 +576,7 @@ public class AsyncRawMonitorsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> future = new CompletableFuture<>();
+        CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -695,7 +584,7 @@ public class AsyncRawMonitorsClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new CatchAllApiHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListMonitorsResponseDto.class),
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, DisableMonitorResponse.class),
                                 response));
                         return;
                     }
@@ -703,6 +592,117 @@ public class AsyncRawMonitorsClient {
                         switch (response.code()) {
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(
+                                                responseBodyString, ValidationErrorResponse.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new CatchAllApiApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (IOException e) {
+                    future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Update the webhook configuration for an existing monitor.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> updateMonitor(String monitorId) {
+        return updateMonitor(monitorId, UpdateMonitorRequestDto.builder().build());
+    }
+
+    /**
+     * Update the webhook configuration for an existing monitor.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> updateMonitor(
+            String monitorId, RequestOptions requestOptions) {
+        return updateMonitor(monitorId, UpdateMonitorRequestDto.builder().build(), requestOptions);
+    }
+
+    /**
+     * Update the webhook configuration for an existing monitor.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> updateMonitor(
+            String monitorId, UpdateMonitorRequestDto request) {
+        return updateMonitor(monitorId, request, null);
+    }
+
+    /**
+     * Update the webhook configuration for an existing monitor.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> updateMonitor(
+            String monitorId, UpdateMonitorRequestDto request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/monitors")
+                .addPathSegment(monitorId);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("PATCH", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new CatchAllApiHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, UpdateMonitorResponseDto.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
                                         response));
                                 return;

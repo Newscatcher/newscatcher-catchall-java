@@ -37,6 +37,35 @@ public class AsyncJobsClient {
     }
 
     /**
+     * Returns all jobs created by the authenticated user.
+     */
+    public CompletableFuture<ListUserJobsResponseDto> getUserJobs() {
+        return this.rawClient.getUserJobs().thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns all jobs created by the authenticated user.
+     */
+    public CompletableFuture<ListUserJobsResponseDto> getUserJobs(RequestOptions requestOptions) {
+        return this.rawClient.getUserJobs(requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns all jobs created by the authenticated user.
+     */
+    public CompletableFuture<ListUserJobsResponseDto> getUserJobs(GetUserJobsRequest request) {
+        return this.rawClient.getUserJobs(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns all jobs created by the authenticated user.
+     */
+    public CompletableFuture<ListUserJobsResponseDto> getUserJobs(
+            GetUserJobsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.getUserJobs(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
      * Get suggested validators, enrichments, and date ranges for a query.
      */
     public CompletableFuture<InitializeResponseDto> initialize(InitializeRequestDto request) {
@@ -63,21 +92,6 @@ public class AsyncJobsClient {
      */
     public CompletableFuture<SubmitResponseDto> createJob(SubmitRequestDto request, RequestOptions requestOptions) {
         return this.rawClient.createJob(request, requestOptions).thenApply(response -> response.body());
-    }
-
-    /**
-     * Continue an existing job to process more records beyond the initial limit.
-     */
-    public CompletableFuture<ContinueResponseDto> continueJob(ContinueRequestDto request) {
-        return this.rawClient.continueJob(request).thenApply(response -> response.body());
-    }
-
-    /**
-     * Continue an existing job to process more records beyond the initial limit.
-     */
-    public CompletableFuture<ContinueResponseDto> continueJob(
-            ContinueRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.continueJob(request, requestOptions).thenApply(response -> response.body());
     }
 
     /**
@@ -110,35 +124,6 @@ public class AsyncJobsClient {
     }
 
     /**
-     * Returns all jobs created by the authenticated user.
-     */
-    public CompletableFuture<ListUserJobsResponseDto> getUserJobs() {
-        return this.rawClient.getUserJobs().thenApply(response -> response.body());
-    }
-
-    /**
-     * Returns all jobs created by the authenticated user.
-     */
-    public CompletableFuture<ListUserJobsResponseDto> getUserJobs(RequestOptions requestOptions) {
-        return this.rawClient.getUserJobs(requestOptions).thenApply(response -> response.body());
-    }
-
-    /**
-     * Returns all jobs created by the authenticated user.
-     */
-    public CompletableFuture<ListUserJobsResponseDto> getUserJobs(GetUserJobsRequest request) {
-        return this.rawClient.getUserJobs(request).thenApply(response -> response.body());
-    }
-
-    /**
-     * Returns all jobs created by the authenticated user.
-     */
-    public CompletableFuture<ListUserJobsResponseDto> getUserJobs(
-            GetUserJobsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getUserJobs(request, requestOptions).thenApply(response -> response.body());
-    }
-
-    /**
      * Retrieve the final results for a completed job.
      */
     public CompletableFuture<PullJobResponseDto> getJobResults(String jobId) {
@@ -165,5 +150,20 @@ public class AsyncJobsClient {
     public CompletableFuture<PullJobResponseDto> getJobResults(
             String jobId, GetJobResultsRequest request, RequestOptions requestOptions) {
         return this.rawClient.getJobResults(jobId, request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Continue an existing job to process more records beyond the initial limit.
+     */
+    public CompletableFuture<ContinueResponseDto> continueJob(ContinueRequestDto request) {
+        return this.rawClient.continueJob(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Continue an existing job to process more records beyond the initial limit.
+     */
+    public CompletableFuture<ContinueResponseDto> continueJob(
+            ContinueRequestDto request, RequestOptions requestOptions) {
+        return this.rawClient.continueJob(request, requestOptions).thenApply(response -> response.body());
     }
 }
