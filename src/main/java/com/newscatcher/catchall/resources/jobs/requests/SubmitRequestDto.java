@@ -42,6 +42,8 @@ public final class SubmitRequestDto {
 
     private final Optional<SubmitRequestDtoMode> mode;
 
+    private final Optional<List<String>> connectedDatasetIds;
+
     private final Map<String, Object> additionalProperties;
 
     private SubmitRequestDto(
@@ -53,6 +55,7 @@ public final class SubmitRequestDto {
             Optional<List<ValidatorSchema>> validators,
             Optional<List<EnrichmentSchema>> enrichments,
             Optional<SubmitRequestDtoMode> mode,
+            Optional<List<String>> connectedDatasetIds,
             Map<String, Object> additionalProperties) {
         this.query = query;
         this.context = context;
@@ -62,6 +65,7 @@ public final class SubmitRequestDto {
         this.validators = validators;
         this.enrichments = enrichments;
         this.mode = mode;
+        this.connectedDatasetIds = connectedDatasetIds;
         this.additionalProperties = additionalProperties;
     }
 
@@ -120,6 +124,15 @@ public final class SubmitRequestDto {
         return mode;
     }
 
+    /**
+     * @return Dataset IDs to connect to this job. When provided, activates Company Search mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.
+     * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
+     */
+    @JsonProperty("connected_dataset_ids")
+    public Optional<List<String>> getConnectedDatasetIds() {
+        return connectedDatasetIds;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -139,7 +152,8 @@ public final class SubmitRequestDto {
                 && endDate.equals(other.endDate)
                 && validators.equals(other.validators)
                 && enrichments.equals(other.enrichments)
-                && mode.equals(other.mode);
+                && mode.equals(other.mode)
+                && connectedDatasetIds.equals(other.connectedDatasetIds);
     }
 
     @java.lang.Override
@@ -152,7 +166,8 @@ public final class SubmitRequestDto {
                 this.endDate,
                 this.validators,
                 this.enrichments,
-                this.mode);
+                this.mode,
+                this.connectedDatasetIds);
     }
 
     @java.lang.Override
@@ -219,11 +234,21 @@ public final class SubmitRequestDto {
         _FinalStage mode(Optional<SubmitRequestDtoMode> mode);
 
         _FinalStage mode(SubmitRequestDtoMode mode);
+
+        /**
+         * <p>Dataset IDs to connect to this job. When provided, activates Company Search mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.</p>
+         * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
+         */
+        _FinalStage connectedDatasetIds(Optional<List<String>> connectedDatasetIds);
+
+        _FinalStage connectedDatasetIds(List<String> connectedDatasetIds);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements QueryStage, _FinalStage {
         private String query;
+
+        private Optional<List<String>> connectedDatasetIds = Optional.empty();
 
         private Optional<SubmitRequestDtoMode> mode = Optional.empty();
 
@@ -254,6 +279,7 @@ public final class SubmitRequestDto {
             validators(other.getValidators());
             enrichments(other.getEnrichments());
             mode(other.getMode());
+            connectedDatasetIds(other.getConnectedDatasetIds());
             return this;
         }
 
@@ -261,6 +287,28 @@ public final class SubmitRequestDto {
         @JsonSetter("query")
         public _FinalStage query(@NotNull String query) {
             this.query = Objects.requireNonNull(query, "query must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Dataset IDs to connect to this job. When provided, activates Company Search mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.</p>
+         * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage connectedDatasetIds(List<String> connectedDatasetIds) {
+            this.connectedDatasetIds = Optional.ofNullable(connectedDatasetIds);
+            return this;
+        }
+
+        /**
+         * <p>Dataset IDs to connect to this job. When provided, activates Company Search mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.</p>
+         * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "connected_dataset_ids", nulls = Nulls.SKIP)
+        public _FinalStage connectedDatasetIds(Optional<List<String>> connectedDatasetIds) {
+            this.connectedDatasetIds = connectedDatasetIds;
             return this;
         }
 
@@ -391,7 +439,16 @@ public final class SubmitRequestDto {
         @java.lang.Override
         public SubmitRequestDto build() {
             return new SubmitRequestDto(
-                    query, context, limit, startDate, endDate, validators, enrichments, mode, additionalProperties);
+                    query,
+                    context,
+                    limit,
+                    startDate,
+                    endDate,
+                    validators,
+                    enrichments,
+                    mode,
+                    connectedDatasetIds,
+                    additionalProperties);
         }
 
         @java.lang.Override

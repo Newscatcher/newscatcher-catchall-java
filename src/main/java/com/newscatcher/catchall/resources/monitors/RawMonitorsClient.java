@@ -48,6 +48,87 @@ public class RawMonitorsClient {
     }
 
     /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public CatchAllApiHttpResponse<ListMonitorsResponseDto> listMonitors() {
+        return listMonitors(ListMonitorsRequest.builder().build());
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public CatchAllApiHttpResponse<ListMonitorsResponseDto> listMonitors(RequestOptions requestOptions) {
+        return listMonitors(ListMonitorsRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public CatchAllApiHttpResponse<ListMonitorsResponseDto> listMonitors(ListMonitorsRequest request) {
+        return listMonitors(request, null);
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public CatchAllApiHttpResponse<ListMonitorsResponseDto> listMonitors(
+            ListMonitorsRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/monitors");
+        if (request.getPage().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page", request.getPage().get(), false);
+        }
+        if (request.getPageSize().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page_size", request.getPageSize().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new CatchAllApiHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListMonitorsResponseDto.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidationErrorResponse.class),
+                                response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new CatchAllApiApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (IOException e) {
+            throw new CatchAllApiException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
      * Create a scheduled monitor based on a reference job.
      */
     public CatchAllApiHttpResponse<CreateMonitorResponseDto> createMonitor(CreateMonitorRequestDto request) {
@@ -98,174 +179,6 @@ public class RawMonitorsClient {
                     throw new UnprocessableEntityError(
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidationErrorResponse.class),
                             response);
-                }
-            } catch (JsonProcessingException ignored) {
-                // unable to map error response, throwing generic error
-            }
-            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
-            throw new CatchAllApiApiException(
-                    "Error with status code " + response.code(), response.code(), errorBody, response);
-        } catch (IOException e) {
-            throw new CatchAllApiException("Network error executing HTTP request", e);
-        }
-    }
-
-    /**
-     * Update the webhook configuration for an existing monitor.
-     */
-    public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(String monitorId) {
-        return updateMonitor(monitorId, UpdateMonitorRequestDto.builder().build());
-    }
-
-    /**
-     * Update the webhook configuration for an existing monitor.
-     */
-    public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(
-            String monitorId, RequestOptions requestOptions) {
-        return updateMonitor(monitorId, UpdateMonitorRequestDto.builder().build(), requestOptions);
-    }
-
-    /**
-     * Update the webhook configuration for an existing monitor.
-     */
-    public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(
-            String monitorId, UpdateMonitorRequestDto request) {
-        return updateMonitor(monitorId, request, null);
-    }
-
-    /**
-     * Update the webhook configuration for an existing monitor.
-     */
-    public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(
-            String monitorId, UpdateMonitorRequestDto request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("catchAll/monitors")
-                .addPathSegment(monitorId);
-        if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((_key, _value) -> {
-                httpUrl.addQueryParameter(_key, _value);
-            });
-        }
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (JsonProcessingException e) {
-            throw new CatchAllApiException("Failed to serialize request", e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl.build())
-                .method("PATCH", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        try (Response response = client.newCall(okhttpRequest).execute()) {
-            ResponseBody responseBody = response.body();
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            if (response.isSuccessful()) {
-                return new CatchAllApiHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, UpdateMonitorResponseDto.class),
-                        response);
-            }
-            try {
-                switch (response.code()) {
-                    case 403:
-                        throw new ForbiddenError(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
-                    case 404:
-                        throw new NotFoundError(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
-                    case 422:
-                        throw new UnprocessableEntityError(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidationErrorResponse.class),
-                                response);
-                }
-            } catch (JsonProcessingException ignored) {
-                // unable to map error response, throwing generic error
-            }
-            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
-            throw new CatchAllApiApiException(
-                    "Error with status code " + response.code(), response.code(), errorBody, response);
-        } catch (IOException e) {
-            throw new CatchAllApiException("Network error executing HTTP request", e);
-        }
-    }
-
-    /**
-     * Return all jobs executed by a monitor.
-     */
-    public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(String monitorId) {
-        return listMonitorJobs(monitorId, ListMonitorJobsRequest.builder().build());
-    }
-
-    /**
-     * Return all jobs executed by a monitor.
-     */
-    public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(
-            String monitorId, RequestOptions requestOptions) {
-        return listMonitorJobs(monitorId, ListMonitorJobsRequest.builder().build(), requestOptions);
-    }
-
-    /**
-     * Return all jobs executed by a monitor.
-     */
-    public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(
-            String monitorId, ListMonitorJobsRequest request) {
-        return listMonitorJobs(monitorId, request, null);
-    }
-
-    /**
-     * Return all jobs executed by a monitor.
-     */
-    public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(
-            String monitorId, ListMonitorJobsRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("catchAll/monitors")
-                .addPathSegment(monitorId)
-                .addPathSegments("jobs");
-        if (request.getSort().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "sort", request.getSort().get(), false);
-        }
-        if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((_key, _value) -> {
-                httpUrl.addQueryParameter(_key, _value);
-            });
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        try (Response response = client.newCall(okhttpRequest).execute()) {
-            ResponseBody responseBody = response.body();
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            if (response.isSuccessful()) {
-                return new CatchAllApiHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListMonitorJobsResponse.class),
-                        response);
-            }
-            try {
-                switch (response.code()) {
-                    case 404:
-                        throw new NotFoundError(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
-                    case 422:
-                        throw new UnprocessableEntityError(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidationErrorResponse.class),
-                                response);
                 }
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
@@ -355,38 +268,42 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Stop scheduled job execution for a monitor.
+     * Return all jobs executed by a monitor.
      */
-    public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(String monitorId) {
-        return disableMonitor(monitorId, DisableMonitorRequest.builder().build());
+    public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(String monitorId) {
+        return listMonitorJobs(monitorId, ListMonitorJobsRequest.builder().build());
     }
 
     /**
-     * Stop scheduled job execution for a monitor.
+     * Return all jobs executed by a monitor.
      */
-    public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(
+    public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(
             String monitorId, RequestOptions requestOptions) {
-        return disableMonitor(monitorId, DisableMonitorRequest.builder().build(), requestOptions);
+        return listMonitorJobs(monitorId, ListMonitorJobsRequest.builder().build(), requestOptions);
     }
 
     /**
-     * Stop scheduled job execution for a monitor.
+     * Return all jobs executed by a monitor.
      */
-    public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(
-            String monitorId, DisableMonitorRequest request) {
-        return disableMonitor(monitorId, request, null);
+    public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(
+            String monitorId, ListMonitorJobsRequest request) {
+        return listMonitorJobs(monitorId, request, null);
     }
 
     /**
-     * Stop scheduled job execution for a monitor.
+     * Return all jobs executed by a monitor.
      */
-    public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(
-            String monitorId, DisableMonitorRequest request, RequestOptions requestOptions) {
+    public CatchAllApiHttpResponse<ListMonitorJobsResponse> listMonitorJobs(
+            String monitorId, ListMonitorJobsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors")
                 .addPathSegment(monitorId)
-                .addPathSegments("disable");
+                .addPathSegments("jobs");
+        if (request.getSort().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "sort", request.getSort().get(), false);
+        }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -394,7 +311,7 @@ public class RawMonitorsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -407,14 +324,11 @@ public class RawMonitorsClient {
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new CatchAllApiHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, DisableMonitorResponse.class),
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListMonitorJobsResponse.class),
                         response);
             }
             try {
                 switch (response.code()) {
-                    case 403:
-                        throw new ForbiddenError(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 404:
                         throw new NotFoundError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
@@ -522,42 +436,38 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Returns all monitors created by the authenticated user.
+     * Stop scheduled job execution for a monitor.
      */
-    public CatchAllApiHttpResponse<ListMonitorsResponseDto> listMonitors() {
-        return listMonitors(ListMonitorsRequest.builder().build());
+    public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(String monitorId) {
+        return disableMonitor(monitorId, DisableMonitorRequest.builder().build());
     }
 
     /**
-     * Returns all monitors created by the authenticated user.
+     * Stop scheduled job execution for a monitor.
      */
-    public CatchAllApiHttpResponse<ListMonitorsResponseDto> listMonitors(RequestOptions requestOptions) {
-        return listMonitors(ListMonitorsRequest.builder().build(), requestOptions);
+    public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(
+            String monitorId, RequestOptions requestOptions) {
+        return disableMonitor(monitorId, DisableMonitorRequest.builder().build(), requestOptions);
     }
 
     /**
-     * Returns all monitors created by the authenticated user.
+     * Stop scheduled job execution for a monitor.
      */
-    public CatchAllApiHttpResponse<ListMonitorsResponseDto> listMonitors(ListMonitorsRequest request) {
-        return listMonitors(request, null);
+    public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(
+            String monitorId, DisableMonitorRequest request) {
+        return disableMonitor(monitorId, request, null);
     }
 
     /**
-     * Returns all monitors created by the authenticated user.
+     * Stop scheduled job execution for a monitor.
      */
-    public CatchAllApiHttpResponse<ListMonitorsResponseDto> listMonitors(
-            ListMonitorsRequest request, RequestOptions requestOptions) {
+    public CatchAllApiHttpResponse<DisableMonitorResponse> disableMonitor(
+            String monitorId, DisableMonitorRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
-                .addPathSegments("catchAll/monitors");
-        if (request.getPage().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "page", request.getPage().get(), false);
-        }
-        if (request.getPageSize().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "page_size", request.getPageSize().get(), false);
-        }
+                .addPathSegments("catchAll/monitors")
+                .addPathSegment(monitorId)
+                .addPathSegments("disable");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -565,7 +475,7 @@ public class RawMonitorsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("GET", null)
+                .method("POST", RequestBody.create("", null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -578,13 +488,103 @@ public class RawMonitorsClient {
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new CatchAllApiHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListMonitorsResponseDto.class),
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, DisableMonitorResponse.class),
                         response);
             }
             try {
                 switch (response.code()) {
                     case 403:
                         throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidationErrorResponse.class),
+                                response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new CatchAllApiApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (IOException e) {
+            throw new CatchAllApiException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Update the webhook configuration for an existing monitor.
+     */
+    public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(String monitorId) {
+        return updateMonitor(monitorId, UpdateMonitorRequestDto.builder().build());
+    }
+
+    /**
+     * Update the webhook configuration for an existing monitor.
+     */
+    public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(
+            String monitorId, RequestOptions requestOptions) {
+        return updateMonitor(monitorId, UpdateMonitorRequestDto.builder().build(), requestOptions);
+    }
+
+    /**
+     * Update the webhook configuration for an existing monitor.
+     */
+    public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(
+            String monitorId, UpdateMonitorRequestDto request) {
+        return updateMonitor(monitorId, request, null);
+    }
+
+    /**
+     * Update the webhook configuration for an existing monitor.
+     */
+    public CatchAllApiHttpResponse<UpdateMonitorResponseDto> updateMonitor(
+            String monitorId, UpdateMonitorRequestDto request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/monitors")
+                .addPathSegment(monitorId);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("PATCH", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new CatchAllApiHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, UpdateMonitorResponseDto.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 404:
+                        throw new NotFoundError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 422:
                         throw new UnprocessableEntityError(
