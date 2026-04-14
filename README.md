@@ -35,7 +35,7 @@ Add the dependency in your `build.gradle` file:
 
 ```groovy
 dependencies {
-  implementation 'com.newscatcherapi:newscatcher-catchall-sdk'
+  implementation 'com.newscatcherapi:newscatcher-catchall-sdk:1.4.0'
 }
 ```
 
@@ -47,7 +47,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.newscatcherapi</groupId>
   <artifactId>newscatcher-catchall-sdk</artifactId>
-  <version>1.3.1</version>
+  <version>1.4.0</version>
 </dependency>
 ```
 
@@ -121,11 +121,11 @@ CatchAllApi client = CatchAllApi
 When the API returns a non-success status code (4xx or 5xx response), an API exception will be thrown.
 
 ```java
-import com.newscatcher.catchall.core.NewscatcherApiApiException;
+import com.newscatcher.catchall.core.CatchAllApiApiException;
 
 try{
     client.jobs().createJob(...);
-} catch (NewscatcherApiApiException e){
+} catch (CatchAllApiApiException e){
     // Do something with the API exception...
 }
 ```
@@ -249,5 +249,6 @@ On the other hand, contributions to the README are always very welcome!
 
 - Documentation: [www.newscatcherapi.com/docs/web-search-api](https://www.newscatcherapi.com/docs/web-search-api/get-started/introduction)
 - Support: <support@newscatcherapi.com>
+
 
 

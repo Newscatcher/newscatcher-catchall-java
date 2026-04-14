@@ -5,6 +5,8 @@ package com.newscatcher.catchall;
 
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.Suppliers;
+import com.newscatcher.catchall.resources.datasets.DatasetsClient;
+import com.newscatcher.catchall.resources.entities.EntitiesClient;
 import com.newscatcher.catchall.resources.jobs.JobsClient;
 import com.newscatcher.catchall.resources.meta.MetaClient;
 import com.newscatcher.catchall.resources.monitors.MonitorsClient;
@@ -17,12 +19,18 @@ public class CatchAllApi {
 
     protected final Supplier<MonitorsClient> monitorsClient;
 
+    protected final Supplier<EntitiesClient> entitiesClient;
+
+    protected final Supplier<DatasetsClient> datasetsClient;
+
     protected final Supplier<MetaClient> metaClient;
 
     public CatchAllApi(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.jobsClient = Suppliers.memoize(() -> new JobsClient(clientOptions));
         this.monitorsClient = Suppliers.memoize(() -> new MonitorsClient(clientOptions));
+        this.entitiesClient = Suppliers.memoize(() -> new EntitiesClient(clientOptions));
+        this.datasetsClient = Suppliers.memoize(() -> new DatasetsClient(clientOptions));
         this.metaClient = Suppliers.memoize(() -> new MetaClient(clientOptions));
     }
 
@@ -32,6 +40,14 @@ public class CatchAllApi {
 
     public MonitorsClient monitors() {
         return this.monitorsClient.get();
+    }
+
+    public EntitiesClient entities() {
+        return this.entitiesClient.get();
+    }
+
+    public DatasetsClient datasets() {
+        return this.datasetsClient.get();
     }
 
     public MetaClient meta() {

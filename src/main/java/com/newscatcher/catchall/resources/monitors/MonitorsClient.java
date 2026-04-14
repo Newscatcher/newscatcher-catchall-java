@@ -38,6 +38,34 @@ public class MonitorsClient {
     }
 
     /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public ListMonitorsResponseDto listMonitors() {
+        return this.rawClient.listMonitors().body();
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public ListMonitorsResponseDto listMonitors(RequestOptions requestOptions) {
+        return this.rawClient.listMonitors(requestOptions).body();
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public ListMonitorsResponseDto listMonitors(ListMonitorsRequest request) {
+        return this.rawClient.listMonitors(request).body();
+    }
+
+    /**
+     * Returns all monitors created by the authenticated user.
+     */
+    public ListMonitorsResponseDto listMonitors(ListMonitorsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.listMonitors(request, requestOptions).body();
+    }
+
+    /**
      * Create a scheduled monitor based on a reference job.
      */
     public CreateMonitorResponseDto createMonitor(CreateMonitorRequestDto request) {
@@ -49,66 +77,6 @@ public class MonitorsClient {
      */
     public CreateMonitorResponseDto createMonitor(CreateMonitorRequestDto request, RequestOptions requestOptions) {
         return this.rawClient.createMonitor(request, requestOptions).body();
-    }
-
-    /**
-     * Update the webhook configuration for an existing monitor.
-     */
-    public UpdateMonitorResponseDto updateMonitor(String monitorId) {
-        return this.rawClient.updateMonitor(monitorId).body();
-    }
-
-    /**
-     * Update the webhook configuration for an existing monitor.
-     */
-    public UpdateMonitorResponseDto updateMonitor(String monitorId, RequestOptions requestOptions) {
-        return this.rawClient.updateMonitor(monitorId, requestOptions).body();
-    }
-
-    /**
-     * Update the webhook configuration for an existing monitor.
-     */
-    public UpdateMonitorResponseDto updateMonitor(String monitorId, UpdateMonitorRequestDto request) {
-        return this.rawClient.updateMonitor(monitorId, request).body();
-    }
-
-    /**
-     * Update the webhook configuration for an existing monitor.
-     */
-    public UpdateMonitorResponseDto updateMonitor(
-            String monitorId, UpdateMonitorRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.updateMonitor(monitorId, request, requestOptions).body();
-    }
-
-    /**
-     * Return all jobs executed by a monitor.
-     */
-    public ListMonitorJobsResponse listMonitorJobs(String monitorId) {
-        return this.rawClient.listMonitorJobs(monitorId).body();
-    }
-
-    /**
-     * Return all jobs executed by a monitor.
-     */
-    public ListMonitorJobsResponse listMonitorJobs(String monitorId, RequestOptions requestOptions) {
-        return this.rawClient.listMonitorJobs(monitorId, requestOptions).body();
-    }
-
-    /**
-     * Return all jobs executed by a monitor.
-     */
-    public ListMonitorJobsResponse listMonitorJobs(String monitorId, ListMonitorJobsRequest request) {
-        return this.rawClient.listMonitorJobs(monitorId, request).body();
-    }
-
-    /**
-     * Return all jobs executed by a monitor.
-     */
-    public ListMonitorJobsResponse listMonitorJobs(
-            String monitorId, ListMonitorJobsRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .listMonitorJobs(monitorId, request, requestOptions)
-                .body();
     }
 
     /**
@@ -143,32 +111,34 @@ public class MonitorsClient {
     }
 
     /**
-     * Stop scheduled job execution for a monitor.
+     * Return all jobs executed by a monitor.
      */
-    public DisableMonitorResponse disableMonitor(String monitorId) {
-        return this.rawClient.disableMonitor(monitorId).body();
+    public ListMonitorJobsResponse listMonitorJobs(String monitorId) {
+        return this.rawClient.listMonitorJobs(monitorId).body();
     }
 
     /**
-     * Stop scheduled job execution for a monitor.
+     * Return all jobs executed by a monitor.
      */
-    public DisableMonitorResponse disableMonitor(String monitorId, RequestOptions requestOptions) {
-        return this.rawClient.disableMonitor(monitorId, requestOptions).body();
+    public ListMonitorJobsResponse listMonitorJobs(String monitorId, RequestOptions requestOptions) {
+        return this.rawClient.listMonitorJobs(monitorId, requestOptions).body();
     }
 
     /**
-     * Stop scheduled job execution for a monitor.
+     * Return all jobs executed by a monitor.
      */
-    public DisableMonitorResponse disableMonitor(String monitorId, DisableMonitorRequest request) {
-        return this.rawClient.disableMonitor(monitorId, request).body();
+    public ListMonitorJobsResponse listMonitorJobs(String monitorId, ListMonitorJobsRequest request) {
+        return this.rawClient.listMonitorJobs(monitorId, request).body();
     }
 
     /**
-     * Stop scheduled job execution for a monitor.
+     * Return all jobs executed by a monitor.
      */
-    public DisableMonitorResponse disableMonitor(
-            String monitorId, DisableMonitorRequest request, RequestOptions requestOptions) {
-        return this.rawClient.disableMonitor(monitorId, request, requestOptions).body();
+    public ListMonitorJobsResponse listMonitorJobs(
+            String monitorId, ListMonitorJobsRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .listMonitorJobs(monitorId, request, requestOptions)
+                .body();
     }
 
     /**
@@ -201,30 +171,60 @@ public class MonitorsClient {
     }
 
     /**
-     * Returns all monitors created by the authenticated user.
+     * Stop scheduled job execution for a monitor.
      */
-    public ListMonitorsResponseDto listMonitors() {
-        return this.rawClient.listMonitors().body();
+    public DisableMonitorResponse disableMonitor(String monitorId) {
+        return this.rawClient.disableMonitor(monitorId).body();
     }
 
     /**
-     * Returns all monitors created by the authenticated user.
+     * Stop scheduled job execution for a monitor.
      */
-    public ListMonitorsResponseDto listMonitors(RequestOptions requestOptions) {
-        return this.rawClient.listMonitors(requestOptions).body();
+    public DisableMonitorResponse disableMonitor(String monitorId, RequestOptions requestOptions) {
+        return this.rawClient.disableMonitor(monitorId, requestOptions).body();
     }
 
     /**
-     * Returns all monitors created by the authenticated user.
+     * Stop scheduled job execution for a monitor.
      */
-    public ListMonitorsResponseDto listMonitors(ListMonitorsRequest request) {
-        return this.rawClient.listMonitors(request).body();
+    public DisableMonitorResponse disableMonitor(String monitorId, DisableMonitorRequest request) {
+        return this.rawClient.disableMonitor(monitorId, request).body();
     }
 
     /**
-     * Returns all monitors created by the authenticated user.
+     * Stop scheduled job execution for a monitor.
      */
-    public ListMonitorsResponseDto listMonitors(ListMonitorsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.listMonitors(request, requestOptions).body();
+    public DisableMonitorResponse disableMonitor(
+            String monitorId, DisableMonitorRequest request, RequestOptions requestOptions) {
+        return this.rawClient.disableMonitor(monitorId, request, requestOptions).body();
+    }
+
+    /**
+     * Update the webhook configuration for an existing monitor.
+     */
+    public UpdateMonitorResponseDto updateMonitor(String monitorId) {
+        return this.rawClient.updateMonitor(monitorId).body();
+    }
+
+    /**
+     * Update the webhook configuration for an existing monitor.
+     */
+    public UpdateMonitorResponseDto updateMonitor(String monitorId, RequestOptions requestOptions) {
+        return this.rawClient.updateMonitor(monitorId, requestOptions).body();
+    }
+
+    /**
+     * Update the webhook configuration for an existing monitor.
+     */
+    public UpdateMonitorResponseDto updateMonitor(String monitorId, UpdateMonitorRequestDto request) {
+        return this.rawClient.updateMonitor(monitorId, request).body();
+    }
+
+    /**
+     * Update the webhook configuration for an existing monitor.
+     */
+    public UpdateMonitorResponseDto updateMonitor(
+            String monitorId, UpdateMonitorRequestDto request, RequestOptions requestOptions) {
+        return this.rawClient.updateMonitor(monitorId, request, requestOptions).body();
     }
 }

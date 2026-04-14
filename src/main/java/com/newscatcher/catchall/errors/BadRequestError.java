@@ -4,21 +4,20 @@
 package com.newscatcher.catchall.errors;
 
 import com.newscatcher.catchall.core.CatchAllApiApiException;
-import com.newscatcher.catchall.types.Error;
 import okhttp3.Response;
 
 public final class BadRequestError extends CatchAllApiApiException {
     /**
      * The body of the response that triggered the exception.
      */
-    private final Error body;
+    private final Object body;
 
-    public BadRequestError(Error body) {
+    public BadRequestError(Object body) {
         super("BadRequestError", 400, body);
         this.body = body;
     }
 
-    public BadRequestError(Error body, Response rawResponse) {
+    public BadRequestError(Object body, Response rawResponse) {
         super("BadRequestError", 400, body, rawResponse);
         this.body = body;
     }
@@ -27,7 +26,7 @@ public final class BadRequestError extends CatchAllApiApiException {
      * @return the body
      */
     @java.lang.Override
-    public Error body() {
+    public Object body() {
         return this.body;
     }
 }

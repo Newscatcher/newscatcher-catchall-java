@@ -5,6 +5,8 @@ package com.newscatcher.catchall;
 
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.Suppliers;
+import com.newscatcher.catchall.resources.datasets.AsyncDatasetsClient;
+import com.newscatcher.catchall.resources.entities.AsyncEntitiesClient;
 import com.newscatcher.catchall.resources.jobs.AsyncJobsClient;
 import com.newscatcher.catchall.resources.meta.AsyncMetaClient;
 import com.newscatcher.catchall.resources.monitors.AsyncMonitorsClient;
@@ -17,12 +19,18 @@ public class AsyncCatchAllApi {
 
     protected final Supplier<AsyncMonitorsClient> monitorsClient;
 
+    protected final Supplier<AsyncEntitiesClient> entitiesClient;
+
+    protected final Supplier<AsyncDatasetsClient> datasetsClient;
+
     protected final Supplier<AsyncMetaClient> metaClient;
 
     public AsyncCatchAllApi(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.jobsClient = Suppliers.memoize(() -> new AsyncJobsClient(clientOptions));
         this.monitorsClient = Suppliers.memoize(() -> new AsyncMonitorsClient(clientOptions));
+        this.entitiesClient = Suppliers.memoize(() -> new AsyncEntitiesClient(clientOptions));
+        this.datasetsClient = Suppliers.memoize(() -> new AsyncDatasetsClient(clientOptions));
         this.metaClient = Suppliers.memoize(() -> new AsyncMetaClient(clientOptions));
     }
 
@@ -32,6 +40,14 @@ public class AsyncCatchAllApi {
 
     public AsyncMonitorsClient monitors() {
         return this.monitorsClient.get();
+    }
+
+    public AsyncEntitiesClient entities() {
+        return this.entitiesClient.get();
+    }
+
+    public AsyncDatasetsClient datasets() {
+        return this.datasetsClient.get();
     }
 
     public AsyncMetaClient meta() {
