@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
 import com.newscatcher.catchall.types.DatasetSortBy;
 import com.newscatcher.catchall.types.DatasetStatus;
+import com.newscatcher.catchall.types.OwnershipFilter;
 import com.newscatcher.catchall.types.SortOrder;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +36,8 @@ public final class ListDatasetsRequest {
 
     private final Optional<SortOrder> sortOrder;
 
+    private final Optional<OwnershipFilter> ownership;
+
     private final Map<String, Object> additionalProperties;
 
     private ListDatasetsRequest(
@@ -44,6 +47,7 @@ public final class ListDatasetsRequest {
             Optional<DatasetStatus> latestStatus,
             Optional<DatasetSortBy> sortBy,
             Optional<SortOrder> sortOrder,
+            Optional<OwnershipFilter> ownership,
             Map<String, Object> additionalProperties) {
         this.page = page;
         this.pageSize = pageSize;
@@ -51,6 +55,7 @@ public final class ListDatasetsRequest {
         this.latestStatus = latestStatus;
         this.sortBy = sortBy;
         this.sortOrder = sortOrder;
+        this.ownership = ownership;
         this.additionalProperties = additionalProperties;
     }
 
@@ -96,6 +101,14 @@ public final class ListDatasetsRequest {
         return sortOrder;
     }
 
+    /**
+     * @return Filter results by ownership. Defaults to <code>all</code>.
+     */
+    @JsonIgnore
+    public Optional<OwnershipFilter> getOwnership() {
+        return ownership;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -113,12 +126,14 @@ public final class ListDatasetsRequest {
                 && search.equals(other.search)
                 && latestStatus.equals(other.latestStatus)
                 && sortBy.equals(other.sortBy)
-                && sortOrder.equals(other.sortOrder);
+                && sortOrder.equals(other.sortOrder)
+                && ownership.equals(other.ownership);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.page, this.pageSize, this.search, this.latestStatus, this.sortBy, this.sortOrder);
+        return Objects.hash(
+                this.page, this.pageSize, this.search, this.latestStatus, this.sortBy, this.sortOrder, this.ownership);
     }
 
     @java.lang.Override
@@ -144,6 +159,8 @@ public final class ListDatasetsRequest {
 
         private Optional<SortOrder> sortOrder = Optional.empty();
 
+        private Optional<OwnershipFilter> ownership = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -156,6 +173,7 @@ public final class ListDatasetsRequest {
             latestStatus(other.getLatestStatus());
             sortBy(other.getSortBy());
             sortOrder(other.getSortOrder());
+            ownership(other.getOwnership());
             return this;
         }
 
@@ -237,9 +255,23 @@ public final class ListDatasetsRequest {
             return this;
         }
 
+        /**
+         * <p>Filter results by ownership. Defaults to <code>all</code>.</p>
+         */
+        @JsonSetter(value = "ownership", nulls = Nulls.SKIP)
+        public Builder ownership(Optional<OwnershipFilter> ownership) {
+            this.ownership = ownership;
+            return this;
+        }
+
+        public Builder ownership(OwnershipFilter ownership) {
+            this.ownership = Optional.ofNullable(ownership);
+            return this;
+        }
+
         public ListDatasetsRequest build() {
             return new ListDatasetsRequest(
-                    page, pageSize, search, latestStatus, sortBy, sortOrder, additionalProperties);
+                    page, pageSize, search, latestStatus, sortBy, sortOrder, ownership, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

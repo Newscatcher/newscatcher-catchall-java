@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
+import com.newscatcher.catchall.types.OwnershipFilter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -24,12 +25,22 @@ public final class ListMonitorsRequest {
 
     private final Optional<Integer> pageSize;
 
+    private final Optional<String> search;
+
+    private final Optional<OwnershipFilter> ownership;
+
     private final Map<String, Object> additionalProperties;
 
     private ListMonitorsRequest(
-            Optional<Integer> page, Optional<Integer> pageSize, Map<String, Object> additionalProperties) {
+            Optional<Integer> page,
+            Optional<Integer> pageSize,
+            Optional<String> search,
+            Optional<OwnershipFilter> ownership,
+            Map<String, Object> additionalProperties) {
         this.page = page;
         this.pageSize = pageSize;
+        this.search = search;
+        this.ownership = ownership;
         this.additionalProperties = additionalProperties;
     }
 
@@ -49,6 +60,22 @@ public final class ListMonitorsRequest {
         return pageSize;
     }
 
+    /**
+     * @return Filter results by text (case-insensitive substring match).
+     */
+    @JsonIgnore
+    public Optional<String> getSearch() {
+        return search;
+    }
+
+    /**
+     * @return Filter results by ownership. Defaults to <code>all</code>.
+     */
+    @JsonIgnore
+    public Optional<OwnershipFilter> getOwnership() {
+        return ownership;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -61,12 +88,15 @@ public final class ListMonitorsRequest {
     }
 
     private boolean equalTo(ListMonitorsRequest other) {
-        return page.equals(other.page) && pageSize.equals(other.pageSize);
+        return page.equals(other.page)
+                && pageSize.equals(other.pageSize)
+                && search.equals(other.search)
+                && ownership.equals(other.ownership);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.page, this.pageSize);
+        return Objects.hash(this.page, this.pageSize, this.search, this.ownership);
     }
 
     @java.lang.Override
@@ -84,6 +114,10 @@ public final class ListMonitorsRequest {
 
         private Optional<Integer> pageSize = Optional.empty();
 
+        private Optional<String> search = Optional.empty();
+
+        private Optional<OwnershipFilter> ownership = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -92,6 +126,8 @@ public final class ListMonitorsRequest {
         public Builder from(ListMonitorsRequest other) {
             page(other.getPage());
             pageSize(other.getPageSize());
+            search(other.getSearch());
+            ownership(other.getOwnership());
             return this;
         }
 
@@ -123,8 +159,36 @@ public final class ListMonitorsRequest {
             return this;
         }
 
+        /**
+         * <p>Filter results by text (case-insensitive substring match).</p>
+         */
+        @JsonSetter(value = "search", nulls = Nulls.SKIP)
+        public Builder search(Optional<String> search) {
+            this.search = search;
+            return this;
+        }
+
+        public Builder search(String search) {
+            this.search = Optional.ofNullable(search);
+            return this;
+        }
+
+        /**
+         * <p>Filter results by ownership. Defaults to <code>all</code>.</p>
+         */
+        @JsonSetter(value = "ownership", nulls = Nulls.SKIP)
+        public Builder ownership(Optional<OwnershipFilter> ownership) {
+            this.ownership = ownership;
+            return this;
+        }
+
+        public Builder ownership(OwnershipFilter ownership) {
+            this.ownership = Optional.ofNullable(ownership);
+            return this;
+        }
+
         public ListMonitorsRequest build() {
-            return new ListMonitorsRequest(page, pageSize, additionalProperties);
+            return new ListMonitorsRequest(page, pageSize, search, ownership, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

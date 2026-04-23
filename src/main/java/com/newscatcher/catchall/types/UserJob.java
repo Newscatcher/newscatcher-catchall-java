@@ -32,6 +32,8 @@ public final class UserJob {
 
     private final Optional<UserJobMode> mode;
 
+    private final Optional<SharingInfo> sharingInfo;
+
     private final Optional<String> userKey;
 
     private final Map<String, Object> additionalProperties;
@@ -42,6 +44,7 @@ public final class UserJob {
             OffsetDateTime createdAt,
             String status,
             Optional<UserJobMode> mode,
+            Optional<SharingInfo> sharingInfo,
             Optional<String> userKey,
             Map<String, Object> additionalProperties) {
         this.jobId = jobId;
@@ -49,6 +52,7 @@ public final class UserJob {
         this.createdAt = createdAt;
         this.status = status;
         this.mode = mode;
+        this.sharingInfo = sharingInfo;
         this.userKey = userKey;
         this.additionalProperties = additionalProperties;
     }
@@ -94,6 +98,14 @@ public final class UserJob {
     }
 
     /**
+     * @return Present when this job is shared with the authenticated user. Omitted when the user owns the job.
+     */
+    @JsonProperty("sharing_info")
+    public Optional<SharingInfo> getSharingInfo() {
+        return sharingInfo;
+    }
+
+    /**
      * @return Masked API key that created this job.
      */
     @JsonProperty("user_key")
@@ -118,12 +130,14 @@ public final class UserJob {
                 && createdAt.equals(other.createdAt)
                 && status.equals(other.status)
                 && mode.equals(other.mode)
+                && sharingInfo.equals(other.sharingInfo)
                 && userKey.equals(other.userKey);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.jobId, this.query, this.createdAt, this.status, this.mode, this.userKey);
+        return Objects.hash(
+                this.jobId, this.query, this.createdAt, this.status, this.mode, this.sharingInfo, this.userKey);
     }
 
     @java.lang.Override
@@ -180,6 +194,13 @@ public final class UserJob {
         _FinalStage mode(UserJobMode mode);
 
         /**
+         * <p>Present when this job is shared with the authenticated user. Omitted when the user owns the job.</p>
+         */
+        _FinalStage sharingInfo(Optional<SharingInfo> sharingInfo);
+
+        _FinalStage sharingInfo(SharingInfo sharingInfo);
+
+        /**
          * <p>Masked API key that created this job.</p>
          */
         _FinalStage userKey(Optional<String> userKey);
@@ -199,6 +220,8 @@ public final class UserJob {
 
         private Optional<String> userKey = Optional.empty();
 
+        private Optional<SharingInfo> sharingInfo = Optional.empty();
+
         private Optional<UserJobMode> mode = Optional.empty();
 
         @JsonAnySetter
@@ -213,6 +236,7 @@ public final class UserJob {
             createdAt(other.getCreatedAt());
             status(other.getStatus());
             mode(other.getMode());
+            sharingInfo(other.getSharingInfo());
             userKey(other.getUserKey());
             return this;
         }
@@ -286,6 +310,26 @@ public final class UserJob {
         }
 
         /**
+         * <p>Present when this job is shared with the authenticated user. Omitted when the user owns the job.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage sharingInfo(SharingInfo sharingInfo) {
+            this.sharingInfo = Optional.ofNullable(sharingInfo);
+            return this;
+        }
+
+        /**
+         * <p>Present when this job is shared with the authenticated user. Omitted when the user owns the job.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "sharing_info", nulls = Nulls.SKIP)
+        public _FinalStage sharingInfo(Optional<SharingInfo> sharingInfo) {
+            this.sharingInfo = sharingInfo;
+            return this;
+        }
+
+        /**
          * <p>Processing mode used for this job.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -307,7 +351,7 @@ public final class UserJob {
 
         @java.lang.Override
         public UserJob build() {
-            return new UserJob(jobId, query, createdAt, status, mode, userKey, additionalProperties);
+            return new UserJob(jobId, query, createdAt, status, mode, sharingInfo, userKey, additionalProperties);
         }
 
         @java.lang.Override

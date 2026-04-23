@@ -9,15 +9,15 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public final class PublicJobStatus {
     public static final PublicJobStatus FAILED = new PublicJobStatus(Value.FAILED, "failed");
 
+    public static final PublicJobStatus CLUSTERING = new PublicJobStatus(Value.CLUSTERING, "clustering");
+
     public static final PublicJobStatus COMPLETED = new PublicJobStatus(Value.COMPLETED, "completed");
 
-    public static final PublicJobStatus CLUSTERING = new PublicJobStatus(Value.CLUSTERING, "clustering");
+    public static final PublicJobStatus ANALYZING = new PublicJobStatus(Value.ANALYZING, "analyzing");
 
     public static final PublicJobStatus SUBMITTED = new PublicJobStatus(Value.SUBMITTED, "submitted");
 
     public static final PublicJobStatus ENRICHING = new PublicJobStatus(Value.ENRICHING, "enriching");
-
-    public static final PublicJobStatus ANALYZING = new PublicJobStatus(Value.ANALYZING, "analyzing");
 
     public static final PublicJobStatus FETCHING = new PublicJobStatus(Value.FETCHING, "fetching");
 
@@ -55,16 +55,16 @@ public final class PublicJobStatus {
         switch (value) {
             case FAILED:
                 return visitor.visitFailed();
-            case COMPLETED:
-                return visitor.visitCompleted();
             case CLUSTERING:
                 return visitor.visitClustering();
+            case COMPLETED:
+                return visitor.visitCompleted();
+            case ANALYZING:
+                return visitor.visitAnalyzing();
             case SUBMITTED:
                 return visitor.visitSubmitted();
             case ENRICHING:
                 return visitor.visitEnriching();
-            case ANALYZING:
-                return visitor.visitAnalyzing();
             case FETCHING:
                 return visitor.visitFetching();
             case UNKNOWN:
@@ -78,16 +78,16 @@ public final class PublicJobStatus {
         switch (value) {
             case "failed":
                 return FAILED;
-            case "completed":
-                return COMPLETED;
             case "clustering":
                 return CLUSTERING;
+            case "completed":
+                return COMPLETED;
+            case "analyzing":
+                return ANALYZING;
             case "submitted":
                 return SUBMITTED;
             case "enriching":
                 return ENRICHING;
-            case "analyzing":
-                return ANALYZING;
             case "fetching":
                 return FETCHING;
             default:

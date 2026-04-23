@@ -59,6 +59,8 @@ public final class PullJobResponseDto {
 
     private final Optional<PullJobResponseDtoMode> mode;
 
+    private final Optional<SharingInfo> sharingInfo;
+
     private final Optional<List<Record>> allRecords;
 
     private final Map<String, Object> additionalProperties;
@@ -81,6 +83,7 @@ public final class PullJobResponseDto {
             Optional<Integer> pageSize,
             Optional<Integer> totalPages,
             Optional<PullJobResponseDtoMode> mode,
+            Optional<SharingInfo> sharingInfo,
             Optional<List<Record>> allRecords,
             Map<String, Object> additionalProperties) {
         this.jobId = jobId;
@@ -100,6 +103,7 @@ public final class PullJobResponseDto {
         this.pageSize = pageSize;
         this.totalPages = totalPages;
         this.mode = mode;
+        this.sharingInfo = sharingInfo;
         this.allRecords = allRecords;
         this.additionalProperties = additionalProperties;
     }
@@ -245,6 +249,17 @@ public final class PullJobResponseDto {
     }
 
     /**
+     * @return Present when the job was shared with the authenticated user by another organization member. <code>null</code> when the user owns the job.
+     */
+    @JsonIgnore
+    public Optional<SharingInfo> getSharingInfo() {
+        if (sharingInfo == null) {
+            return Optional.empty();
+        }
+        return sharingInfo;
+    }
+
+    /**
      * @return Array of extracted records with structured data and citations.
      */
     @JsonProperty("all_records")
@@ -262,6 +277,12 @@ public final class PullJobResponseDto {
     @JsonProperty("progress_validated")
     private Optional<Integer> _getProgressValidated() {
         return progressValidated;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("sharing_info")
+    private Optional<SharingInfo> _getSharingInfo() {
+        return sharingInfo;
     }
 
     @java.lang.Override
@@ -293,6 +314,7 @@ public final class PullJobResponseDto {
                 && pageSize.equals(other.pageSize)
                 && totalPages.equals(other.totalPages)
                 && mode.equals(other.mode)
+                && sharingInfo.equals(other.sharingInfo)
                 && allRecords.equals(other.allRecords);
     }
 
@@ -316,6 +338,7 @@ public final class PullJobResponseDto {
                 this.pageSize,
                 this.totalPages,
                 this.mode,
+                this.sharingInfo,
                 this.allRecords);
     }
 
@@ -459,6 +482,15 @@ public final class PullJobResponseDto {
         _FinalStage mode(PullJobResponseDtoMode mode);
 
         /**
+         * <p>Present when the job was shared with the authenticated user by another organization member. <code>null</code> when the user owns the job.</p>
+         */
+        _FinalStage sharingInfo(Optional<SharingInfo> sharingInfo);
+
+        _FinalStage sharingInfo(SharingInfo sharingInfo);
+
+        _FinalStage sharingInfo(Nullable<SharingInfo> sharingInfo);
+
+        /**
          * <p>Array of extracted records with structured data and citations.</p>
          */
         _FinalStage allRecords(Optional<List<Record>> allRecords);
@@ -471,6 +503,8 @@ public final class PullJobResponseDto {
         private String jobId;
 
         private Optional<List<Record>> allRecords = Optional.empty();
+
+        private Optional<SharingInfo> sharingInfo = Optional.empty();
 
         private Optional<PullJobResponseDtoMode> mode = Optional.empty();
 
@@ -528,6 +562,7 @@ public final class PullJobResponseDto {
             pageSize(other.getPageSize());
             totalPages(other.getTotalPages());
             mode(other.getMode());
+            sharingInfo(other.getSharingInfo());
             allRecords(other.getAllRecords());
             return this;
         }
@@ -561,6 +596,42 @@ public final class PullJobResponseDto {
         @JsonSetter(value = "all_records", nulls = Nulls.SKIP)
         public _FinalStage allRecords(Optional<List<Record>> allRecords) {
             this.allRecords = allRecords;
+            return this;
+        }
+
+        /**
+         * <p>Present when the job was shared with the authenticated user by another organization member. <code>null</code> when the user owns the job.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage sharingInfo(Nullable<SharingInfo> sharingInfo) {
+            if (sharingInfo.isNull()) {
+                this.sharingInfo = null;
+            } else if (sharingInfo.isEmpty()) {
+                this.sharingInfo = Optional.empty();
+            } else {
+                this.sharingInfo = Optional.of(sharingInfo.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Present when the job was shared with the authenticated user by another organization member. <code>null</code> when the user owns the job.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage sharingInfo(SharingInfo sharingInfo) {
+            this.sharingInfo = Optional.ofNullable(sharingInfo);
+            return this;
+        }
+
+        /**
+         * <p>Present when the job was shared with the authenticated user by another organization member. <code>null</code> when the user owns the job.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "sharing_info", nulls = Nulls.SKIP)
+        public _FinalStage sharingInfo(Optional<SharingInfo> sharingInfo) {
+            this.sharingInfo = sharingInfo;
             return this;
         }
 
@@ -932,6 +1003,7 @@ public final class PullJobResponseDto {
                     pageSize,
                     totalPages,
                     mode,
+                    sharingInfo,
                     allRecords,
                     additionalProperties);
         }

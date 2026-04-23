@@ -6,8 +6,10 @@ package com.newscatcher.catchall.resources.monitors;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.monitors.requests.CreateMonitorRequestDto;
+import com.newscatcher.catchall.resources.monitors.requests.DeleteMonitorRequest;
 import com.newscatcher.catchall.resources.monitors.requests.DisableMonitorRequest;
 import com.newscatcher.catchall.resources.monitors.requests.EnableMonitorRequestDto;
+import com.newscatcher.catchall.resources.monitors.requests.GetMonitorStatusHistoryRequest;
 import com.newscatcher.catchall.resources.monitors.requests.ListMonitorJobsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.ListMonitorsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.PullMonitorResultsRequest;
@@ -16,7 +18,9 @@ import com.newscatcher.catchall.resources.monitors.types.DisableMonitorResponse;
 import com.newscatcher.catchall.resources.monitors.types.EnableMonitorResponse;
 import com.newscatcher.catchall.resources.monitors.types.ListMonitorJobsResponse;
 import com.newscatcher.catchall.types.CreateMonitorResponseDto;
+import com.newscatcher.catchall.types.DeleteMonitorResponseDto;
 import com.newscatcher.catchall.types.ListMonitorsResponseDto;
+import com.newscatcher.catchall.types.MonitorStatusHistoryResponseDto;
 import com.newscatcher.catchall.types.PullMonitorResponseDto;
 import com.newscatcher.catchall.types.UpdateMonitorResponseDto;
 import java.util.concurrent.CompletableFuture;
@@ -148,6 +152,39 @@ public class AsyncMonitorsClient {
     }
 
     /**
+     * Returns the full execution history of a monitor as a list of status entries, ordered from newest to oldest.
+     */
+    public CompletableFuture<MonitorStatusHistoryResponseDto> getMonitorStatusHistory(String monitorId) {
+        return this.rawClient.getMonitorStatusHistory(monitorId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns the full execution history of a monitor as a list of status entries, ordered from newest to oldest.
+     */
+    public CompletableFuture<MonitorStatusHistoryResponseDto> getMonitorStatusHistory(
+            String monitorId, RequestOptions requestOptions) {
+        return this.rawClient.getMonitorStatusHistory(monitorId, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns the full execution history of a monitor as a list of status entries, ordered from newest to oldest.
+     */
+    public CompletableFuture<MonitorStatusHistoryResponseDto> getMonitorStatusHistory(
+            String monitorId, GetMonitorStatusHistoryRequest request) {
+        return this.rawClient.getMonitorStatusHistory(monitorId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns the full execution history of a monitor as a list of status entries, ordered from newest to oldest.
+     */
+    public CompletableFuture<MonitorStatusHistoryResponseDto> getMonitorStatusHistory(
+            String monitorId, GetMonitorStatusHistoryRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .getMonitorStatusHistory(monitorId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
      * Resume scheduled job execution for a monitor.
      */
     public CompletableFuture<EnableMonitorResponse> enableMonitor(String monitorId) {
@@ -203,6 +240,55 @@ public class AsyncMonitorsClient {
     public CompletableFuture<DisableMonitorResponse> disableMonitor(
             String monitorId, DisableMonitorRequest request, RequestOptions requestOptions) {
         return this.rawClient.disableMonitor(monitorId, request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Soft-deletes a monitor. The monitor is flagged as deleted, stops
+     * executing scheduled jobs immediately, and no longer appears in list
+     * results.
+     * <p>Only the monitor owner can delete a monitor. Returns <code>404</code> if the
+     * monitor is not found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted monitor returns <code>200</code>.</p>
+     */
+    public CompletableFuture<DeleteMonitorResponseDto> deleteMonitor(String monitorId) {
+        return this.rawClient.deleteMonitor(monitorId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Soft-deletes a monitor. The monitor is flagged as deleted, stops
+     * executing scheduled jobs immediately, and no longer appears in list
+     * results.
+     * <p>Only the monitor owner can delete a monitor. Returns <code>404</code> if the
+     * monitor is not found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted monitor returns <code>200</code>.</p>
+     */
+    public CompletableFuture<DeleteMonitorResponseDto> deleteMonitor(String monitorId, RequestOptions requestOptions) {
+        return this.rawClient.deleteMonitor(monitorId, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Soft-deletes a monitor. The monitor is flagged as deleted, stops
+     * executing scheduled jobs immediately, and no longer appears in list
+     * results.
+     * <p>Only the monitor owner can delete a monitor. Returns <code>404</code> if the
+     * monitor is not found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted monitor returns <code>200</code>.</p>
+     */
+    public CompletableFuture<DeleteMonitorResponseDto> deleteMonitor(String monitorId, DeleteMonitorRequest request) {
+        return this.rawClient.deleteMonitor(monitorId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Soft-deletes a monitor. The monitor is flagged as deleted, stops
+     * executing scheduled jobs immediately, and no longer appears in list
+     * results.
+     * <p>Only the monitor owner can delete a monitor. Returns <code>404</code> if the
+     * monitor is not found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted monitor returns <code>200</code>.</p>
+     */
+    public CompletableFuture<DeleteMonitorResponseDto> deleteMonitor(
+            String monitorId, DeleteMonitorRequest request, RequestOptions requestOptions) {
+        return this.rawClient.deleteMonitor(monitorId, request, requestOptions).thenApply(response -> response.body());
     }
 
     /**

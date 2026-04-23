@@ -123,6 +123,10 @@ public class AsyncRawDatasetsClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "sort_order", request.getSortOrder().get(), false);
         }
+        if (request.getOwnership().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "ownership", request.getOwnership().get(), false);
+        }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);

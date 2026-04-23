@@ -15,14 +15,17 @@ import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.errors.BadRequestError;
 import com.newscatcher.catchall.errors.ForbiddenError;
 import com.newscatcher.catchall.errors.NotFoundError;
+import com.newscatcher.catchall.errors.UnauthorizedError;
 import com.newscatcher.catchall.errors.UnprocessableEntityError;
 import com.newscatcher.catchall.resources.jobs.requests.ContinueRequestDto;
+import com.newscatcher.catchall.resources.jobs.requests.DeleteJobRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobResultsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobStatusRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetUserJobsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.InitializeRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
 import com.newscatcher.catchall.types.ContinueResponseDto;
+import com.newscatcher.catchall.types.DeleteJobResponseDto;
 import com.newscatcher.catchall.types.Error;
 import com.newscatcher.catchall.types.InitializeResponseDto;
 import com.newscatcher.catchall.types.ListUserJobsResponseDto;
@@ -87,6 +90,14 @@ public class AsyncRawJobsClient {
         if (request.getPageSize().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "page_size", request.getPageSize().get(), false);
+        }
+        if (request.getSearch().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "search", request.getSearch().get(), false);
+        }
+        if (request.getOwnership().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "ownership", request.getOwnership().get(), false);
         }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -572,6 +583,114 @@ public class AsyncRawJobsClient {
                                 future.completeExceptionally(new UnprocessableEntityError(
                                         ObjectMappers.JSON_MAPPER.readValue(
                                                 responseBodyString, ValidationErrorResponse.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new CatchAllApiApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (IOException e) {
+                    future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Soft-deletes a job. The job is flagged as deleted and no longer
+     * appears in list results. The underlying data is retained.
+     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not
+     * found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted job returns <code>200</code>.</p>
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<DeleteJobResponseDto>> deleteJob(String jobId) {
+        return deleteJob(jobId, DeleteJobRequest.builder().build());
+    }
+
+    /**
+     * Soft-deletes a job. The job is flagged as deleted and no longer
+     * appears in list results. The underlying data is retained.
+     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not
+     * found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted job returns <code>200</code>.</p>
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<DeleteJobResponseDto>> deleteJob(
+            String jobId, RequestOptions requestOptions) {
+        return deleteJob(jobId, DeleteJobRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Soft-deletes a job. The job is flagged as deleted and no longer
+     * appears in list results. The underlying data is retained.
+     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not
+     * found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted job returns <code>200</code>.</p>
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<DeleteJobResponseDto>> deleteJob(
+            String jobId, DeleteJobRequest request) {
+        return deleteJob(jobId, request, null);
+    }
+
+    /**
+     * Soft-deletes a job. The job is flagged as deleted and no longer
+     * appears in list results. The underlying data is retained.
+     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not
+     * found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted job returns <code>200</code>.</p>
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<DeleteJobResponseDto>> deleteJob(
+            String jobId, DeleteJobRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/jobs")
+                .addPathSegment(jobId);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("DELETE", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        CompletableFuture<CatchAllApiHttpResponse<DeleteJobResponseDto>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new CatchAllApiHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, DeleteJobResponseDto.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
                                         response));
                                 return;
                         }

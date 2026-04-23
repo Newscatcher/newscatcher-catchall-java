@@ -125,7 +125,7 @@ public final class SubmitRequestDto {
     }
 
     /**
-     * @return Dataset IDs to connect to this job. When provided, activates Company Search mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.
+     * @return Dataset IDs to connect to this job. When provided, activates Company Watchlist mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.
      * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
      */
     @JsonProperty("connected_dataset_ids")
@@ -236,7 +236,7 @@ public final class SubmitRequestDto {
         _FinalStage mode(SubmitRequestDtoMode mode);
 
         /**
-         * <p>Dataset IDs to connect to this job. When provided, activates Company Search mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.</p>
+         * <p>Dataset IDs to connect to this job. When provided, activates Company Watchlist mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.</p>
          * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
          */
         _FinalStage connectedDatasetIds(Optional<List<String>> connectedDatasetIds);
@@ -291,7 +291,7 @@ public final class SubmitRequestDto {
         }
 
         /**
-         * <p>Dataset IDs to connect to this job. When provided, activates Company Search mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.</p>
+         * <p>Dataset IDs to connect to this job. When provided, activates Company Watchlist mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.</p>
          * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -302,7 +302,7 @@ public final class SubmitRequestDto {
         }
 
         /**
-         * <p>Dataset IDs to connect to this job. When provided, activates Company Search mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.</p>
+         * <p>Dataset IDs to connect to this job. When provided, activates Company Watchlist mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.</p>
          * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
          */
         @java.lang.Override

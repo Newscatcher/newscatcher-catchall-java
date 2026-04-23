@@ -45,6 +45,8 @@ public final class MonitorListItemDto {
 
     private final Optional<String> userKey;
 
+    private final Optional<SharingInfo> sharingInfo;
+
     private final Map<String, Object> additionalProperties;
 
     private MonitorListItemDto(
@@ -58,6 +60,7 @@ public final class MonitorListItemDto {
             Optional<OffsetDateTime> createdAt,
             Optional<WebhookDto> webhook,
             Optional<String> userKey,
+            Optional<SharingInfo> sharingInfo,
             Map<String, Object> additionalProperties) {
         this.monitorId = monitorId;
         this.referenceJobId = referenceJobId;
@@ -69,6 +72,7 @@ public final class MonitorListItemDto {
         this.createdAt = createdAt;
         this.webhook = webhook;
         this.userKey = userKey;
+        this.sharingInfo = sharingInfo;
         this.additionalProperties = additionalProperties;
     }
 
@@ -155,6 +159,14 @@ public final class MonitorListItemDto {
         return userKey;
     }
 
+    /**
+     * @return Present when this monitor was shared with the authenticated user. Omitted when the user owns the monitor.
+     */
+    @JsonProperty("sharing_info")
+    public Optional<SharingInfo> getSharingInfo() {
+        return sharingInfo;
+    }
+
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("webhook")
     private Optional<WebhookDto> _getWebhook() {
@@ -182,7 +194,8 @@ public final class MonitorListItemDto {
                 && timezone.equals(other.timezone)
                 && createdAt.equals(other.createdAt)
                 && webhook.equals(other.webhook)
-                && userKey.equals(other.userKey);
+                && userKey.equals(other.userKey)
+                && sharingInfo.equals(other.sharingInfo);
     }
 
     @java.lang.Override
@@ -197,7 +210,8 @@ public final class MonitorListItemDto {
                 this.timezone,
                 this.createdAt,
                 this.webhook,
-                this.userKey);
+                this.userKey,
+                this.sharingInfo);
     }
 
     @java.lang.Override
@@ -289,6 +303,13 @@ public final class MonitorListItemDto {
         _FinalStage userKey(Optional<String> userKey);
 
         _FinalStage userKey(String userKey);
+
+        /**
+         * <p>Present when this monitor was shared with the authenticated user. Omitted when the user owns the monitor.</p>
+         */
+        _FinalStage sharingInfo(Optional<SharingInfo> sharingInfo);
+
+        _FinalStage sharingInfo(SharingInfo sharingInfo);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -301,6 +322,8 @@ public final class MonitorListItemDto {
         private String referenceJobQuery;
 
         private boolean enabled;
+
+        private Optional<SharingInfo> sharingInfo = Optional.empty();
 
         private Optional<String> userKey = Optional.empty();
 
@@ -331,6 +354,7 @@ public final class MonitorListItemDto {
             createdAt(other.getCreatedAt());
             webhook(other.getWebhook());
             userKey(other.getUserKey());
+            sharingInfo(other.getSharingInfo());
             return this;
         }
 
@@ -379,6 +403,26 @@ public final class MonitorListItemDto {
         @JsonSetter("enabled")
         public _FinalStage enabled(boolean enabled) {
             this.enabled = enabled;
+            return this;
+        }
+
+        /**
+         * <p>Present when this monitor was shared with the authenticated user. Omitted when the user owns the monitor.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage sharingInfo(SharingInfo sharingInfo) {
+            this.sharingInfo = Optional.ofNullable(sharingInfo);
+            return this;
+        }
+
+        /**
+         * <p>Present when this monitor was shared with the authenticated user. Omitted when the user owns the monitor.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "sharing_info", nulls = Nulls.SKIP)
+        public _FinalStage sharingInfo(Optional<SharingInfo> sharingInfo) {
+            this.sharingInfo = sharingInfo;
             return this;
         }
 
@@ -531,6 +575,7 @@ public final class MonitorListItemDto {
                     createdAt,
                     webhook,
                     userKey,
+                    sharingInfo,
                     additionalProperties);
         }
 
