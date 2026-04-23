@@ -58,6 +58,22 @@ client.jobs().getUserJobs(
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**search:** `Optional<String>` — Filter results by text (case-insensitive substring match).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ownership:** `Optional<OwnershipFilter>` — Filter results by ownership. Defaults to `all`.
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
@@ -265,7 +281,7 @@ Job processing mode.
 
 **connectedDatasetIds:** `Optional<List<String>>` 
 
-Dataset IDs to connect to this job. When provided, activates Company Search mode — the job returns only events relevant to companies in the connected datasets with each record including a `connected_entities` array scored per company.
+Dataset IDs to connect to this job. When provided, activates Company Watchlist mode — the job returns only events relevant to companies in the connected datasets with each record including a `connected_entities` array scored per company.
 
 The dataset must have `latest_status: ready` before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns `400`.
     
@@ -481,6 +497,71 @@ client.jobs().continueJob(
 </dl>
 </details>
 
+<details><summary><code>client.jobs.deleteJob(jobId) -> DeleteJobResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Soft-deletes a job. The job is flagged as deleted and no longer
+appears in list results. The underlying data is retained.
+
+Only the job owner can delete a job. Returns `404` if the job is not
+found or does not belong to the authenticated user.
+
+Deleting an already-deleted job returns `200`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.jobs().deleteJob(
+    "5f0c9087-85cb-4917-b3c7-e5a5eff73a0c",
+    DeleteJobRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**jobId:** `String` — Unique job identifier returned from [`POST /catchAll/submit`](https://www.newscatcherapi.com/docs/web-search-api/api-reference/jobs/create-job).
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Monitors
 <details><summary><code>client.monitors.listMonitors() -> ListMonitorsResponseDto</code></summary>
 <dl>
@@ -537,6 +618,22 @@ client.monitors().listMonitors(
 <dd>
 
 **pageSize:** `Optional<Integer>` — Number of records per page.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**search:** `Optional<String>` — Filter results by text (case-insensitive substring match).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ownership:** `Optional<OwnershipFilter>` — Filter results by ownership. Defaults to `all`.
     
 </dd>
 </dl>
@@ -792,6 +889,65 @@ client.monitors().listMonitorJobs(
 </dl>
 </details>
 
+<details><summary><code>client.monitors.getMonitorStatusHistory(monitorId) -> MonitorStatusHistoryResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the full execution history of a monitor as a list of status entries, ordered from newest to oldest.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.monitors().getMonitorStatusHistory(
+    "monitor_id",
+    GetMonitorStatusHistoryRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**monitorId:** `String` — Monitor identifier.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.monitors.enableMonitor(monitorId, request) -> EnableMonitorResponse</code></summary>
 <dl>
 <dd>
@@ -894,6 +1050,72 @@ Stop scheduled job execution for a monitor.
 client.monitors().disableMonitor(
     "monitor_id",
     DisableMonitorRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**monitorId:** `String` — Monitor identifier.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.monitors.deleteMonitor(monitorId) -> DeleteMonitorResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Soft-deletes a monitor. The monitor is flagged as deleted, stops
+executing scheduled jobs immediately, and no longer appears in list
+results.
+
+Only the monitor owner can delete a monitor. Returns `404` if the
+monitor is not found or does not belong to the authenticated user.
+
+Deleting an already-deleted monitor returns `200`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.monitors().deleteMonitor(
+    "monitor_id",
+    DeleteMonitorRequest
         .builder()
         .build()
 );
@@ -1634,6 +1856,14 @@ client.datasets().listDatasets(
 <dd>
 
 **sortOrder:** `Optional<SortOrder>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ownership:** `Optional<OwnershipFilter>` — Filter results by ownership. Defaults to `all`.
     
 </dd>
 </dl>

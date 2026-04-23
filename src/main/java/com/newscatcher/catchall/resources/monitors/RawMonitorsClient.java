@@ -14,10 +14,13 @@ import com.newscatcher.catchall.core.QueryStringMapper;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.errors.ForbiddenError;
 import com.newscatcher.catchall.errors.NotFoundError;
+import com.newscatcher.catchall.errors.UnauthorizedError;
 import com.newscatcher.catchall.errors.UnprocessableEntityError;
 import com.newscatcher.catchall.resources.monitors.requests.CreateMonitorRequestDto;
+import com.newscatcher.catchall.resources.monitors.requests.DeleteMonitorRequest;
 import com.newscatcher.catchall.resources.monitors.requests.DisableMonitorRequest;
 import com.newscatcher.catchall.resources.monitors.requests.EnableMonitorRequestDto;
+import com.newscatcher.catchall.resources.monitors.requests.GetMonitorStatusHistoryRequest;
 import com.newscatcher.catchall.resources.monitors.requests.ListMonitorJobsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.ListMonitorsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.PullMonitorResultsRequest;
@@ -26,8 +29,10 @@ import com.newscatcher.catchall.resources.monitors.types.DisableMonitorResponse;
 import com.newscatcher.catchall.resources.monitors.types.EnableMonitorResponse;
 import com.newscatcher.catchall.resources.monitors.types.ListMonitorJobsResponse;
 import com.newscatcher.catchall.types.CreateMonitorResponseDto;
+import com.newscatcher.catchall.types.DeleteMonitorResponseDto;
 import com.newscatcher.catchall.types.Error;
 import com.newscatcher.catchall.types.ListMonitorsResponseDto;
+import com.newscatcher.catchall.types.MonitorStatusHistoryResponseDto;
 import com.newscatcher.catchall.types.PullMonitorResponseDto;
 import com.newscatcher.catchall.types.UpdateMonitorResponseDto;
 import com.newscatcher.catchall.types.ValidationErrorResponse;
@@ -83,6 +88,14 @@ public class RawMonitorsClient {
         if (request.getPageSize().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "page_size", request.getPageSize().get(), false);
+        }
+        if (request.getSearch().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "search", request.getSearch().get(), false);
+        }
+        if (request.getOwnership().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "ownership", request.getOwnership().get(), false);
         }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -349,6 +362,84 @@ public class RawMonitorsClient {
     }
 
     /**
+     * Returns the full execution history of a monitor as a list of status entries, ordered from newest to oldest.
+     */
+    public CatchAllApiHttpResponse<MonitorStatusHistoryResponseDto> getMonitorStatusHistory(String monitorId) {
+        return getMonitorStatusHistory(
+                monitorId, GetMonitorStatusHistoryRequest.builder().build());
+    }
+
+    /**
+     * Returns the full execution history of a monitor as a list of status entries, ordered from newest to oldest.
+     */
+    public CatchAllApiHttpResponse<MonitorStatusHistoryResponseDto> getMonitorStatusHistory(
+            String monitorId, RequestOptions requestOptions) {
+        return getMonitorStatusHistory(
+                monitorId, GetMonitorStatusHistoryRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Returns the full execution history of a monitor as a list of status entries, ordered from newest to oldest.
+     */
+    public CatchAllApiHttpResponse<MonitorStatusHistoryResponseDto> getMonitorStatusHistory(
+            String monitorId, GetMonitorStatusHistoryRequest request) {
+        return getMonitorStatusHistory(monitorId, request, null);
+    }
+
+    /**
+     * Returns the full execution history of a monitor as a list of status entries, ordered from newest to oldest.
+     */
+    public CatchAllApiHttpResponse<MonitorStatusHistoryResponseDto> getMonitorStatusHistory(
+            String monitorId, GetMonitorStatusHistoryRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/monitors")
+                .addPathSegment(monitorId)
+                .addPathSegments("status");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new CatchAllApiHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, MonitorStatusHistoryResponseDto.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new CatchAllApiApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (IOException e) {
+            throw new CatchAllApiException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
      * Resume scheduled job execution for a monitor.
      */
     public CatchAllApiHttpResponse<EnableMonitorResponse> enableMonitor(String monitorId) {
@@ -503,6 +594,101 @@ public class RawMonitorsClient {
                         throw new UnprocessableEntityError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidationErrorResponse.class),
                                 response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new CatchAllApiApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (IOException e) {
+            throw new CatchAllApiException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Soft-deletes a monitor. The monitor is flagged as deleted, stops
+     * executing scheduled jobs immediately, and no longer appears in list
+     * results.
+     * <p>Only the monitor owner can delete a monitor. Returns <code>404</code> if the
+     * monitor is not found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted monitor returns <code>200</code>.</p>
+     */
+    public CatchAllApiHttpResponse<DeleteMonitorResponseDto> deleteMonitor(String monitorId) {
+        return deleteMonitor(monitorId, DeleteMonitorRequest.builder().build());
+    }
+
+    /**
+     * Soft-deletes a monitor. The monitor is flagged as deleted, stops
+     * executing scheduled jobs immediately, and no longer appears in list
+     * results.
+     * <p>Only the monitor owner can delete a monitor. Returns <code>404</code> if the
+     * monitor is not found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted monitor returns <code>200</code>.</p>
+     */
+    public CatchAllApiHttpResponse<DeleteMonitorResponseDto> deleteMonitor(
+            String monitorId, RequestOptions requestOptions) {
+        return deleteMonitor(monitorId, DeleteMonitorRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Soft-deletes a monitor. The monitor is flagged as deleted, stops
+     * executing scheduled jobs immediately, and no longer appears in list
+     * results.
+     * <p>Only the monitor owner can delete a monitor. Returns <code>404</code> if the
+     * monitor is not found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted monitor returns <code>200</code>.</p>
+     */
+    public CatchAllApiHttpResponse<DeleteMonitorResponseDto> deleteMonitor(
+            String monitorId, DeleteMonitorRequest request) {
+        return deleteMonitor(monitorId, request, null);
+    }
+
+    /**
+     * Soft-deletes a monitor. The monitor is flagged as deleted, stops
+     * executing scheduled jobs immediately, and no longer appears in list
+     * results.
+     * <p>Only the monitor owner can delete a monitor. Returns <code>404</code> if the
+     * monitor is not found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted monitor returns <code>200</code>.</p>
+     */
+    public CatchAllApiHttpResponse<DeleteMonitorResponseDto> deleteMonitor(
+            String monitorId, DeleteMonitorRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/monitors")
+                .addPathSegment(monitorId);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("DELETE", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new CatchAllApiHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, DeleteMonitorResponseDto.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                 }
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error

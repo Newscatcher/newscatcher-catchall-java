@@ -13,11 +13,11 @@ public final class EnrichmentType {
 
     public static final EnrichmentType DATE = new EnrichmentType(Value.DATE, "date");
 
-    public static final EnrichmentType URL = new EnrichmentType(Value.URL, "url");
-
     public static final EnrichmentType OPTION = new EnrichmentType(Value.OPTION, "option");
 
     public static final EnrichmentType COMPANY = new EnrichmentType(Value.COMPANY, "company");
+
+    public static final EnrichmentType URL = new EnrichmentType(Value.URL, "url");
 
     private final Value value;
 
@@ -57,12 +57,12 @@ public final class EnrichmentType {
                 return visitor.visitText();
             case DATE:
                 return visitor.visitDate();
-            case URL:
-                return visitor.visitUrl();
             case OPTION:
                 return visitor.visitOption();
             case COMPANY:
                 return visitor.visitCompany();
+            case URL:
+                return visitor.visitUrl();
             case UNKNOWN:
             default:
                 return visitor.visitUnknown(string);
@@ -78,12 +78,12 @@ public final class EnrichmentType {
                 return TEXT;
             case "date":
                 return DATE;
-            case "url":
-                return URL;
             case "option":
                 return OPTION;
             case "company":
                 return COMPANY;
+            case "url":
+                return URL;
             default:
                 return new EnrichmentType(Value.UNKNOWN, value);
         }

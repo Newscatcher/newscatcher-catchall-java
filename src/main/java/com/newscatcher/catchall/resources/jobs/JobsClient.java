@@ -6,12 +6,14 @@ package com.newscatcher.catchall.resources.jobs;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.jobs.requests.ContinueRequestDto;
+import com.newscatcher.catchall.resources.jobs.requests.DeleteJobRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobResultsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobStatusRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetUserJobsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.InitializeRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
 import com.newscatcher.catchall.types.ContinueResponseDto;
+import com.newscatcher.catchall.types.DeleteJobResponseDto;
 import com.newscatcher.catchall.types.InitializeResponseDto;
 import com.newscatcher.catchall.types.ListUserJobsResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
@@ -159,5 +161,49 @@ public class JobsClient {
      */
     public ContinueResponseDto continueJob(ContinueRequestDto request, RequestOptions requestOptions) {
         return this.rawClient.continueJob(request, requestOptions).body();
+    }
+
+    /**
+     * Soft-deletes a job. The job is flagged as deleted and no longer
+     * appears in list results. The underlying data is retained.
+     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not
+     * found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted job returns <code>200</code>.</p>
+     */
+    public DeleteJobResponseDto deleteJob(String jobId) {
+        return this.rawClient.deleteJob(jobId).body();
+    }
+
+    /**
+     * Soft-deletes a job. The job is flagged as deleted and no longer
+     * appears in list results. The underlying data is retained.
+     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not
+     * found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted job returns <code>200</code>.</p>
+     */
+    public DeleteJobResponseDto deleteJob(String jobId, RequestOptions requestOptions) {
+        return this.rawClient.deleteJob(jobId, requestOptions).body();
+    }
+
+    /**
+     * Soft-deletes a job. The job is flagged as deleted and no longer
+     * appears in list results. The underlying data is retained.
+     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not
+     * found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted job returns <code>200</code>.</p>
+     */
+    public DeleteJobResponseDto deleteJob(String jobId, DeleteJobRequest request) {
+        return this.rawClient.deleteJob(jobId, request).body();
+    }
+
+    /**
+     * Soft-deletes a job. The job is flagged as deleted and no longer
+     * appears in list results. The underlying data is retained.
+     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not
+     * found or does not belong to the authenticated user.</p>
+     * <p>Deleting an already-deleted job returns <code>200</code>.</p>
+     */
+    public DeleteJobResponseDto deleteJob(String jobId, DeleteJobRequest request, RequestOptions requestOptions) {
+        return this.rawClient.deleteJob(jobId, request, requestOptions).body();
     }
 }
