@@ -1,0 +1,70 @@
+name: SDK Release
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  release:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Read version from build.gradle
+        id: version
+        run: |
+          VERSION=$(grep -m1 "^version = '" build.gradle | grep -oP "'\K[^']+")
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: Could not read version from build.gradle"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "TAG=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Get latest git tag
+        id: latest_tag
+        run: |
+          LATEST=$(git describe --tags --abbrev=0 2>/dev/null || echo "none")
+          echo "LATEST_TAG=$LATEST" >> $GITHUB_OUTPUT
+
+      - name: Check if version was bumped
+        id: check
+        run: |
+          TAG="${{ steps.version.outputs.TAG }}"
+          LATEST="${{ steps.latest_tag.outputs.LATEST_TAG }}"
+          if [ "$TAG" = "$LATEST" ]; then
+            echo "bumped=false" >> $GITHUB_OUTPUT
+            echo "Version $TAG already tagged — skipping release."
+          else
+            echo "bumped=true" >> $GITHUB_OUTPUT
+            echo "New version detected: $TAG (previous: $LATEST)"
+          fi
+
+      - name: Create and push tag
+        if: steps.check.outputs.bumped == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "${{ steps.version.outputs.TAG }}"
+          git push origin "${{ steps.version.outputs.TAG }}"
+
+      - name: Create GitHub release with generated notes
+        if: steps.check.outputs.bumped == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.version.outputs.TAG }}" \
+            --title "${{ steps.version.outputs.TAG }}" \
+            --generate-notes \
+            --latest
