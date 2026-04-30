@@ -58,6 +58,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag "${{ steps.version.outputs.TAG }}"
           git push origin "${{ steps.version.outputs.TAG }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Create GitHub release with generated notes
         if: steps.check.outputs.bumped == 'true'
