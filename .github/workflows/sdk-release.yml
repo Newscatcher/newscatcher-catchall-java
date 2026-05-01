@@ -8,8 +8,43 @@ on:
       - main
 
 jobs:
-  release:
+  compile:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        id: setup-jre
+        uses: actions/setup-java@v1
+        with:
+          java-version: "11"
+          architecture: x64
+
+      - name: Compile
+        run: ./gradlew compileJava
+
+  test:
+    needs: [compile]
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        id: setup-jre
+        uses: actions/setup-java@v1
+        with:
+          java-version: "11"
+          architecture: x64
+
+      - name: Test
+        run: ./gradlew test
+
+  release:
+    needs: [compile, test]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -51,6 +86,13 @@ jobs:
             echo "New version detected: $TAG (previous: $LATEST)"
           fi
 
+      - name: Set up Java
+        if: steps.check.outputs.bumped == 'true'
+        uses: actions/setup-java@v1
+        with:
+          java-version: "11"
+          architecture: x64
+
       - name: Create and push tag
         if: steps.check.outputs.bumped == 'true'
         run: |
@@ -58,8 +100,17 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag "${{ steps.version.outputs.TAG }}"
           git push origin "${{ steps.version.outputs.TAG }}"
+
+      - name: Publish to Maven
+        if: steps.check.outputs.bumped == 'true'
+        run: ./gradlew sonatypeCentralUpload
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_PUBLISH_REGISTRY_URL: "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+          MAVEN_SIGNATURE_KID: ${{ secrets.MAVEN_SIGNATURE_KID }}
+          MAVEN_SIGNATURE_SECRET_KEY: ${{ secrets.MAVEN_SIGNATURE_SECRET_KEY }}
+          MAVEN_SIGNATURE_PASSWORD: ${{ secrets.MAVEN_SIGNATURE_PASSWORD }}
 
       - name: Create GitHub release with generated notes
         if: steps.check.outputs.bumped == 'true'
