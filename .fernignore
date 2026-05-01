@@ -3,3 +3,6 @@ gradle/wrapper/gradle-wrapper.properties
 gradlew
 gradlew.bat
 changelog.md
+
+# CI
+.github/workflows/sdk-release.yml
