@@ -2004,6 +2004,7 @@ Use semicolons (`;`) to separate multiple values in `alternative_names` and `key
 
 ```java
 client.datasets().createDatasetFromCsv(
+    null,
     CreateDatasetFromCsvRequest
         .builder()
         .name("name")
@@ -2577,6 +2578,7 @@ endpoint since the dataset already exists.
 ```java
 client.datasets().uploadCsvToDataset(
     "ccabb755-afc2-4047-b84c-78d1f23d49b2",
+    null,
     UploadCsvToDatasetRequest
         .builder()
         .build()

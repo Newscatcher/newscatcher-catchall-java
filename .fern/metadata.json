@@ -1,16 +1,15 @@
 {
-  "cliVersion": "4.90.0",
+  "cliVersion": "5.1.0",
   "generatorName": "fernapi/fern-java-sdk",
-  "generatorVersion": "4.4.1",
+  "generatorVersion": "4.6.4",
   "generatorConfig": {
     "publish-to": "central",
     "client-class-name": "CatchAllApi",
     "package-prefix": "com.newscatcher.catchall"
   },
-  "originGitCommit": "3707beee5d0e236f2469e89f7b19c3a08efb6f95",
-  "originGitCommitIsDirty": true,
-  "invokedBy": "ci",
-  "requestedVersion": "AUTO",
-  "ciProvider": "unknown",
-  "sdkVersion": "1.5.0"
+  "originGitCommit": "57be6b5662276253461696b49ad9ff6448cc29f3",
+  "originGitCommitIsDirty": false,
+  "invokedBy": "manual",
+  "requestedVersion": "1.5.1",
+  "sdkVersion": "1.5.1"
 }
