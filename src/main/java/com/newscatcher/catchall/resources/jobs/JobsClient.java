@@ -164,10 +164,8 @@ public class JobsClient {
     }
 
     /**
-     * Soft-deletes a job. The job is flagged as deleted and no longer
-     * appears in list results. The underlying data is retained.
-     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not
-     * found or does not belong to the authenticated user.</p>
+     * Soft-deletes a job. The job is flagged as deleted and no longer appears in list results. The underlying data is retained.
+     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not found or does not belong to the authenticated user.</p>
      * <p>Deleting an already-deleted job returns <code>200</code>.</p>
      */
     public DeleteJobResponseDto deleteJob(String jobId) {
@@ -175,10 +173,8 @@ public class JobsClient {
     }
 
     /**
-     * Soft-deletes a job. The job is flagged as deleted and no longer
-     * appears in list results. The underlying data is retained.
-     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not
-     * found or does not belong to the authenticated user.</p>
+     * Soft-deletes a job. The job is flagged as deleted and no longer appears in list results. The underlying data is retained.
+     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not found or does not belong to the authenticated user.</p>
      * <p>Deleting an already-deleted job returns <code>200</code>.</p>
      */
     public DeleteJobResponseDto deleteJob(String jobId, RequestOptions requestOptions) {
@@ -186,10 +182,8 @@ public class JobsClient {
     }
 
     /**
-     * Soft-deletes a job. The job is flagged as deleted and no longer
-     * appears in list results. The underlying data is retained.
-     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not
-     * found or does not belong to the authenticated user.</p>
+     * Soft-deletes a job. The job is flagged as deleted and no longer appears in list results. The underlying data is retained.
+     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not found or does not belong to the authenticated user.</p>
      * <p>Deleting an already-deleted job returns <code>200</code>.</p>
      */
     public DeleteJobResponseDto deleteJob(String jobId, DeleteJobRequest request) {
@@ -197,10 +191,8 @@ public class JobsClient {
     }
 
     /**
-     * Soft-deletes a job. The job is flagged as deleted and no longer
-     * appears in list results. The underlying data is retained.
-     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not
-     * found or does not belong to the authenticated user.</p>
+     * Soft-deletes a job. The job is flagged as deleted and no longer appears in list results. The underlying data is retained.
+     * <p>Only the job owner can delete a job. Returns <code>404</code> if the job is not found or does not belong to the authenticated user.</p>
      * <p>Deleting an already-deleted job returns <code>200</code>.</p>
      */
     public DeleteJobResponseDto deleteJob(String jobId, DeleteJobRequest request, RequestOptions requestOptions) {

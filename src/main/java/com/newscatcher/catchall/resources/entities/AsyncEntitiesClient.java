@@ -35,36 +35,28 @@ public class AsyncEntitiesClient {
     }
 
     /**
-     * Returns a paginated list of entities belonging to the authenticated
-     * organization. Supports filtering by status and entity type, and
-     * sorting by name, status, or creation date.
+     * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public CompletableFuture<EntityListResponse> listEntities() {
         return this.rawClient.listEntities().thenApply(response -> response.body());
     }
 
     /**
-     * Returns a paginated list of entities belonging to the authenticated
-     * organization. Supports filtering by status and entity type, and
-     * sorting by name, status, or creation date.
+     * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public CompletableFuture<EntityListResponse> listEntities(RequestOptions requestOptions) {
         return this.rawClient.listEntities(requestOptions).thenApply(response -> response.body());
     }
 
     /**
-     * Returns a paginated list of entities belonging to the authenticated
-     * organization. Supports filtering by status and entity type, and
-     * sorting by name, status, or creation date.
+     * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public CompletableFuture<EntityListResponse> listEntities(ListEntitiesRequest request) {
         return this.rawClient.listEntities(request).thenApply(response -> response.body());
     }
 
     /**
-     * Returns a paginated list of entities belonging to the authenticated
-     * organization. Supports filtering by status and entity type, and
-     * sorting by name, status, or creation date.
+     * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public CompletableFuture<EntityListResponse> listEntities(
             ListEntitiesRequest request, RequestOptions requestOptions) {
@@ -95,20 +87,16 @@ public class AsyncEntitiesClient {
     }
 
     /**
-     * Creates multiple entities in a single request. Each entity is
-     * processed independently — a failure in one does not affect others.
-     * <p>Returns an array of <code>{id, status}</code> objects in the same order as
-     * the input array.</p>
+     * Creates multiple entities in a single request. Each entity is processed independently — a failure in one does not affect others.
+     * <p>Returns an array of <code>{id, status}</code> objects in the same order as the input array.</p>
      */
     public CompletableFuture<CreateEntitiesBatchResponse> createEntitiesBatch(CreateEntitiesBatchRequest request) {
         return this.rawClient.createEntitiesBatch(request).thenApply(response -> response.body());
     }
 
     /**
-     * Creates multiple entities in a single request. Each entity is
-     * processed independently — a failure in one does not affect others.
-     * <p>Returns an array of <code>{id, status}</code> objects in the same order as
-     * the input array.</p>
+     * Creates multiple entities in a single request. Each entity is processed independently — a failure in one does not affect others.
+     * <p>Returns an array of <code>{id, status}</code> objects in the same order as the input array.</p>
      */
     public CompletableFuture<CreateEntitiesBatchResponse> createEntitiesBatch(
             CreateEntitiesBatchRequest request, RequestOptions requestOptions) {

@@ -26,6 +26,8 @@ public final class CreateMonitorRequestDto {
 
     private final String schedule;
 
+    private final Optional<String> timezone;
+
     private final Optional<WebhookDto> webhook;
 
     private final Optional<Integer> limit;
@@ -37,12 +39,14 @@ public final class CreateMonitorRequestDto {
     private CreateMonitorRequestDto(
             String referenceJobId,
             String schedule,
+            Optional<String> timezone,
             Optional<WebhookDto> webhook,
             Optional<Integer> limit,
             Optional<Boolean> backfill,
             Map<String, Object> additionalProperties) {
         this.referenceJobId = referenceJobId;
         this.schedule = schedule;
+        this.timezone = timezone;
         this.webhook = webhook;
         this.limit = limit;
         this.backfill = backfill;
@@ -59,12 +63,20 @@ public final class CreateMonitorRequestDto {
     }
 
     /**
-     * @return Monitor schedule in plain text format (e.g. 'every day at 12 PM UTC', 'every 48 hours').
-     * <p>Minimum frequency depends on your plan.</p>
+     * @return Monitor schedule in plain text format. Minimum frequency depends on your plan.
      */
     @JsonProperty("schedule")
     public String getSchedule() {
         return schedule;
+    }
+
+    /**
+     * @return The IANA timezone identifier used as the fallback when the <code>schedule</code> string does not include an explicit timezone.
+     * <p>If the schedule includes a timezone abbreviation (for example, <code>&quot;every day at 9am EST&quot;</code>), the parsed timezone takes priority and this value is ignored.</p>
+     */
+    @JsonProperty("timezone")
+    public Optional<String> getTimezone() {
+        return timezone;
     }
 
     /**
@@ -106,6 +118,7 @@ public final class CreateMonitorRequestDto {
     private boolean equalTo(CreateMonitorRequestDto other) {
         return referenceJobId.equals(other.referenceJobId)
                 && schedule.equals(other.schedule)
+                && timezone.equals(other.timezone)
                 && webhook.equals(other.webhook)
                 && limit.equals(other.limit)
                 && backfill.equals(other.backfill);
@@ -113,7 +126,7 @@ public final class CreateMonitorRequestDto {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.referenceJobId, this.schedule, this.webhook, this.limit, this.backfill);
+        return Objects.hash(this.referenceJobId, this.schedule, this.timezone, this.webhook, this.limit, this.backfill);
     }
 
     @java.lang.Override
@@ -137,8 +150,7 @@ public final class CreateMonitorRequestDto {
 
     public interface ScheduleStage {
         /**
-         * <p>Monitor schedule in plain text format (e.g. 'every day at 12 PM UTC', 'every 48 hours').</p>
-         * <p>Minimum frequency depends on your plan.</p>
+         * <p>Monitor schedule in plain text format. Minimum frequency depends on your plan.</p>
          */
         _FinalStage schedule(@NotNull String schedule);
     }
@@ -149,6 +161,14 @@ public final class CreateMonitorRequestDto {
         _FinalStage additionalProperty(String key, Object value);
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>The IANA timezone identifier used as the fallback when the <code>schedule</code> string does not include an explicit timezone.</p>
+         * <p>If the schedule includes a timezone abbreviation (for example, <code>&quot;every day at 9am EST&quot;</code>), the parsed timezone takes priority and this value is ignored.</p>
+         */
+        _FinalStage timezone(Optional<String> timezone);
+
+        _FinalStage timezone(String timezone);
 
         /**
          * <p>Optional webhook to receive notifications when jobs complete.</p>
@@ -185,6 +205,8 @@ public final class CreateMonitorRequestDto {
 
         private Optional<WebhookDto> webhook = Optional.empty();
 
+        private Optional<String> timezone = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -194,6 +216,7 @@ public final class CreateMonitorRequestDto {
         public Builder from(CreateMonitorRequestDto other) {
             referenceJobId(other.getReferenceJobId());
             schedule(other.getSchedule());
+            timezone(other.getTimezone());
             webhook(other.getWebhook());
             limit(other.getLimit());
             backfill(other.getBackfill());
@@ -215,10 +238,8 @@ public final class CreateMonitorRequestDto {
         }
 
         /**
-         * <p>Monitor schedule in plain text format (e.g. 'every day at 12 PM UTC', 'every 48 hours').</p>
-         * <p>Minimum frequency depends on your plan.</p>
-         * <p>Monitor schedule in plain text format (e.g. 'every day at 12 PM UTC', 'every 48 hours').</p>
-         * <p>Minimum frequency depends on your plan.</p>
+         * <p>Monitor schedule in plain text format. Minimum frequency depends on your plan.</p>
+         * <p>Monitor schedule in plain text format. Minimum frequency depends on your plan.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -290,10 +311,32 @@ public final class CreateMonitorRequestDto {
             return this;
         }
 
+        /**
+         * <p>The IANA timezone identifier used as the fallback when the <code>schedule</code> string does not include an explicit timezone.</p>
+         * <p>If the schedule includes a timezone abbreviation (for example, <code>&quot;every day at 9am EST&quot;</code>), the parsed timezone takes priority and this value is ignored.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage timezone(String timezone) {
+            this.timezone = Optional.ofNullable(timezone);
+            return this;
+        }
+
+        /**
+         * <p>The IANA timezone identifier used as the fallback when the <code>schedule</code> string does not include an explicit timezone.</p>
+         * <p>If the schedule includes a timezone abbreviation (for example, <code>&quot;every day at 9am EST&quot;</code>), the parsed timezone takes priority and this value is ignored.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "timezone", nulls = Nulls.SKIP)
+        public _FinalStage timezone(Optional<String> timezone) {
+            this.timezone = timezone;
+            return this;
+        }
+
         @java.lang.Override
         public CreateMonitorRequestDto build() {
             return new CreateMonitorRequestDto(
-                    referenceJobId, schedule, webhook, limit, backfill, additionalProperties);
+                    referenceJobId, schedule, timezone, webhook, limit, backfill, additionalProperties);
         }
 
         @java.lang.Override

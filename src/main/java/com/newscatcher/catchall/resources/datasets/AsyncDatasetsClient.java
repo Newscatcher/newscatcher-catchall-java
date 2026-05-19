@@ -11,8 +11,8 @@ import com.newscatcher.catchall.resources.datasets.requests.CreateDatasetRequest
 import com.newscatcher.catchall.resources.datasets.requests.DeleteDatasetRequest;
 import com.newscatcher.catchall.resources.datasets.requests.GetDatasetRequest;
 import com.newscatcher.catchall.resources.datasets.requests.GetDatasetStatusHistoryRequest;
+import com.newscatcher.catchall.resources.datasets.requests.ListDatasetEntitiesRequest;
 import com.newscatcher.catchall.resources.datasets.requests.ListDatasetsRequest;
-import com.newscatcher.catchall.resources.datasets.requests.ListEntitiesInDatasetRequest;
 import com.newscatcher.catchall.resources.datasets.requests.RemoveEntitiesFromDatasetRequest;
 import com.newscatcher.catchall.resources.datasets.requests.UpdateDatasetRequest;
 import com.newscatcher.catchall.resources.datasets.requests.UploadCsvToDatasetRequest;
@@ -46,36 +46,28 @@ public class AsyncDatasetsClient {
     }
 
     /**
-     * Returns a paginated list of datasets belonging to the authenticated
-     * organization. Supports filtering by status and sorting by name,
-     * status, or creation date.
+     * Returns a paginated list of datasets belonging to the authenticated organization. Supports filtering by status and sorting by name, status, or creation date.
      */
     public CompletableFuture<DatasetListResponse> listDatasets() {
         return this.rawClient.listDatasets().thenApply(response -> response.body());
     }
 
     /**
-     * Returns a paginated list of datasets belonging to the authenticated
-     * organization. Supports filtering by status and sorting by name,
-     * status, or creation date.
+     * Returns a paginated list of datasets belonging to the authenticated organization. Supports filtering by status and sorting by name, status, or creation date.
      */
     public CompletableFuture<DatasetListResponse> listDatasets(RequestOptions requestOptions) {
         return this.rawClient.listDatasets(requestOptions).thenApply(response -> response.body());
     }
 
     /**
-     * Returns a paginated list of datasets belonging to the authenticated
-     * organization. Supports filtering by status and sorting by name,
-     * status, or creation date.
+     * Returns a paginated list of datasets belonging to the authenticated organization. Supports filtering by status and sorting by name, status, or creation date.
      */
     public CompletableFuture<DatasetListResponse> listDatasets(ListDatasetsRequest request) {
         return this.rawClient.listDatasets(request).thenApply(response -> response.body());
     }
 
     /**
-     * Returns a paginated list of datasets belonging to the authenticated
-     * organization. Supports filtering by status and sorting by name,
-     * status, or creation date.
+     * Returns a paginated list of datasets belonging to the authenticated organization. Supports filtering by status and sorting by name, status, or creation date.
      */
     public CompletableFuture<DatasetListResponse> listDatasets(
             ListDatasetsRequest request, RequestOptions requestOptions) {
@@ -108,9 +100,7 @@ public class AsyncDatasetsClient {
     }
 
     /**
-     * Creates a new dataset by uploading a CSV file. Each row in the CSV
-     * becomes an entity. The <code>name</code> column is required; all other columns
-     * are optional.
+     * Creates a new dataset by uploading a CSV file. Each row in the CSV becomes an entity. The <code>name</code> and <code>domain</code>columns are required; all other columns are optional.
      * <p><strong>CSV format:</strong></p>
      * <pre><code class="language-csv">name,description,domain,alternative_names,key_persons
      * NewsCatcher,&quot;AI-powered news data provider&quot;,newscatcherapi.com,&quot;NC;NewsCatcher API&quot;,&quot;Artem Bugara;Maksym Sugonyaka&quot;
@@ -125,9 +115,7 @@ public class AsyncDatasetsClient {
     }
 
     /**
-     * Creates a new dataset by uploading a CSV file. Each row in the CSV
-     * becomes an entity. The <code>name</code> column is required; all other columns
-     * are optional.
+     * Creates a new dataset by uploading a CSV file. Each row in the CSV becomes an entity. The <code>name</code> and <code>domain</code>columns are required; all other columns are optional.
      * <p><strong>CSV format:</strong></p>
      * <pre><code class="language-csv">name,description,domain,alternative_names,key_persons
      * NewsCatcher,&quot;AI-powered news data provider&quot;,newscatcherapi.com,&quot;NC;NewsCatcher API&quot;,&quot;Artem Bugara;Maksym Sugonyaka&quot;
@@ -262,39 +250,6 @@ public class AsyncDatasetsClient {
     }
 
     /**
-     * Returns a paginated list of entities in a dataset. Supports filtering by status and entity type.
-     */
-    public CompletableFuture<DatasetEntityListResponse> listEntitiesInDataset(String datasetId) {
-        return this.rawClient.listEntitiesInDataset(datasetId).thenApply(response -> response.body());
-    }
-
-    /**
-     * Returns a paginated list of entities in a dataset. Supports filtering by status and entity type.
-     */
-    public CompletableFuture<DatasetEntityListResponse> listEntitiesInDataset(
-            String datasetId, RequestOptions requestOptions) {
-        return this.rawClient.listEntitiesInDataset(datasetId, requestOptions).thenApply(response -> response.body());
-    }
-
-    /**
-     * Returns a paginated list of entities in a dataset. Supports filtering by status and entity type.
-     */
-    public CompletableFuture<DatasetEntityListResponse> listEntitiesInDataset(
-            String datasetId, ListEntitiesInDatasetRequest request) {
-        return this.rawClient.listEntitiesInDataset(datasetId, request).thenApply(response -> response.body());
-    }
-
-    /**
-     * Returns a paginated list of entities in a dataset. Supports filtering by status and entity type.
-     */
-    public CompletableFuture<DatasetEntityListResponse> listEntitiesInDataset(
-            String datasetId, ListEntitiesInDatasetRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .listEntitiesInDataset(datasetId, request, requestOptions)
-                .thenApply(response -> response.body());
-    }
-
-    /**
      * Adds one or more existing entities to a dataset. Returns the number of entities added.
      */
     public CompletableFuture<ManageEntitiesResponse> addEntitiesToDataset(
@@ -313,9 +268,7 @@ public class AsyncDatasetsClient {
     }
 
     /**
-     * Removes one or more entities from a dataset. The entities themselves
-     * are not deleted — they are only removed from this dataset. Returns
-     * the number of entities removed.
+     * Removes one or more entities from a dataset. The entities themselves are not deleted — they are only removed from this dataset. Returns the number of entities removed.
      */
     public CompletableFuture<ManageEntitiesResponse> removeEntitiesFromDataset(
             String datasetId, RemoveEntitiesFromDatasetRequest request) {
@@ -323,9 +276,7 @@ public class AsyncDatasetsClient {
     }
 
     /**
-     * Removes one or more entities from a dataset. The entities themselves
-     * are not deleted — they are only removed from this dataset. Returns
-     * the number of entities removed.
+     * Removes one or more entities from a dataset. The entities themselves are not deleted — they are only removed from this dataset. Returns the number of entities removed.
      */
     public CompletableFuture<ManageEntitiesResponse> removeEntitiesFromDataset(
             String datasetId, RemoveEntitiesFromDatasetRequest request, RequestOptions requestOptions) {
@@ -335,16 +286,47 @@ public class AsyncDatasetsClient {
     }
 
     /**
-     * Returns the full status change history for a dataset, ordered
-     * chronologically from oldest to newest.
+     * Returns a paginated list of entities in a dataset. Supports filtering by status, entity type, and name search.
+     */
+    public CompletableFuture<DatasetEntityListResponse> listEntitiesInDataset(String datasetId) {
+        return this.rawClient.listEntitiesInDataset(datasetId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns a paginated list of entities in a dataset. Supports filtering by status, entity type, and name search.
+     */
+    public CompletableFuture<DatasetEntityListResponse> listEntitiesInDataset(
+            String datasetId, RequestOptions requestOptions) {
+        return this.rawClient.listEntitiesInDataset(datasetId, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns a paginated list of entities in a dataset. Supports filtering by status, entity type, and name search.
+     */
+    public CompletableFuture<DatasetEntityListResponse> listEntitiesInDataset(
+            String datasetId, ListDatasetEntitiesRequest request) {
+        return this.rawClient.listEntitiesInDataset(datasetId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns a paginated list of entities in a dataset. Supports filtering by status, entity type, and name search.
+     */
+    public CompletableFuture<DatasetEntityListResponse> listEntitiesInDataset(
+            String datasetId, ListDatasetEntitiesRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .listEntitiesInDataset(datasetId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns the full status change history for a dataset, ordered chronologically from oldest to newest.
      */
     public CompletableFuture<DatasetStatusHistoryResponse> getDatasetStatusHistory(String datasetId) {
         return this.rawClient.getDatasetStatusHistory(datasetId).thenApply(response -> response.body());
     }
 
     /**
-     * Returns the full status change history for a dataset, ordered
-     * chronologically from oldest to newest.
+     * Returns the full status change history for a dataset, ordered chronologically from oldest to newest.
      */
     public CompletableFuture<DatasetStatusHistoryResponse> getDatasetStatusHistory(
             String datasetId, RequestOptions requestOptions) {
@@ -352,8 +334,7 @@ public class AsyncDatasetsClient {
     }
 
     /**
-     * Returns the full status change history for a dataset, ordered
-     * chronologically from oldest to newest.
+     * Returns the full status change history for a dataset, ordered chronologically from oldest to newest.
      */
     public CompletableFuture<DatasetStatusHistoryResponse> getDatasetStatusHistory(
             String datasetId, GetDatasetStatusHistoryRequest request) {
@@ -361,8 +342,7 @@ public class AsyncDatasetsClient {
     }
 
     /**
-     * Returns the full status change history for a dataset, ordered
-     * chronologically from oldest to newest.
+     * Returns the full status change history for a dataset, ordered chronologically from oldest to newest.
      */
     public CompletableFuture<DatasetStatusHistoryResponse> getDatasetStatusHistory(
             String datasetId, GetDatasetStatusHistoryRequest request, RequestOptions requestOptions) {
@@ -372,10 +352,8 @@ public class AsyncDatasetsClient {
     }
 
     /**
-     * Appends new companies to an existing dataset by uploading a CSV file.
-     * Uses the same CSV format as the dataset creation endpoint.
-     * <p>The response omits <code>dataset_name</code> compared to the create-from-CSV
-     * endpoint since the dataset already exists.</p>
+     * Appends new companies to an existing dataset by uploading a CSV file. Uses the same CSV format as the dataset creation endpoint.
+     * <p>The response omits <code>dataset_name</code> compared to the create-from-CSV endpoint since the dataset already exists.</p>
      */
     public CompletableFuture<UploadCsvToDatasetResponse> uploadCsvToDataset(
             String datasetId, File file, UploadCsvToDatasetRequest request) {
@@ -383,10 +361,8 @@ public class AsyncDatasetsClient {
     }
 
     /**
-     * Appends new companies to an existing dataset by uploading a CSV file.
-     * Uses the same CSV format as the dataset creation endpoint.
-     * <p>The response omits <code>dataset_name</code> compared to the create-from-CSV
-     * endpoint since the dataset already exists.</p>
+     * Appends new companies to an existing dataset by uploading a CSV file. Uses the same CSV format as the dataset creation endpoint.
+     * <p>The response omits <code>dataset_name</code> compared to the create-from-CSV endpoint since the dataset already exists.</p>
      */
     public CompletableFuture<UploadCsvToDatasetResponse> uploadCsvToDataset(
             String datasetId, File file, UploadCsvToDatasetRequest request, RequestOptions requestOptions) {

@@ -34,36 +34,28 @@ public class EntitiesClient {
     }
 
     /**
-     * Returns a paginated list of entities belonging to the authenticated
-     * organization. Supports filtering by status and entity type, and
-     * sorting by name, status, or creation date.
+     * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public EntityListResponse listEntities() {
         return this.rawClient.listEntities().body();
     }
 
     /**
-     * Returns a paginated list of entities belonging to the authenticated
-     * organization. Supports filtering by status and entity type, and
-     * sorting by name, status, or creation date.
+     * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public EntityListResponse listEntities(RequestOptions requestOptions) {
         return this.rawClient.listEntities(requestOptions).body();
     }
 
     /**
-     * Returns a paginated list of entities belonging to the authenticated
-     * organization. Supports filtering by status and entity type, and
-     * sorting by name, status, or creation date.
+     * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public EntityListResponse listEntities(ListEntitiesRequest request) {
         return this.rawClient.listEntities(request).body();
     }
 
     /**
-     * Returns a paginated list of entities belonging to the authenticated
-     * organization. Supports filtering by status and entity type, and
-     * sorting by name, status, or creation date.
+     * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public EntityListResponse listEntities(ListEntitiesRequest request, RequestOptions requestOptions) {
         return this.rawClient.listEntities(request, requestOptions).body();
@@ -92,20 +84,16 @@ public class EntitiesClient {
     }
 
     /**
-     * Creates multiple entities in a single request. Each entity is
-     * processed independently — a failure in one does not affect others.
-     * <p>Returns an array of <code>{id, status}</code> objects in the same order as
-     * the input array.</p>
+     * Creates multiple entities in a single request. Each entity is processed independently — a failure in one does not affect others.
+     * <p>Returns an array of <code>{id, status}</code> objects in the same order as the input array.</p>
      */
     public CreateEntitiesBatchResponse createEntitiesBatch(CreateEntitiesBatchRequest request) {
         return this.rawClient.createEntitiesBatch(request).body();
     }
 
     /**
-     * Creates multiple entities in a single request. Each entity is
-     * processed independently — a failure in one does not affect others.
-     * <p>Returns an array of <code>{id, status}</code> objects in the same order as
-     * the input array.</p>
+     * Creates multiple entities in a single request. Each entity is processed independently — a failure in one does not affect others.
+     * <p>Returns an array of <code>{id, status}</code> objects in the same order as the input array.</p>
      */
     public CreateEntitiesBatchResponse createEntitiesBatch(
             CreateEntitiesBatchRequest request, RequestOptions requestOptions) {

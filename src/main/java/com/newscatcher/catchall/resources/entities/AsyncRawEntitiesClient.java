@@ -47,36 +47,28 @@ public class AsyncRawEntitiesClient {
     }
 
     /**
-     * Returns a paginated list of entities belonging to the authenticated
-     * organization. Supports filtering by status and entity type, and
-     * sorting by name, status, or creation date.
+     * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public CompletableFuture<CatchAllApiHttpResponse<EntityListResponse>> listEntities() {
         return listEntities(ListEntitiesRequest.builder().build());
     }
 
     /**
-     * Returns a paginated list of entities belonging to the authenticated
-     * organization. Supports filtering by status and entity type, and
-     * sorting by name, status, or creation date.
+     * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public CompletableFuture<CatchAllApiHttpResponse<EntityListResponse>> listEntities(RequestOptions requestOptions) {
         return listEntities(ListEntitiesRequest.builder().build(), requestOptions);
     }
 
     /**
-     * Returns a paginated list of entities belonging to the authenticated
-     * organization. Supports filtering by status and entity type, and
-     * sorting by name, status, or creation date.
+     * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public CompletableFuture<CatchAllApiHttpResponse<EntityListResponse>> listEntities(ListEntitiesRequest request) {
         return listEntities(request, null);
     }
 
     /**
-     * Returns a paginated list of entities belonging to the authenticated
-     * organization. Supports filtering by status and entity type, and
-     * sorting by name, status, or creation date.
+     * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public CompletableFuture<CatchAllApiHttpResponse<EntityListResponse>> listEntities(
             ListEntitiesRequest request, RequestOptions requestOptions) {
@@ -256,10 +248,8 @@ public class AsyncRawEntitiesClient {
     }
 
     /**
-     * Creates multiple entities in a single request. Each entity is
-     * processed independently — a failure in one does not affect others.
-     * <p>Returns an array of <code>{id, status}</code> objects in the same order as
-     * the input array.</p>
+     * Creates multiple entities in a single request. Each entity is processed independently — a failure in one does not affect others.
+     * <p>Returns an array of <code>{id, status}</code> objects in the same order as the input array.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<CreateEntitiesBatchResponse>> createEntitiesBatch(
             CreateEntitiesBatchRequest request) {
@@ -267,10 +257,8 @@ public class AsyncRawEntitiesClient {
     }
 
     /**
-     * Creates multiple entities in a single request. Each entity is
-     * processed independently — a failure in one does not affect others.
-     * <p>Returns an array of <code>{id, status}</code> objects in the same order as
-     * the input array.</p>
+     * Creates multiple entities in a single request. Each entity is processed independently — a failure in one does not affect others.
+     * <p>Returns an array of <code>{id, status}</code> objects in the same order as the input array.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<CreateEntitiesBatchResponse>> createEntitiesBatch(
             CreateEntitiesBatchRequest request, RequestOptions requestOptions) {

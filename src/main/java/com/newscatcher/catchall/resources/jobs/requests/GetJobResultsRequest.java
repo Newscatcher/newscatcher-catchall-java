@@ -5,9 +5,9 @@ package com.newscatcher.catchall.resources.jobs.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -36,7 +36,7 @@ public final class GetJobResultsRequest {
     /**
      * @return Page number to retrieve.
      */
-    @JsonIgnore
+    @JsonProperty("page")
     public Optional<Integer> getPage() {
         return page;
     }
@@ -44,7 +44,7 @@ public final class GetJobResultsRequest {
     /**
      * @return Number of records per page.
      */
-    @JsonIgnore
+    @JsonProperty("page_size")
     public Optional<Integer> getPageSize() {
         return pageSize;
     }

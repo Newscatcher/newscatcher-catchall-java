@@ -9,11 +9,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
@@ -27,14 +29,26 @@ public final class ConnectedEntity {
 
     private final String relation;
 
+    private final String type;
+
+    private final Optional<CompanyAttributes> company;
+
     private final Map<String, Object> additionalProperties;
 
     private ConnectedEntity(
-            String entityId, String name, int edScore, String relation, Map<String, Object> additionalProperties) {
+            String entityId,
+            String name,
+            int edScore,
+            String relation,
+            String type,
+            Optional<CompanyAttributes> company,
+            Map<String, Object> additionalProperties) {
         this.entityId = entityId;
         this.name = name;
         this.edScore = edScore;
         this.relation = relation;
+        this.type = type;
+        this.company = company;
         this.additionalProperties = additionalProperties;
     }
 
@@ -55,8 +69,7 @@ public final class ConnectedEntity {
     }
 
     /**
-     * @return Relevance score indicating how directly the entity is associated
-     * with this event.
+     * @return Relevance score indicating how directly the entity is associated with this event.
      * <p>| Score | Meaning |
      * |-------|---------|
      * | 10 | Direct mention, critical event (merger, CEO change, major lawsuit) |
@@ -70,12 +83,28 @@ public final class ConnectedEntity {
     }
 
     /**
-     * @return Short explanation (up to 100 characters) of why this entity is
-     * associated with the event.
+     * @return Short explanation (up to 100 characters) of why this entity is associated with the event.
      */
     @JsonProperty("relation")
     public String getRelation() {
         return relation;
+    }
+
+    /**
+     * @return The entity type.
+     */
+    @JsonProperty("type")
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @return The stored attributes for this entity. Present only when attributes exist in the database.
+     * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code> field.</p>
+     */
+    @JsonProperty("company")
+    public Optional<CompanyAttributes> getCompany() {
+        return company;
     }
 
     @java.lang.Override
@@ -93,12 +122,14 @@ public final class ConnectedEntity {
         return entityId.equals(other.entityId)
                 && name.equals(other.name)
                 && edScore == other.edScore
-                && relation.equals(other.relation);
+                && relation.equals(other.relation)
+                && type.equals(other.type)
+                && company.equals(other.company);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.entityId, this.name, this.edScore, this.relation);
+        return Objects.hash(this.entityId, this.name, this.edScore, this.relation, this.type, this.company);
     }
 
     @java.lang.Override
@@ -128,8 +159,7 @@ public final class ConnectedEntity {
 
     public interface EdScoreStage {
         /**
-         * <p>Relevance score indicating how directly the entity is associated
-         * with this event.</p>
+         * <p>Relevance score indicating how directly the entity is associated with this event.</p>
          * <p>| Score | Meaning |
          * |-------|---------|
          * | 10 | Direct mention, critical event (merger, CEO change, major lawsuit) |
@@ -142,10 +172,16 @@ public final class ConnectedEntity {
 
     public interface RelationStage {
         /**
-         * <p>Short explanation (up to 100 characters) of why this entity is
-         * associated with the event.</p>
+         * <p>Short explanation (up to 100 characters) of why this entity is associated with the event.</p>
          */
-        _FinalStage relation(@NotNull String relation);
+        TypeStage relation(@NotNull String relation);
+    }
+
+    public interface TypeStage {
+        /**
+         * <p>The entity type.</p>
+         */
+        _FinalStage type(@NotNull String type);
     }
 
     public interface _FinalStage {
@@ -154,10 +190,19 @@ public final class ConnectedEntity {
         _FinalStage additionalProperty(String key, Object value);
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>The stored attributes for this entity. Present only when attributes exist in the database.</p>
+         * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code> field.</p>
+         */
+        _FinalStage company(Optional<CompanyAttributes> company);
+
+        _FinalStage company(CompanyAttributes company);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements EntityIdStage, NameStage, EdScoreStage, RelationStage, _FinalStage {
+    public static final class Builder
+            implements EntityIdStage, NameStage, EdScoreStage, RelationStage, TypeStage, _FinalStage {
         private String entityId;
 
         private String name;
@@ -165,6 +210,10 @@ public final class ConnectedEntity {
         private int edScore;
 
         private String relation;
+
+        private String type;
+
+        private Optional<CompanyAttributes> company = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -177,6 +226,8 @@ public final class ConnectedEntity {
             name(other.getName());
             edScore(other.getEdScore());
             relation(other.getRelation());
+            type(other.getType());
+            company(other.getCompany());
             return this;
         }
 
@@ -205,16 +256,14 @@ public final class ConnectedEntity {
         }
 
         /**
-         * <p>Relevance score indicating how directly the entity is associated
-         * with this event.</p>
+         * <p>Relevance score indicating how directly the entity is associated with this event.</p>
          * <p>| Score | Meaning |
          * |-------|---------|
          * | 10 | Direct mention, critical event (merger, CEO change, major lawsuit) |
          * | 7–9 | Major impact (earnings, product launch, senior hire) |
          * | 4–6 | Routine update (minor product news, mid-level changes) |
          * | 1–3 | Indirect mention (listed with others, stock noise) |</p>
-         * <p>Relevance score indicating how directly the entity is associated
-         * with this event.</p>
+         * <p>Relevance score indicating how directly the entity is associated with this event.</p>
          * <p>| Score | Meaning |
          * |-------|---------|
          * | 10 | Direct mention, critical event (merger, CEO change, major lawsuit) |
@@ -231,22 +280,54 @@ public final class ConnectedEntity {
         }
 
         /**
-         * <p>Short explanation (up to 100 characters) of why this entity is
-         * associated with the event.</p>
-         * <p>Short explanation (up to 100 characters) of why this entity is
-         * associated with the event.</p>
+         * <p>Short explanation (up to 100 characters) of why this entity is associated with the event.</p>
+         * <p>Short explanation (up to 100 characters) of why this entity is associated with the event.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
         @JsonSetter("relation")
-        public _FinalStage relation(@NotNull String relation) {
+        public TypeStage relation(@NotNull String relation) {
             this.relation = Objects.requireNonNull(relation, "relation must not be null");
+            return this;
+        }
+
+        /**
+         * <p>The entity type.</p>
+         * <p>The entity type.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("type")
+        public _FinalStage type(@NotNull String type) {
+            this.type = Objects.requireNonNull(type, "type must not be null");
+            return this;
+        }
+
+        /**
+         * <p>The stored attributes for this entity. Present only when attributes exist in the database.</p>
+         * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code> field.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage company(CompanyAttributes company) {
+            this.company = Optional.ofNullable(company);
+            return this;
+        }
+
+        /**
+         * <p>The stored attributes for this entity. Present only when attributes exist in the database.</p>
+         * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code> field.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "company", nulls = Nulls.SKIP)
+        public _FinalStage company(Optional<CompanyAttributes> company) {
+            this.company = company;
             return this;
         }
 
         @java.lang.Override
         public ConnectedEntity build() {
-            return new ConnectedEntity(entityId, name, edScore, relation, additionalProperties);
+            return new ConnectedEntity(entityId, name, edScore, relation, type, company, additionalProperties);
         }
 
         @java.lang.Override

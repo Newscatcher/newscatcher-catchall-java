@@ -70,7 +70,7 @@ client.jobs().getUserJobs(
 <dl>
 <dd>
 
-**ownership:** `Optional<OwnershipFilter>` — Filter results by ownership. Defaults to `all`.
+**ownership:** `Optional<OwnershipFilter>` 
     
 </dd>
 </dl>
@@ -281,9 +281,21 @@ Job processing mode.
 
 **connectedDatasetIds:** `Optional<List<String>>` 
 
-Dataset IDs to connect to this job. When provided, activates Company Watchlist mode — the job returns only events relevant to companies in the connected datasets with each record including a `connected_entities` array scored per company.
+Dataset IDs to connect to the job. When provided, this enables Company Watchlist mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use `ed_score_min`.
 
 The dataset must have `latest_status: ready` before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns `400`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**edScoreMin:** `Optional<Integer>` 
+
+The minimum relevance score a connected entity must reach for its record to be included in results.
+
+Only valid when `connected_dataset_ids` is set; otherwise ignored. Records where no connected entity meets the threshold are excluded entirely.
     
 </dd>
 </dl>
@@ -509,11 +521,9 @@ client.jobs().continueJob(
 <dl>
 <dd>
 
-Soft-deletes a job. The job is flagged as deleted and no longer
-appears in list results. The underlying data is retained.
+Soft-deletes a job. The job is flagged as deleted and no longer appears in list results. The underlying data is retained.
 
-Only the job owner can delete a job. Returns `404` if the job is not
-found or does not belong to the authenticated user.
+Only the job owner can delete a job. Returns `404` if the job is not found or does not belong to the authenticated user.
 
 Deleting an already-deleted job returns `200`.
 </dd>
@@ -633,7 +643,7 @@ client.monitors().listMonitors(
 <dl>
 <dd>
 
-**ownership:** `Optional<OwnershipFilter>` — Filter results by ownership. Defaults to `all`.
+**ownership:** `Optional<OwnershipFilter>` 
     
 </dd>
 </dl>
@@ -676,7 +686,8 @@ client.monitors().createMonitor(
     CreateMonitorRequestDto
         .builder()
         .referenceJobId("5f0c9087-85cb-4917-b3c7-e5a5eff73a0c")
-        .schedule("every day at 12 PM UTC")
+        .schedule("every day at 12 PM")
+        .timezone("UTC")
         .webhook(
             WebhookDto
                 .builder()
@@ -719,11 +730,19 @@ If [`backfill`](https://www.newscatcherapi.com/docs/web-search-api/api-reference
 <dl>
 <dd>
 
-**schedule:** `String` 
+**schedule:** `String` — Monitor schedule in plain text format. Minimum frequency depends on your plan.
+    
+</dd>
+</dl>
 
-Monitor schedule in plain text format (e.g. 'every day at 12 PM UTC', 'every 48 hours').
+<dl>
+<dd>
 
-Minimum frequency depends on your plan.
+**timezone:** `Optional<String>` 
+
+The IANA timezone identifier used as the fallback when the `schedule` string does not include an explicit timezone.
+
+If the schedule includes a timezone abbreviation (for example, `"every day at 9am EST"`), the parsed timezone takes priority and this value is ignored. 
     
 </dd>
 </dl>
@@ -1245,9 +1264,7 @@ client.monitors().updateMonitor(
 <dl>
 <dd>
 
-Returns a paginated list of entities belonging to the authenticated
-organization. Supports filtering by status and entity type, and
-sorting by name, status, or creation date.
+Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
 </dd>
 </dl>
 </dd>
@@ -1441,11 +1458,9 @@ client.entities().createEntity(
 <dl>
 <dd>
 
-Creates multiple entities in a single request. Each entity is
-processed independently — a failure in one does not affect others.
+Creates multiple entities in a single request. Each entity is processed independently — a failure in one does not affect others.
 
-Returns an array of `{id, status}` objects in the same order as
-the input array.
+Returns an array of `{id, status}` objects in the same order as the input array.
 </dd>
 </dl>
 </dd>
@@ -1778,9 +1793,7 @@ client.entities().updateEntity(
 <dl>
 <dd>
 
-Returns a paginated list of datasets belonging to the authenticated
-organization. Supports filtering by status and sorting by name,
-status, or creation date.
+Returns a paginated list of datasets belonging to the authenticated organization. Supports filtering by status and sorting by name, status, or creation date.
 </dd>
 </dl>
 </dd>
@@ -1863,7 +1876,7 @@ client.datasets().listDatasets(
 <dl>
 <dd>
 
-**ownership:** `Optional<OwnershipFilter>` — Filter results by ownership. Defaults to `all`.
+**ownership:** `Optional<OwnershipFilter>` 
     
 </dd>
 </dl>
@@ -1975,9 +1988,7 @@ client.datasets().createDataset(
 <dl>
 <dd>
 
-Creates a new dataset by uploading a CSV file. Each row in the CSV
-becomes an entity. The `name` column is required; all other columns
-are optional.
+Creates a new dataset by uploading a CSV file. Each row in the CSV becomes an entity. The `name` and `domain`columns are required; all other columns are optional.
 
 **CSV format:**
 ```csv
@@ -2004,6 +2015,7 @@ Use semicolons (`;`) to separate multiple values in `alternative_names` and `key
 
 ```java
 client.datasets().createDatasetFromCsv(
+    null,
     CreateDatasetFromCsvRequest
         .builder()
         .name("name")
@@ -2217,121 +2229,6 @@ client.datasets().updateDataset(
 </dl>
 </details>
 
-<details><summary><code>client.datasets.listEntitiesInDataset(datasetId) -> DatasetEntityListResponse</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Returns a paginated list of entities in a dataset. Supports filtering by status and entity type.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.datasets().listEntitiesInDataset(
-    "ccabb755-afc2-4047-b84c-78d1f23d49b2",
-    ListEntitiesInDatasetRequest
-        .builder()
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**datasetId:** `String` — Unique dataset identifier.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**page:** `Optional<Integer>` — Page number to retrieve.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pageSize:** `Optional<Integer>` — Number of entities per page.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**search:** `Optional<String>` — Filter entities by name.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**status:** `Optional<EntityStatus>` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**entityType:** `Optional<EntityType>` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**sortBy:** `Optional<EntitySortBy>` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**sortOrder:** `Optional<SortOrder>` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 <details><summary><code>client.datasets.addEntitiesToDataset(datasetId, request) -> ManageEntitiesResponse</code></summary>
 <dl>
 <dd>
@@ -2419,9 +2316,7 @@ client.datasets().addEntitiesToDataset(
 <dl>
 <dd>
 
-Removes one or more entities from a dataset. The entities themselves
-are not deleted — they are only removed from this dataset. Returns
-the number of entities removed.
+Removes one or more entities from a dataset. The entities themselves are not deleted — they are only removed from this dataset. Returns the number of entities removed.
 </dd>
 </dl>
 </dd>
@@ -2484,6 +2379,128 @@ client.datasets().removeEntitiesFromDataset(
 </dl>
 </details>
 
+<details><summary><code>client.datasets.listEntitiesInDataset(datasetId, request) -> DatasetEntityListResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns a paginated list of entities in a dataset. Supports filtering by status, entity type, and name search.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.datasets().listEntitiesInDataset(
+    "ccabb755-afc2-4047-b84c-78d1f23d49b2",
+    ListDatasetEntitiesRequest
+        .builder()
+        .page(1)
+        .pageSize(100)
+        .search("OpenAI")
+        .status(EntityStatus.READY)
+        .entityType(EntityType.COMPANY)
+        .sortBy(EntitySortBy.CREATED_AT)
+        .sortOrder(SortOrder.DESC)
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**datasetId:** `String` — Unique dataset identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `Optional<Integer>` — The page number to retrieve.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageSize:** `Optional<Integer>` — The number of entities per page.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**search:** `Optional<String>` — Filters entities by name using a case-insensitive substring match.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `Optional<EntityStatus>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**entityType:** `Optional<EntityType>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sortBy:** `Optional<EntitySortBy>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sortOrder:** `Optional<SortOrder>` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.datasets.getDatasetStatusHistory(datasetId) -> DatasetStatusHistoryResponse</code></summary>
 <dl>
 <dd>
@@ -2496,8 +2513,7 @@ client.datasets().removeEntitiesFromDataset(
 <dl>
 <dd>
 
-Returns the full status change history for a dataset, ordered
-chronologically from oldest to newest.
+Returns the full status change history for a dataset, ordered chronologically from oldest to newest.
 </dd>
 </dl>
 </dd>
@@ -2556,11 +2572,9 @@ client.datasets().getDatasetStatusHistory(
 <dl>
 <dd>
 
-Appends new companies to an existing dataset by uploading a CSV file.
-Uses the same CSV format as the dataset creation endpoint.
+Appends new companies to an existing dataset by uploading a CSV file. Uses the same CSV format as the dataset creation endpoint.
 
-The response omits `dataset_name` compared to the create-from-CSV
-endpoint since the dataset already exists.
+The response omits `dataset_name` compared to the create-from-CSV endpoint since the dataset already exists.
 </dd>
 </dl>
 </dd>
@@ -2577,6 +2591,7 @@ endpoint since the dataset already exists.
 ```java
 client.datasets().uploadCsvToDataset(
     "ccabb755-afc2-4047-b84c-78d1f23d49b2",
+    null,
     UploadCsvToDatasetRequest
         .builder()
         .build()

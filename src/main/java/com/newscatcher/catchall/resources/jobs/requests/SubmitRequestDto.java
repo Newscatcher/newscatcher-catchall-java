@@ -44,6 +44,8 @@ public final class SubmitRequestDto {
 
     private final Optional<List<String>> connectedDatasetIds;
 
+    private final Optional<Integer> edScoreMin;
+
     private final Map<String, Object> additionalProperties;
 
     private SubmitRequestDto(
@@ -56,6 +58,7 @@ public final class SubmitRequestDto {
             Optional<List<EnrichmentSchema>> enrichments,
             Optional<SubmitRequestDtoMode> mode,
             Optional<List<String>> connectedDatasetIds,
+            Optional<Integer> edScoreMin,
             Map<String, Object> additionalProperties) {
         this.query = query;
         this.context = context;
@@ -66,6 +69,7 @@ public final class SubmitRequestDto {
         this.enrichments = enrichments;
         this.mode = mode;
         this.connectedDatasetIds = connectedDatasetIds;
+        this.edScoreMin = edScoreMin;
         this.additionalProperties = additionalProperties;
     }
 
@@ -125,12 +129,21 @@ public final class SubmitRequestDto {
     }
 
     /**
-     * @return Dataset IDs to connect to this job. When provided, activates Company Watchlist mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.
+     * @return Dataset IDs to connect to the job. When provided, this enables Company Watchlist mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use <code>ed_score_min</code>.
      * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
      */
     @JsonProperty("connected_dataset_ids")
     public Optional<List<String>> getConnectedDatasetIds() {
         return connectedDatasetIds;
+    }
+
+    /**
+     * @return The minimum relevance score a connected entity must reach for its record to be included in results.
+     * <p>Only valid when <code>connected_dataset_ids</code> is set; otherwise ignored. Records where no connected entity meets the threshold are excluded entirely.</p>
+     */
+    @JsonProperty("ed_score_min")
+    public Optional<Integer> getEdScoreMin() {
+        return edScoreMin;
     }
 
     @java.lang.Override
@@ -153,7 +166,8 @@ public final class SubmitRequestDto {
                 && validators.equals(other.validators)
                 && enrichments.equals(other.enrichments)
                 && mode.equals(other.mode)
-                && connectedDatasetIds.equals(other.connectedDatasetIds);
+                && connectedDatasetIds.equals(other.connectedDatasetIds)
+                && edScoreMin.equals(other.edScoreMin);
     }
 
     @java.lang.Override
@@ -167,7 +181,8 @@ public final class SubmitRequestDto {
                 this.validators,
                 this.enrichments,
                 this.mode,
-                this.connectedDatasetIds);
+                this.connectedDatasetIds,
+                this.edScoreMin);
     }
 
     @java.lang.Override
@@ -236,17 +251,27 @@ public final class SubmitRequestDto {
         _FinalStage mode(SubmitRequestDtoMode mode);
 
         /**
-         * <p>Dataset IDs to connect to this job. When provided, activates Company Watchlist mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.</p>
+         * <p>Dataset IDs to connect to the job. When provided, this enables Company Watchlist mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use <code>ed_score_min</code>.</p>
          * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
          */
         _FinalStage connectedDatasetIds(Optional<List<String>> connectedDatasetIds);
 
         _FinalStage connectedDatasetIds(List<String> connectedDatasetIds);
+
+        /**
+         * <p>The minimum relevance score a connected entity must reach for its record to be included in results.</p>
+         * <p>Only valid when <code>connected_dataset_ids</code> is set; otherwise ignored. Records where no connected entity meets the threshold are excluded entirely.</p>
+         */
+        _FinalStage edScoreMin(Optional<Integer> edScoreMin);
+
+        _FinalStage edScoreMin(Integer edScoreMin);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements QueryStage, _FinalStage {
         private String query;
+
+        private Optional<Integer> edScoreMin = Optional.empty();
 
         private Optional<List<String>> connectedDatasetIds = Optional.empty();
 
@@ -280,6 +305,7 @@ public final class SubmitRequestDto {
             enrichments(other.getEnrichments());
             mode(other.getMode());
             connectedDatasetIds(other.getConnectedDatasetIds());
+            edScoreMin(other.getEdScoreMin());
             return this;
         }
 
@@ -291,7 +317,29 @@ public final class SubmitRequestDto {
         }
 
         /**
-         * <p>Dataset IDs to connect to this job. When provided, activates Company Watchlist mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.</p>
+         * <p>The minimum relevance score a connected entity must reach for its record to be included in results.</p>
+         * <p>Only valid when <code>connected_dataset_ids</code> is set; otherwise ignored. Records where no connected entity meets the threshold are excluded entirely.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage edScoreMin(Integer edScoreMin) {
+            this.edScoreMin = Optional.ofNullable(edScoreMin);
+            return this;
+        }
+
+        /**
+         * <p>The minimum relevance score a connected entity must reach for its record to be included in results.</p>
+         * <p>Only valid when <code>connected_dataset_ids</code> is set; otherwise ignored. Records where no connected entity meets the threshold are excluded entirely.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "ed_score_min", nulls = Nulls.SKIP)
+        public _FinalStage edScoreMin(Optional<Integer> edScoreMin) {
+            this.edScoreMin = edScoreMin;
+            return this;
+        }
+
+        /**
+         * <p>Dataset IDs to connect to the job. When provided, this enables Company Watchlist mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use <code>ed_score_min</code>.</p>
          * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -302,7 +350,7 @@ public final class SubmitRequestDto {
         }
 
         /**
-         * <p>Dataset IDs to connect to this job. When provided, activates Company Watchlist mode — the job returns only events relevant to companies in the connected datasets with each record including a <code>connected_entities</code> array scored per company.</p>
+         * <p>Dataset IDs to connect to the job. When provided, this enables Company Watchlist mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use <code>ed_score_min</code>.</p>
          * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
          */
         @java.lang.Override
@@ -448,6 +496,7 @@ public final class SubmitRequestDto {
                     enrichments,
                     mode,
                     connectedDatasetIds,
+                    edScoreMin,
                     additionalProperties);
         }
 

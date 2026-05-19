@@ -23,8 +23,8 @@ import com.newscatcher.catchall.resources.datasets.requests.CreateDatasetRequest
 import com.newscatcher.catchall.resources.datasets.requests.DeleteDatasetRequest;
 import com.newscatcher.catchall.resources.datasets.requests.GetDatasetRequest;
 import com.newscatcher.catchall.resources.datasets.requests.GetDatasetStatusHistoryRequest;
+import com.newscatcher.catchall.resources.datasets.requests.ListDatasetEntitiesRequest;
 import com.newscatcher.catchall.resources.datasets.requests.ListDatasetsRequest;
-import com.newscatcher.catchall.resources.datasets.requests.ListEntitiesInDatasetRequest;
 import com.newscatcher.catchall.resources.datasets.requests.RemoveEntitiesFromDatasetRequest;
 import com.newscatcher.catchall.resources.datasets.requests.UpdateDatasetRequest;
 import com.newscatcher.catchall.resources.datasets.requests.UploadCsvToDatasetRequest;
@@ -59,36 +59,28 @@ public class RawDatasetsClient {
     }
 
     /**
-     * Returns a paginated list of datasets belonging to the authenticated
-     * organization. Supports filtering by status and sorting by name,
-     * status, or creation date.
+     * Returns a paginated list of datasets belonging to the authenticated organization. Supports filtering by status and sorting by name, status, or creation date.
      */
     public CatchAllApiHttpResponse<DatasetListResponse> listDatasets() {
         return listDatasets(ListDatasetsRequest.builder().build());
     }
 
     /**
-     * Returns a paginated list of datasets belonging to the authenticated
-     * organization. Supports filtering by status and sorting by name,
-     * status, or creation date.
+     * Returns a paginated list of datasets belonging to the authenticated organization. Supports filtering by status and sorting by name, status, or creation date.
      */
     public CatchAllApiHttpResponse<DatasetListResponse> listDatasets(RequestOptions requestOptions) {
         return listDatasets(ListDatasetsRequest.builder().build(), requestOptions);
     }
 
     /**
-     * Returns a paginated list of datasets belonging to the authenticated
-     * organization. Supports filtering by status and sorting by name,
-     * status, or creation date.
+     * Returns a paginated list of datasets belonging to the authenticated organization. Supports filtering by status and sorting by name, status, or creation date.
      */
     public CatchAllApiHttpResponse<DatasetListResponse> listDatasets(ListDatasetsRequest request) {
         return listDatasets(request, null);
     }
 
     /**
-     * Returns a paginated list of datasets belonging to the authenticated
-     * organization. Supports filtering by status and sorting by name,
-     * status, or creation date.
+     * Returns a paginated list of datasets belonging to the authenticated organization. Supports filtering by status and sorting by name, status, or creation date.
      */
     public CatchAllApiHttpResponse<DatasetListResponse> listDatasets(
             ListDatasetsRequest request, RequestOptions requestOptions) {
@@ -241,9 +233,7 @@ public class RawDatasetsClient {
     }
 
     /**
-     * Creates a new dataset by uploading a CSV file. Each row in the CSV
-     * becomes an entity. The <code>name</code> column is required; all other columns
-     * are optional.
+     * Creates a new dataset by uploading a CSV file. Each row in the CSV becomes an entity. The <code>name</code> and <code>domain</code>columns are required; all other columns are optional.
      * <p><strong>CSV format:</strong></p>
      * <pre><code class="language-csv">name,description,domain,alternative_names,key_persons
      * NewsCatcher,&quot;AI-powered news data provider&quot;,newscatcherapi.com,&quot;NC;NewsCatcher API&quot;,&quot;Artem Bugara;Maksym Sugonyaka&quot;
@@ -258,9 +248,7 @@ public class RawDatasetsClient {
     }
 
     /**
-     * Creates a new dataset by uploading a CSV file. Each row in the CSV
-     * becomes an entity. The <code>name</code> column is required; all other columns
-     * are optional.
+     * Creates a new dataset by uploading a CSV file. Each row in the CSV becomes an entity. The <code>name</code> and <code>domain</code>columns are required; all other columns are optional.
      * <p><strong>CSV format:</strong></p>
      * <pre><code class="language-csv">name,description,domain,alternative_names,key_persons
      * NewsCatcher,&quot;AI-powered news data provider&quot;,newscatcherapi.com,&quot;NC;NewsCatcher API&quot;,&quot;Artem Bugara;Maksym Sugonyaka&quot;
@@ -759,112 +747,6 @@ public class RawDatasetsClient {
     }
 
     /**
-     * Returns a paginated list of entities in a dataset. Supports filtering by status and entity type.
-     */
-    public CatchAllApiHttpResponse<DatasetEntityListResponse> listEntitiesInDataset(String datasetId) {
-        return listEntitiesInDataset(
-                datasetId, ListEntitiesInDatasetRequest.builder().build());
-    }
-
-    /**
-     * Returns a paginated list of entities in a dataset. Supports filtering by status and entity type.
-     */
-    public CatchAllApiHttpResponse<DatasetEntityListResponse> listEntitiesInDataset(
-            String datasetId, RequestOptions requestOptions) {
-        return listEntitiesInDataset(
-                datasetId, ListEntitiesInDatasetRequest.builder().build(), requestOptions);
-    }
-
-    /**
-     * Returns a paginated list of entities in a dataset. Supports filtering by status and entity type.
-     */
-    public CatchAllApiHttpResponse<DatasetEntityListResponse> listEntitiesInDataset(
-            String datasetId, ListEntitiesInDatasetRequest request) {
-        return listEntitiesInDataset(datasetId, request, null);
-    }
-
-    /**
-     * Returns a paginated list of entities in a dataset. Supports filtering by status and entity type.
-     */
-    public CatchAllApiHttpResponse<DatasetEntityListResponse> listEntitiesInDataset(
-            String datasetId, ListEntitiesInDatasetRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
-                .addPathSegments("entities");
-        if (request.getPage().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "page", request.getPage().get(), false);
-        }
-        if (request.getPageSize().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "page_size", request.getPageSize().get(), false);
-        }
-        if (request.getSearch().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "search", request.getSearch().get(), false);
-        }
-        if (request.getStatus().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "status", request.getStatus().get(), false);
-        }
-        if (request.getEntityType().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "entity_type", request.getEntityType().get(), false);
-        }
-        if (request.getSortBy().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "sort_by", request.getSortBy().get(), false);
-        }
-        if (request.getSortOrder().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "sort_order", request.getSortOrder().get(), false);
-        }
-        if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((_key, _value) -> {
-                httpUrl.addQueryParameter(_key, _value);
-            });
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        try (Response response = client.newCall(okhttpRequest).execute()) {
-            ResponseBody responseBody = response.body();
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            if (response.isSuccessful()) {
-                return new CatchAllApiHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, DatasetEntityListResponse.class),
-                        response);
-            }
-            try {
-                switch (response.code()) {
-                    case 403:
-                        throw new ForbiddenError(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
-                    case 404:
-                        throw new NotFoundError(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
-                }
-            } catch (JsonProcessingException ignored) {
-                // unable to map error response, throwing generic error
-            }
-            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
-            throw new CatchAllApiApiException(
-                    "Error with status code " + response.code(), response.code(), errorBody, response);
-        } catch (IOException e) {
-            throw new CatchAllApiException("Network error executing HTTP request", e);
-        }
-    }
-
-    /**
      * Adds one or more existing entities to a dataset. Returns the number of entities added.
      */
     public CatchAllApiHttpResponse<ManageEntitiesResponse> addEntitiesToDataset(
@@ -938,9 +820,7 @@ public class RawDatasetsClient {
     }
 
     /**
-     * Removes one or more entities from a dataset. The entities themselves
-     * are not deleted — they are only removed from this dataset. Returns
-     * the number of entities removed.
+     * Removes one or more entities from a dataset. The entities themselves are not deleted — they are only removed from this dataset. Returns the number of entities removed.
      */
     public CatchAllApiHttpResponse<ManageEntitiesResponse> removeEntitiesFromDataset(
             String datasetId, RemoveEntitiesFromDatasetRequest request) {
@@ -948,9 +828,7 @@ public class RawDatasetsClient {
     }
 
     /**
-     * Removes one or more entities from a dataset. The entities themselves
-     * are not deleted — they are only removed from this dataset. Returns
-     * the number of entities removed.
+     * Removes one or more entities from a dataset. The entities themselves are not deleted — they are only removed from this dataset. Returns the number of entities removed.
      */
     public CatchAllApiHttpResponse<ManageEntitiesResponse> removeEntitiesFromDataset(
             String datasetId, RemoveEntitiesFromDatasetRequest request, RequestOptions requestOptions) {
@@ -1015,8 +893,98 @@ public class RawDatasetsClient {
     }
 
     /**
-     * Returns the full status change history for a dataset, ordered
-     * chronologically from oldest to newest.
+     * Returns a paginated list of entities in a dataset. Supports filtering by status, entity type, and name search.
+     */
+    public CatchAllApiHttpResponse<DatasetEntityListResponse> listEntitiesInDataset(String datasetId) {
+        return listEntitiesInDataset(
+                datasetId, ListDatasetEntitiesRequest.builder().build());
+    }
+
+    /**
+     * Returns a paginated list of entities in a dataset. Supports filtering by status, entity type, and name search.
+     */
+    public CatchAllApiHttpResponse<DatasetEntityListResponse> listEntitiesInDataset(
+            String datasetId, RequestOptions requestOptions) {
+        return listEntitiesInDataset(
+                datasetId, ListDatasetEntitiesRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Returns a paginated list of entities in a dataset. Supports filtering by status, entity type, and name search.
+     */
+    public CatchAllApiHttpResponse<DatasetEntityListResponse> listEntitiesInDataset(
+            String datasetId, ListDatasetEntitiesRequest request) {
+        return listEntitiesInDataset(datasetId, request, null);
+    }
+
+    /**
+     * Returns a paginated list of entities in a dataset. Supports filtering by status, entity type, and name search.
+     */
+    public CatchAllApiHttpResponse<DatasetEntityListResponse> listEntitiesInDataset(
+            String datasetId, ListDatasetEntitiesRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/datasets")
+                .addPathSegment(datasetId)
+                .addPathSegments("entities")
+                .addPathSegments("list");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new CatchAllApiHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, DatasetEntityListResponse.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidationErrorResponse.class),
+                                response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new CatchAllApiApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (IOException e) {
+            throw new CatchAllApiException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Returns the full status change history for a dataset, ordered chronologically from oldest to newest.
      */
     public CatchAllApiHttpResponse<DatasetStatusHistoryResponse> getDatasetStatusHistory(String datasetId) {
         return getDatasetStatusHistory(
@@ -1024,8 +992,7 @@ public class RawDatasetsClient {
     }
 
     /**
-     * Returns the full status change history for a dataset, ordered
-     * chronologically from oldest to newest.
+     * Returns the full status change history for a dataset, ordered chronologically from oldest to newest.
      */
     public CatchAllApiHttpResponse<DatasetStatusHistoryResponse> getDatasetStatusHistory(
             String datasetId, RequestOptions requestOptions) {
@@ -1034,8 +1001,7 @@ public class RawDatasetsClient {
     }
 
     /**
-     * Returns the full status change history for a dataset, ordered
-     * chronologically from oldest to newest.
+     * Returns the full status change history for a dataset, ordered chronologically from oldest to newest.
      */
     public CatchAllApiHttpResponse<DatasetStatusHistoryResponse> getDatasetStatusHistory(
             String datasetId, GetDatasetStatusHistoryRequest request) {
@@ -1043,8 +1009,7 @@ public class RawDatasetsClient {
     }
 
     /**
-     * Returns the full status change history for a dataset, ordered
-     * chronologically from oldest to newest.
+     * Returns the full status change history for a dataset, ordered chronologically from oldest to newest.
      */
     public CatchAllApiHttpResponse<DatasetStatusHistoryResponse> getDatasetStatusHistory(
             String datasetId, GetDatasetStatusHistoryRequest request, RequestOptions requestOptions) {
@@ -1097,10 +1062,8 @@ public class RawDatasetsClient {
     }
 
     /**
-     * Appends new companies to an existing dataset by uploading a CSV file.
-     * Uses the same CSV format as the dataset creation endpoint.
-     * <p>The response omits <code>dataset_name</code> compared to the create-from-CSV
-     * endpoint since the dataset already exists.</p>
+     * Appends new companies to an existing dataset by uploading a CSV file. Uses the same CSV format as the dataset creation endpoint.
+     * <p>The response omits <code>dataset_name</code> compared to the create-from-CSV endpoint since the dataset already exists.</p>
      */
     public CatchAllApiHttpResponse<UploadCsvToDatasetResponse> uploadCsvToDataset(
             String datasetId, File file, UploadCsvToDatasetRequest request) {
@@ -1108,10 +1071,8 @@ public class RawDatasetsClient {
     }
 
     /**
-     * Appends new companies to an existing dataset by uploading a CSV file.
-     * Uses the same CSV format as the dataset creation endpoint.
-     * <p>The response omits <code>dataset_name</code> compared to the create-from-CSV
-     * endpoint since the dataset already exists.</p>
+     * Appends new companies to an existing dataset by uploading a CSV file. Uses the same CSV format as the dataset creation endpoint.
+     * <p>The response omits <code>dataset_name</code> compared to the create-from-CSV endpoint since the dataset already exists.</p>
      */
     public CatchAllApiHttpResponse<UploadCsvToDatasetResponse> uploadCsvToDataset(
             String datasetId, File file, UploadCsvToDatasetRequest request, RequestOptions requestOptions) {

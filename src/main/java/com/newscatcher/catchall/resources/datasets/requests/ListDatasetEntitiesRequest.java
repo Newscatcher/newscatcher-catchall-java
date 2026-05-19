@@ -5,9 +5,9 @@ package com.newscatcher.catchall.resources.datasets.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -22,8 +22,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = ListEntitiesInDatasetRequest.Builder.class)
-public final class ListEntitiesInDatasetRequest {
+@JsonDeserialize(builder = ListDatasetEntitiesRequest.Builder.class)
+public final class ListDatasetEntitiesRequest {
     private final Optional<Integer> page;
 
     private final Optional<Integer> pageSize;
@@ -40,7 +40,7 @@ public final class ListEntitiesInDatasetRequest {
 
     private final Map<String, Object> additionalProperties;
 
-    private ListEntitiesInDatasetRequest(
+    private ListDatasetEntitiesRequest(
             Optional<Integer> page,
             Optional<Integer> pageSize,
             Optional<String> search,
@@ -60,45 +60,45 @@ public final class ListEntitiesInDatasetRequest {
     }
 
     /**
-     * @return Page number to retrieve.
+     * @return The page number to retrieve.
      */
-    @JsonIgnore
+    @JsonProperty("page")
     public Optional<Integer> getPage() {
         return page;
     }
 
     /**
-     * @return Number of entities per page.
+     * @return The number of entities per page.
      */
-    @JsonIgnore
+    @JsonProperty("page_size")
     public Optional<Integer> getPageSize() {
         return pageSize;
     }
 
     /**
-     * @return Filter entities by name.
+     * @return Filters entities by name using a case-insensitive substring match.
      */
-    @JsonIgnore
+    @JsonProperty("search")
     public Optional<String> getSearch() {
         return search;
     }
 
-    @JsonIgnore
+    @JsonProperty("status")
     public Optional<EntityStatus> getStatus() {
         return status;
     }
 
-    @JsonIgnore
+    @JsonProperty("entity_type")
     public Optional<EntityType> getEntityType() {
         return entityType;
     }
 
-    @JsonIgnore
+    @JsonProperty("sort_by")
     public Optional<EntitySortBy> getSortBy() {
         return sortBy;
     }
 
-    @JsonIgnore
+    @JsonProperty("sort_order")
     public Optional<SortOrder> getSortOrder() {
         return sortOrder;
     }
@@ -106,7 +106,7 @@ public final class ListEntitiesInDatasetRequest {
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof ListEntitiesInDatasetRequest && equalTo((ListEntitiesInDatasetRequest) other);
+        return other instanceof ListDatasetEntitiesRequest && equalTo((ListDatasetEntitiesRequest) other);
     }
 
     @JsonAnyGetter
@@ -114,7 +114,7 @@ public final class ListEntitiesInDatasetRequest {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(ListEntitiesInDatasetRequest other) {
+    private boolean equalTo(ListDatasetEntitiesRequest other) {
         return page.equals(other.page)
                 && pageSize.equals(other.pageSize)
                 && search.equals(other.search)
@@ -160,7 +160,7 @@ public final class ListEntitiesInDatasetRequest {
 
         private Builder() {}
 
-        public Builder from(ListEntitiesInDatasetRequest other) {
+        public Builder from(ListDatasetEntitiesRequest other) {
             page(other.getPage());
             pageSize(other.getPageSize());
             search(other.getSearch());
@@ -172,7 +172,7 @@ public final class ListEntitiesInDatasetRequest {
         }
 
         /**
-         * <p>Page number to retrieve.</p>
+         * <p>The page number to retrieve.</p>
          */
         @JsonSetter(value = "page", nulls = Nulls.SKIP)
         public Builder page(Optional<Integer> page) {
@@ -186,7 +186,7 @@ public final class ListEntitiesInDatasetRequest {
         }
 
         /**
-         * <p>Number of entities per page.</p>
+         * <p>The number of entities per page.</p>
          */
         @JsonSetter(value = "page_size", nulls = Nulls.SKIP)
         public Builder pageSize(Optional<Integer> pageSize) {
@@ -200,7 +200,7 @@ public final class ListEntitiesInDatasetRequest {
         }
 
         /**
-         * <p>Filter entities by name.</p>
+         * <p>Filters entities by name using a case-insensitive substring match.</p>
          */
         @JsonSetter(value = "search", nulls = Nulls.SKIP)
         public Builder search(Optional<String> search) {
@@ -257,8 +257,8 @@ public final class ListEntitiesInDatasetRequest {
             return this;
         }
 
-        public ListEntitiesInDatasetRequest build() {
-            return new ListEntitiesInDatasetRequest(
+        public ListDatasetEntitiesRequest build() {
+            return new ListDatasetEntitiesRequest(
                     page, pageSize, search, status, entityType, sortBy, sortOrder, additionalProperties);
         }
 
