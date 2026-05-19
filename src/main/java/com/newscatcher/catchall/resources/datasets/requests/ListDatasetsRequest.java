@@ -5,9 +5,9 @@ package com.newscatcher.catchall.resources.datasets.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -62,7 +62,7 @@ public final class ListDatasetsRequest {
     /**
      * @return Page number to retrieve.
      */
-    @JsonIgnore
+    @JsonProperty("page")
     public Optional<Integer> getPage() {
         return page;
     }
@@ -70,7 +70,7 @@ public final class ListDatasetsRequest {
     /**
      * @return Number of datasets per page.
      */
-    @JsonIgnore
+    @JsonProperty("page_size")
     public Optional<Integer> getPageSize() {
         return pageSize;
     }
@@ -78,7 +78,7 @@ public final class ListDatasetsRequest {
     /**
      * @return Filter datasets by name (case-insensitive substring match).
      */
-    @JsonIgnore
+    @JsonProperty("search")
     public Optional<String> getSearch() {
         return search;
     }
@@ -86,25 +86,22 @@ public final class ListDatasetsRequest {
     /**
      * @return Filter by dataset status.
      */
-    @JsonIgnore
+    @JsonProperty("latest_status")
     public Optional<DatasetStatus> getLatestStatus() {
         return latestStatus;
     }
 
-    @JsonIgnore
+    @JsonProperty("sort_by")
     public Optional<DatasetSortBy> getSortBy() {
         return sortBy;
     }
 
-    @JsonIgnore
+    @JsonProperty("sort_order")
     public Optional<SortOrder> getSortOrder() {
         return sortOrder;
     }
 
-    /**
-     * @return Filter results by ownership. Defaults to <code>all</code>.
-     */
-    @JsonIgnore
+    @JsonProperty("ownership")
     public Optional<OwnershipFilter> getOwnership() {
         return ownership;
     }
@@ -255,9 +252,6 @@ public final class ListDatasetsRequest {
             return this;
         }
 
-        /**
-         * <p>Filter results by ownership. Defaults to <code>all</code>.</p>
-         */
         @JsonSetter(value = "ownership", nulls = Nulls.SKIP)
         public Builder ownership(Optional<OwnershipFilter> ownership) {
             this.ownership = ownership;

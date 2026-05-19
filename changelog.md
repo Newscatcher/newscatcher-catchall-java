@@ -1,3 +1,19 @@
+## 2.0.0 - 2026-05-19
+### Breaking Changes
+* **`ListEntitiesInDatasetRequest`** — renamed to **`ListDatasetEntitiesRequest`**; update all imports and usages to the new class name.
+* **`listEntitiesInDataset()`** — now sends `POST /catchAll/datasets/{id}/entities/list` instead of `GET /catchAll/datasets/{id}/entities`; recompile against the new SDK and update any HTTP-level integrations.
+* **`ConnectedEntity.Builder`** — a new mandatory `.type(entityType)` step is now required between `.relation()` and `.build()`; update all existing builder chains accordingly.
+### Added
+* **`ConnectedEntity.getType()`** — returns the entity type string for a connected entity.
+* **`ConnectedEntity.getCompany()`** — returns an `Optional<CompanyAttributes>` with stored company attributes when present.
+* **`SubmitRequestDto.getEdScoreMin()`** — new optional `ed_score_min` field to set a minimum relevance score threshold for Company Watchlist mode results.
+* **`CreateMonitorRequestDto.getTimezone()`** — new optional `timezone` field accepting an IANA timezone identifier used as a fallback when the schedule string lacks an explicit timezone.
+### Changed
+* **`addEntitiesToDataset()`** — now throws `UnprocessableEntityError` on HTTP 422 responses in addition to the existing `NotFoundError` on 404.
+* **`createDataset()` / `uploadCsvToDataset()` documentation** — clarifies that both `name` and `domain` columns are required in the uploaded CSV (previously only `name` was documented as required).
+### Fixed
+* **`ListDatasetsRequest` and `ListDatasetEntitiesRequest`** — getter methods were incorrectly annotated with `@JsonIgnore` instead of `@JsonProperty`, causing query parameters (`page`, `page_size`, `search`, etc.) to be silently dropped during serialization; now correctly annotated.
+
 ## 1.5.0 - 2026-04-23
 * ## [1.5.0] - 2025
 ### Added
