@@ -5,9 +5,9 @@ package com.newscatcher.catchall.resources.jobs.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -47,7 +47,7 @@ public final class GetUserJobsRequest {
     /**
      * @return Page number to retrieve.
      */
-    @JsonIgnore
+    @JsonProperty("page")
     public Optional<Integer> getPage() {
         return page;
     }
@@ -55,7 +55,7 @@ public final class GetUserJobsRequest {
     /**
      * @return Number of records per page.
      */
-    @JsonIgnore
+    @JsonProperty("page_size")
     public Optional<Integer> getPageSize() {
         return pageSize;
     }
@@ -63,7 +63,7 @@ public final class GetUserJobsRequest {
     /**
      * @return Filter results by text (case-insensitive substring match).
      */
-    @JsonIgnore
+    @JsonProperty("search")
     public Optional<String> getSearch() {
         return search;
     }
@@ -71,7 +71,7 @@ public final class GetUserJobsRequest {
     /**
      * @return Filter results by ownership. Defaults to <code>all</code>.
      */
-    @JsonIgnore
+    @JsonProperty("ownership")
     public Optional<OwnershipFilter> getOwnership() {
         return ownership;
     }

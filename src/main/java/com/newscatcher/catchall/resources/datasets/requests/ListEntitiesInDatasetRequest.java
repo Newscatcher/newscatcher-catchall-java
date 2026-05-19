@@ -5,9 +5,9 @@ package com.newscatcher.catchall.resources.datasets.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -62,7 +62,7 @@ public final class ListEntitiesInDatasetRequest {
     /**
      * @return Page number to retrieve.
      */
-    @JsonIgnore
+    @JsonProperty("page")
     public Optional<Integer> getPage() {
         return page;
     }
@@ -70,7 +70,7 @@ public final class ListEntitiesInDatasetRequest {
     /**
      * @return Number of entities per page.
      */
-    @JsonIgnore
+    @JsonProperty("page_size")
     public Optional<Integer> getPageSize() {
         return pageSize;
     }
@@ -78,27 +78,27 @@ public final class ListEntitiesInDatasetRequest {
     /**
      * @return Filter entities by name.
      */
-    @JsonIgnore
+    @JsonProperty("search")
     public Optional<String> getSearch() {
         return search;
     }
 
-    @JsonIgnore
+    @JsonProperty("status")
     public Optional<EntityStatus> getStatus() {
         return status;
     }
 
-    @JsonIgnore
+    @JsonProperty("entity_type")
     public Optional<EntityType> getEntityType() {
         return entityType;
     }
 
-    @JsonIgnore
+    @JsonProperty("sort_by")
     public Optional<EntitySortBy> getSortBy() {
         return sortBy;
     }
 
-    @JsonIgnore
+    @JsonProperty("sort_order")
     public Optional<SortOrder> getSortOrder() {
         return sortOrder;
     }

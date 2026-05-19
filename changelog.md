@@ -1,3 +1,7 @@
+## 1.6.0 - 2026-05-19
+### Changed
+* **Request query parameter serialization** — optional fields on all list/filter request types (`ListDatasetsRequest`, `ListEntitiesRequest`, `ListEntitiesInDatasetRequest`, `GetJobResultsRequest`, `GetUserJobsRequest`, `ListMonitorJobsRequest`, `ListMonitorsRequest`) were previously annotated with `@JsonIgnore` and silently dropped during serialization; they are now correctly annotated with `@JsonProperty` and transmitted as query parameters. Pagination (`page`, `page_size`), filtering (`search`, `status`, `ownership`, etc.), and sorting (`sort_by`, `sort_order`) fields now work as expected.
+
 ## 1.5.0 - 2026-04-23
 * ## [1.5.0] - 2025
 ### Added
