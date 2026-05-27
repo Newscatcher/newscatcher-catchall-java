@@ -24,6 +24,7 @@ import com.newscatcher.catchall.resources.jobs.requests.GetJobStatusRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetUserJobsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.InitializeRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
+import com.newscatcher.catchall.resources.jobs.requests.ValidateQueryRequestDto;
 import com.newscatcher.catchall.types.ContinueResponseDto;
 import com.newscatcher.catchall.types.DeleteJobResponseDto;
 import com.newscatcher.catchall.types.Error;
@@ -32,6 +33,7 @@ import com.newscatcher.catchall.types.ListUserJobsResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
 import com.newscatcher.catchall.types.StatusResponseDto;
 import com.newscatcher.catchall.types.SubmitResponseDto;
+import com.newscatcher.catchall.types.ValidateQueryResponseDto;
 import com.newscatcher.catchall.types.ValidationErrorResponse;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -99,6 +101,10 @@ public class AsyncRawJobsClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "ownership", request.getOwnership().get(), false);
         }
+        if (request.getProjectId().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "project_id", request.getProjectId().get(), false);
+        }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -131,6 +137,93 @@ public class AsyncRawJobsClient {
                             future.completeExceptionally(new ForbiddenError(
                                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response));
                             return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new CatchAllApiApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (IOException e) {
+                    future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Checks whether a query is well-formed and likely to produce good results before submitting a job.
+     * <p>Returns a quality assessment with a status level, identified issues, and actionable suggestions.</p>
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<ValidateQueryResponseDto>> validateQuery(
+            ValidateQueryRequestDto request) {
+        return validateQuery(request, null);
+    }
+
+    /**
+     * Checks whether a query is well-formed and likely to produce good results before submitting a job.
+     * <p>Returns a quality assessment with a status level, identified issues, and actionable suggestions.</p>
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<ValidateQueryResponseDto>> validateQuery(
+            ValidateQueryRequestDto request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/validate");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        CompletableFuture<CatchAllApiHttpResponse<ValidateQueryResponseDto>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new CatchAllApiHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidateQueryResponseDto.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(
+                                                responseBodyString, ValidationErrorResponse.class),
+                                        response));
+                                return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error

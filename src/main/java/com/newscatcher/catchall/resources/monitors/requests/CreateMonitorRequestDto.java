@@ -12,8 +12,8 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
-import com.newscatcher.catchall.types.WebhookDto;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,11 +28,13 @@ public final class CreateMonitorRequestDto {
 
     private final Optional<String> timezone;
 
-    private final Optional<WebhookDto> webhook;
+    private final Optional<List<String>> webhookIds;
 
     private final Optional<Integer> limit;
 
     private final Optional<Boolean> backfill;
+
+    private final Optional<String> projectId;
 
     private final Map<String, Object> additionalProperties;
 
@@ -40,16 +42,18 @@ public final class CreateMonitorRequestDto {
             String referenceJobId,
             String schedule,
             Optional<String> timezone,
-            Optional<WebhookDto> webhook,
+            Optional<List<String>> webhookIds,
             Optional<Integer> limit,
             Optional<Boolean> backfill,
+            Optional<String> projectId,
             Map<String, Object> additionalProperties) {
         this.referenceJobId = referenceJobId;
         this.schedule = schedule;
         this.timezone = timezone;
-        this.webhook = webhook;
+        this.webhookIds = webhookIds;
         this.limit = limit;
         this.backfill = backfill;
+        this.projectId = projectId;
         this.additionalProperties = additionalProperties;
     }
 
@@ -80,11 +84,14 @@ public final class CreateMonitorRequestDto {
     }
 
     /**
-     * @return Optional webhook to receive notifications when jobs complete.
+     * @return IDs of centralized webhooks to notify on each run completion.
+     * Passing IDs here is equivalent to calling
+     * <code>POST /catchAll/webhooks/{webhook_id}/resources</code> for each ID after creation.
+     * Maximum 5 per monitor.
      */
-    @JsonProperty("webhook")
-    public Optional<WebhookDto> getWebhook() {
-        return webhook;
+    @JsonProperty("webhook_ids")
+    public Optional<List<String>> getWebhookIds() {
+        return webhookIds;
     }
 
     /**
@@ -104,6 +111,14 @@ public final class CreateMonitorRequestDto {
         return backfill;
     }
 
+    /**
+     * @return Project to assign this monitor to. The monitor appears in the project's resource list after creation.
+     */
+    @JsonProperty("project_id")
+    public Optional<String> getProjectId() {
+        return projectId;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -119,14 +134,22 @@ public final class CreateMonitorRequestDto {
         return referenceJobId.equals(other.referenceJobId)
                 && schedule.equals(other.schedule)
                 && timezone.equals(other.timezone)
-                && webhook.equals(other.webhook)
+                && webhookIds.equals(other.webhookIds)
                 && limit.equals(other.limit)
-                && backfill.equals(other.backfill);
+                && backfill.equals(other.backfill)
+                && projectId.equals(other.projectId);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.referenceJobId, this.schedule, this.timezone, this.webhook, this.limit, this.backfill);
+        return Objects.hash(
+                this.referenceJobId,
+                this.schedule,
+                this.timezone,
+                this.webhookIds,
+                this.limit,
+                this.backfill,
+                this.projectId);
     }
 
     @java.lang.Override
@@ -171,11 +194,14 @@ public final class CreateMonitorRequestDto {
         _FinalStage timezone(String timezone);
 
         /**
-         * <p>Optional webhook to receive notifications when jobs complete.</p>
+         * <p>IDs of centralized webhooks to notify on each run completion.
+         * Passing IDs here is equivalent to calling
+         * <code>POST /catchAll/webhooks/{webhook_id}/resources</code> for each ID after creation.
+         * Maximum 5 per monitor.</p>
          */
-        _FinalStage webhook(Optional<WebhookDto> webhook);
+        _FinalStage webhookIds(Optional<List<String>> webhookIds);
 
-        _FinalStage webhook(WebhookDto webhook);
+        _FinalStage webhookIds(List<String> webhookIds);
 
         /**
          * <p>Maximum number of records per monitor run. If not provided, defaults to the plan limit.</p>
@@ -191,6 +217,13 @@ public final class CreateMonitorRequestDto {
         _FinalStage backfill(Optional<Boolean> backfill);
 
         _FinalStage backfill(Boolean backfill);
+
+        /**
+         * <p>Project to assign this monitor to. The monitor appears in the project's resource list after creation.</p>
+         */
+        _FinalStage projectId(Optional<String> projectId);
+
+        _FinalStage projectId(String projectId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -199,11 +232,13 @@ public final class CreateMonitorRequestDto {
 
         private String schedule;
 
+        private Optional<String> projectId = Optional.empty();
+
         private Optional<Boolean> backfill = Optional.empty();
 
         private Optional<Integer> limit = Optional.empty();
 
-        private Optional<WebhookDto> webhook = Optional.empty();
+        private Optional<List<String>> webhookIds = Optional.empty();
 
         private Optional<String> timezone = Optional.empty();
 
@@ -217,9 +252,10 @@ public final class CreateMonitorRequestDto {
             referenceJobId(other.getReferenceJobId());
             schedule(other.getSchedule());
             timezone(other.getTimezone());
-            webhook(other.getWebhook());
+            webhookIds(other.getWebhookIds());
             limit(other.getLimit());
             backfill(other.getBackfill());
+            projectId(other.getProjectId());
             return this;
         }
 
@@ -246,6 +282,26 @@ public final class CreateMonitorRequestDto {
         @JsonSetter("schedule")
         public _FinalStage schedule(@NotNull String schedule) {
             this.schedule = Objects.requireNonNull(schedule, "schedule must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Project to assign this monitor to. The monitor appears in the project's resource list after creation.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage projectId(String projectId) {
+            this.projectId = Optional.ofNullable(projectId);
+            return this;
+        }
+
+        /**
+         * <p>Project to assign this monitor to. The monitor appears in the project's resource list after creation.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "project_id", nulls = Nulls.SKIP)
+        public _FinalStage projectId(Optional<String> projectId) {
+            this.projectId = projectId;
             return this;
         }
 
@@ -292,22 +348,28 @@ public final class CreateMonitorRequestDto {
         }
 
         /**
-         * <p>Optional webhook to receive notifications when jobs complete.</p>
+         * <p>IDs of centralized webhooks to notify on each run completion.
+         * Passing IDs here is equivalent to calling
+         * <code>POST /catchAll/webhooks/{webhook_id}/resources</code> for each ID after creation.
+         * Maximum 5 per monitor.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage webhook(WebhookDto webhook) {
-            this.webhook = Optional.ofNullable(webhook);
+        public _FinalStage webhookIds(List<String> webhookIds) {
+            this.webhookIds = Optional.ofNullable(webhookIds);
             return this;
         }
 
         /**
-         * <p>Optional webhook to receive notifications when jobs complete.</p>
+         * <p>IDs of centralized webhooks to notify on each run completion.
+         * Passing IDs here is equivalent to calling
+         * <code>POST /catchAll/webhooks/{webhook_id}/resources</code> for each ID after creation.
+         * Maximum 5 per monitor.</p>
          */
         @java.lang.Override
-        @JsonSetter(value = "webhook", nulls = Nulls.SKIP)
-        public _FinalStage webhook(Optional<WebhookDto> webhook) {
-            this.webhook = webhook;
+        @JsonSetter(value = "webhook_ids", nulls = Nulls.SKIP)
+        public _FinalStage webhookIds(Optional<List<String>> webhookIds) {
+            this.webhookIds = webhookIds;
             return this;
         }
 
@@ -336,7 +398,7 @@ public final class CreateMonitorRequestDto {
         @java.lang.Override
         public CreateMonitorRequestDto build() {
             return new CreateMonitorRequestDto(
-                    referenceJobId, schedule, timezone, webhook, limit, backfill, additionalProperties);
+                    referenceJobId, schedule, timezone, webhookIds, limit, backfill, projectId, additionalProperties);
         }
 
         @java.lang.Override

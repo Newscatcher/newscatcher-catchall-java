@@ -48,7 +48,7 @@ public final class JobStep {
     }
 
     /**
-     * @return Whether this step has finished processing.
+     * @return True if this step has finished processing; false otherwise.
      */
     @JsonProperty("completed")
     public boolean getCompleted() {
@@ -99,7 +99,7 @@ public final class JobStep {
 
     public interface CompletedStage {
         /**
-         * <p>Whether this step has finished processing.</p>
+         * <p>True if this step has finished processing; false otherwise.</p>
          */
         _FinalStage completed(boolean completed);
     }
@@ -153,8 +153,8 @@ public final class JobStep {
         }
 
         /**
-         * <p>Whether this step has finished processing.</p>
-         * <p>Whether this step has finished processing.</p>
+         * <p>True if this step has finished processing; false otherwise.</p>
+         * <p>True if this step has finished processing; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

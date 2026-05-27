@@ -30,6 +30,7 @@ Returns all jobs created by the authenticated user.
 client.jobs().getUserJobs(
     GetUserJobsRequest
         .builder()
+        .projectId("60a85db4-78ec-4b78-876a-bc7d9cdadd04")
         .build()
 );
 ```
@@ -71,6 +72,75 @@ client.jobs().getUserJobs(
 <dd>
 
 **ownership:** `Optional<OwnershipFilter>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**projectId:** `Optional<String>` — Filter results to resources belonging to this project.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.jobs.validateQuery(request) -> ValidateQueryResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Checks whether a query is well-formed and likely to produce good results before submitting a job.
+
+Returns a quality assessment with a status level, identified issues, and actionable suggestions.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.jobs().validateQuery(
+    ValidateQueryRequestDto
+        .builder()
+        .query("Series B funding rounds for SaaS startups")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**query:** `String` — Plain text query to validate.
     
 </dd>
 </dl>
@@ -296,6 +366,22 @@ The dataset must have `latest_status: ready` before the job is submitted. Submit
 The minimum relevance score a connected entity must reach for its record to be included in results.
 
 Only valid when `connected_dataset_ids` is set; otherwise ignored. Records where no connected entity meets the threshold are excluded entirely.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**projectId:** `Optional<String>` — Project to assign this job to. The job appears in the project's resource list immediately after submission.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**webhookIds:** `Optional<List<String>>` — IDs of webhooks to notify when the job completes. Maximum 5 per job.
     
 </dd>
 </dl>
@@ -603,6 +689,7 @@ Returns all monitors created by the authenticated user.
 client.monitors().listMonitors(
     ListMonitorsRequest
         .builder()
+        .projectId("60a85db4-78ec-4b78-876a-bc7d9cdadd04")
         .build()
 );
 ```
@@ -647,6 +734,14 @@ client.monitors().listMonitors(
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**projectId:** `Optional<String>` — Filter results to resources belonging to this project.
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
@@ -688,17 +783,10 @@ client.monitors().createMonitor(
         .referenceJobId("5f0c9087-85cb-4917-b3c7-e5a5eff73a0c")
         .schedule("every day at 12 PM")
         .timezone("UTC")
-        .webhook(
-            WebhookDto
-                .builder()
-                .url("https://your-endpoint.com/webhook")
-                .method(WebhookDtoMethod.POST)
-                .headers(
-                    new HashMap<String, String>() {{
-                        put("Authorization", "Bearer your_token_here");
-                    }}
-                )
-                .build()
+        .webhookIds(
+            Optional.of(
+                Arrays.asList("a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+            )
         )
         .limit(10)
         .backfill(true)
@@ -750,7 +838,12 @@ If the schedule includes a timezone abbreviation (for example, `"every day at 9a
 <dl>
 <dd>
 
-**webhook:** `Optional<WebhookDto>` — Optional webhook to receive notifications when jobs complete.
+**webhookIds:** `Optional<List<String>>` 
+
+IDs of centralized webhooks to notify on each run completion.
+Passing IDs here is equivalent to calling
+`POST /catchAll/webhooks/{webhook_id}/resources` for each ID after creation.
+Maximum 5 per monitor.
     
 </dd>
 </dl>
@@ -771,6 +864,14 @@ If the schedule includes a timezone abbreviation (for example, `"every day at 9a
 If true, fills the data gap between the reference job's `end_date` and the first scheduled run. The reference job's `end_date` must be within the last 7 days. 
 
 If false, no gap filling occurs and the first run uses the current cron window only — the reference job's age does not matter.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**projectId:** `Optional<String>` — Project to assign this monitor to. The monitor appears in the project's resource list after creation.
     
 </dd>
 </dl>
@@ -1195,17 +1296,10 @@ client.monitors().updateMonitor(
     "monitor_id",
     UpdateMonitorRequestDto
         .builder()
-        .webhook(
-            WebhookDto
-                .builder()
-                .url("https://new-endpoint.com/webhook")
-                .method(WebhookDtoMethod.POST)
-                .headers(
-                    new HashMap<String, String>() {{
-                        put("Authorization", "Bearer new_token_xyz");
-                    }}
-                )
-                .build()
+        .webhookIds(
+            Optional.of(
+                Arrays.asList("a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+            )
         )
         .build()
 );
@@ -1231,7 +1325,11 @@ client.monitors().updateMonitor(
 <dl>
 <dd>
 
-**webhook:** `Optional<WebhookDto>` — Updated webhook configuration.
+**webhookIds:** `Optional<List<String>>` 
+
+Updated list of centralized webhook IDs for this monitor. 
+
+Replaces all existing webhook assignments. Pass an empty array `[]` to clear all assignments. Omit to leave existing assignments unchanged.
     
 </dd>
 </dl>
@@ -1240,6 +1338,982 @@ client.monitors().updateMonitor(
 <dd>
 
 **limit:** `Optional<Integer>` — Updated maximum number of records per monitor run.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Webhooks
+<details><summary><code>client.webhooks.listWebhooks() -> ListWebhooksResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns a paginated list of webhooks belonging to the organization.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.webhooks().listWebhooks(
+    ListWebhooksRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**page:** `Optional<Integer>` — Page number to retrieve.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageSize:** `Optional<Integer>` — Number of webhooks per page.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**search:** `Optional<String>` — Filter results by text (case-insensitive substring match).
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhooks.createWebhook(request) -> CreateWebhookResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates a new webhook endpoint for the organization.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.webhooks().createWebhook(
+    CreateWebhookRequestDto
+        .builder()
+        .name("Layoffs Alert")
+        .url("https://hooks.slack.com/services/T000/B000/xxx")
+        .type(WebhookType.SLACK)
+        .deliveryMode(DeliveryMode.FULL)
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**name:** `String` — Human-readable label for this webhook.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**url:** `String` 
+
+Destination URL that receives the payload. Must use HTTPS. IP addresses are not accepted.
+
+Type-specific URL requirements:
+- `slack`: Must start with `https://hooks.slack.com/`.
+- `teams`: Hostname must match `*.webhook.office.com` or `*.webhook.office365.com`.
+- `generic`: Any valid HTTPS domain.
+- `custom`: Any valid HTTPS domain.
+
+When `type` is omitted, it is auto-detected from the URL.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**type:** `Optional<WebhookType>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**deliveryMode:** `Optional<DeliveryMode>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**method:** `Optional<HttpMethod>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**headers:** `Optional<Map<String, String>>` — Custom HTTP headers forwarded with each delivery.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**params:** `Optional<Map<String, String>>` — Query parameters appended to the webhook URL.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**auth:** `Optional<CreateWebhookRequestDtoAuth>` 
+
+Authentication forwarded with each delivery. Supported types:
+- `bearer`: Adds an `Authorization: Bearer <token>` header.
+- `api_key`: Adds a custom header with the specified name and value.
+- `basic`: Adds an `Authorization: Basic <credentials>` header.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**formatterConfig:** `Optional<Map<String, Object>>` — Custom payload transformation configuration. Required only when `type` is `custom`.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhooks.getWebhook(webhookId) -> GetWebhookResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the full configuration of a single webhook by ID.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.webhooks().getWebhook(
+    "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    GetWebhookRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**webhookId:** `String` — Unique webhook identifier.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhooks.deleteWebhook(webhookId)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Permanently deletes a webhook and removes all resource assignments. 
+
+Assigned jobs and monitors no longer trigger delivery to this webhook. This operation cannot be undone.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.webhooks().deleteWebhook(
+    "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    DeleteWebhookRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**webhookId:** `String` — Unique webhook identifier.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhooks.updateWebhook(webhookId, request) -> UpdateWebhookResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Updates one or more fields of an existing webhook.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.webhooks().updateWebhook(
+    "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    UpdateWebhookRequestDto
+        .builder()
+        .name("Layoffs Alert (EU)")
+        .isActive(false)
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**webhookId:** `String` — Unique webhook identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `Optional<String>` — Updated webhook name.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**url:** `Optional<String>` — Updated destination URL. Must use HTTPS. Type-specific URL rules apply.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**type:** `Optional<WebhookType>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**deliveryMode:** `Optional<DeliveryMode>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**method:** `Optional<HttpMethod>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**headers:** `Optional<Map<String, String>>` — Updated HTTP headers. Replaces existing headers entirely.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**params:** `Optional<Map<String, String>>` — Updated query parameters. Replaces existing params entirely.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**auth:** `Optional<UpdateWebhookRequestDtoAuth>` — Updated authentication configuration. Replaces existing auth entirely.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**formatterConfig:** `Optional<Map<String, Object>>` — Updated formatter configuration.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**isActive:** `Optional<Boolean>` — Set to `false` to disable delivery without deleting the webhook.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhooks.testWebhook(webhookId, request) -> TestWebhookResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Sends a test HTTP request to the webhook URL using the webhook's configured method, headers, and auth. Returns the response from the target endpoint.
+
+Use this to verify URL reachability and authentication before attaching the webhook to a live job or monitor.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.webhooks().testWebhook(
+    "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    TestWebhookRequestDto
+        .builder()
+        .payload(
+            new HashMap<String, Object>() {{
+                put("test", true);
+                put("message", "CatchAll webhook test");
+            }}
+        )
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**webhookId:** `String` — Unique webhook identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**payload:** `Optional<Map<String, Object>>` 
+
+Custom payload to send in the test request. If omitted, a synthetic
+test payload is sent.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhooks.listWebhookResources(webhookId) -> ListWebhookResourcesResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns a paginated list of resources currently assigned to this webhook.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.webhooks().listWebhookResources(
+    "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    ListWebhookResourcesRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**webhookId:** `String` — Unique webhook identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**resourceType:** `Optional<MappableResourceType>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `Optional<Integer>` — Page number to retrieve.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageSize:** `Optional<Integer>` — Number of assignments per page.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhooks.assignWebhookResource(webhookId, request) -> AssignWebhookResourceResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Attaches a job, monitor, or monitor group to the webhook. When the
+resource completes, the webhook receives a delivery.
+
+A single webhook can be assigned to multiple resources. Each resource
+can have up to 5 webhooks assigned.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.webhooks().assignWebhookResource(
+    "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    AssignWebhookResourceRequestDto
+        .builder()
+        .resourceType(MappableResourceType.MONITOR)
+        .resourceId("3fec5b07-8786-46d7-9486-d43ff67eccd4")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**webhookId:** `String` — Unique webhook identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**resourceType:** `MappableResourceType` — Type of resource to assign.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**resourceId:** `String` — ID of the resource to assign.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhooks.removeWebhookResource(webhookId, resourceType, resourceId)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Detaches a resource from this webhook. Completions of the resource no longer trigger delivery to this webhook.
+
+The webhook and the resource itself are not deleted.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.webhooks().removeWebhookResource(
+    "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    MappableResourceType.JOB,
+    "3fec5b07-8786-46d7-9486-d43ff67eccd4",
+    RemoveWebhookResourceRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**webhookId:** `String` — Unique webhook identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**resourceType:** `MappableResourceType` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**resourceId:** `String` — Unique resource identifier.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhooks.listWebhooksForResource(resourceType, resourceId) -> ListWebhooksResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns all webhooks currently assigned to the given resource.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.webhooks().listWebhooksForResource(
+    MappableResourceType.JOB,
+    "3fec5b07-8786-46d7-9486-d43ff67eccd4",
+    ListWebhooksForResourceRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**resourceType:** `MappableResourceType` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**resourceId:** `String` — Unique resource identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**isActive:** `Optional<Boolean>` — Filter by active status. Omit to return webhooks regardless of status.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `Optional<Integer>` — Page number to retrieve.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageSize:** `Optional<Integer>` — Number of webhooks per page.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhooks.getWebhookDeliveryHistory() -> DeliveryHistoryResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns a paginated delivery log for a given resource, ordered by timestamp descending. 
+
+Each record shows the webhook dispatched, the HTTP status code returned, delivery outcome, and any error or warning messages. Use this to debug failed deliveries or audit dispatch activity.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.webhooks().getWebhookDeliveryHistory(
+    GetWebhookDeliveryHistoryRequest
+        .builder()
+        .resourceType(MappableResourceType.JOB)
+        .resourceId("3fec5b07-8786-46d7-9486-d43ff67eccd4")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**resourceType:** `MappableResourceType` — Type of the resource to retrieve delivery history for.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**resourceId:** `String` — Identifier of the resource to retrieve delivery history for.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `Optional<Integer>` — Page number to retrieve.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageSize:** `Optional<Integer>` — Number of records per page.
     
 </dd>
 </dl>
@@ -1812,6 +2886,7 @@ client.datasets().listDatasets(
     ListDatasetsRequest
         .builder()
         .search("Portfolio")
+        .projectId("60a85db4-78ec-4b78-876a-bc7d9cdadd04")
         .build()
 );
 ```
@@ -1877,6 +2952,14 @@ client.datasets().listDatasets(
 <dd>
 
 **ownership:** `Optional<OwnershipFilter>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**projectId:** `Optional<String>` — Filter results to resources belonging to this project.
     
 </dd>
 </dl>
@@ -2611,6 +3694,658 @@ client.datasets().uploadCsvToDataset(
 <dd>
 
 **datasetId:** `String` — Unique dataset identifier.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Projects
+<details><summary><code>client.projects.listProjects() -> ProjectListResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns all projects visible to the authenticated user.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.projects().listProjects(
+    ListProjectsRequest
+        .builder()
+        .search("M&A")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**page:** `Optional<Integer>` — Page number to retrieve.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageSize:** `Optional<Integer>` — Number of records per page.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**search:** `Optional<String>` — Filter by project name (case-insensitive substring match).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ownership:** `Optional<OwnershipFilter>` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.projects.createProject(request) -> CreateProjectResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates a new project.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.projects().createProject(
+    CreateProjectRequestDto
+        .builder()
+        .name("AI M&A Tracking")
+        .description("Tracks AI-related M&A activity for our investment team.")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**name:** `String` — Name for the project.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `Optional<String>` — Optional description.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.projects.getProject(projectId) -> ProjectResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns a single project by ID.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.projects().getProject(
+    "60a85db4-78ec-4b78-876a-bc7d9cdadd04",
+    GetProjectRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**projectId:** `String` — Unique project identifier.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.projects.deleteProject(projectId)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Deletes a project. By default, assigned resources are unassigned but not deleted. 
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.projects().deleteProject(
+    "60a85db4-78ec-4b78-876a-bc7d9cdadd04",
+    DeleteProjectRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**projectId:** `String` — Unique project identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**deleteResources:** `Optional<Boolean>` — If true, permanently deletes all resources (jobs, monitors, datasets) assigned to the project. If false, the project is deleted and its resources are unassigned but not deleted.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.projects.updateProject(projectId, request) -> UpdateProjectResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Updates the name or description of an existing project.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.projects().updateProject(
+    "60a85db4-78ec-4b78-876a-bc7d9cdadd04",
+    UpdateProjectRequestDto
+        .builder()
+        .name("AI M&A Tracking (Q2 2026)")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**projectId:** `String` — Unique project identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `Optional<String>` — New name for the project.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `Optional<String>` — New description for the project.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.projects.getProjectOverview(projectId) -> ProjectOverviewResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns resource counts for a project, grouped by type and status.
+
+For `jobs` and `monitors`, counts are broken down by status (for example, `completed`, `failed`). For `datasets` and `monitor_groups`, only a `total` count is returned.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.projects().getProjectOverview(
+    "60a85db4-78ec-4b78-876a-bc7d9cdadd04",
+    GetProjectOverviewRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**projectId:** `String` — Unique project identifier.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.projects.listProjectResources(projectId) -> ProjectResourceListResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns all resources assigned to a project, with optional filtering by type.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.projects().listProjectResources(
+    "60a85db4-78ec-4b78-876a-bc7d9cdadd04",
+    ListProjectResourcesRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**projectId:** `String` — Unique project identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**resourceType:** `Optional<ProjectResourceType>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `Optional<Integer>` — Page number to retrieve.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageSize:** `Optional<Integer>` — Number of records per page.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.projects.addResourceToProject(projectId, request) -> AddResourceResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Assigns one or more existing resources to a project in a single request.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.projects().addResourceToProject(
+    "60a85db4-78ec-4b78-876a-bc7d9cdadd04",
+    AddResourceRequestDto
+        .builder()
+        .resources(
+            Arrays.asList(
+                ResourceItemDto
+                    .builder()
+                    .resourceType(ProjectResourceType.JOB)
+                    .resourceId("48421e16-1f50-4048-b62c-d3bc0789d30d")
+                    .build()
+            )
+        )
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**projectId:** `String` — Unique project identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**resources:** `List<ResourceItemDto>` — Resources to assign to the project.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.projects.removeResourceFromProject(projectId, resourceType, resourceId) -> RemoveResourceResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Removes a resource from a project. The resource itself is not
+deleted — it becomes unassigned and continues to exist.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.projects().removeResourceFromProject(
+    "60a85db4-78ec-4b78-876a-bc7d9cdadd04",
+    ProjectResourceType.JOB,
+    "48421e16-1f50-4048-b62c-d3bc0789d30d",
+    RemoveResourceFromProjectRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**projectId:** `String` — Unique project identifier.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**resourceType:** `ProjectResourceType` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**resourceId:** `String` — ID of the resource to remove.
     
 </dd>
 </dl>
