@@ -38,6 +38,8 @@ public final class ListDatasetsRequest {
 
     private final Optional<OwnershipFilter> ownership;
 
+    private final Optional<String> projectId;
+
     private final Map<String, Object> additionalProperties;
 
     private ListDatasetsRequest(
@@ -48,6 +50,7 @@ public final class ListDatasetsRequest {
             Optional<DatasetSortBy> sortBy,
             Optional<SortOrder> sortOrder,
             Optional<OwnershipFilter> ownership,
+            Optional<String> projectId,
             Map<String, Object> additionalProperties) {
         this.page = page;
         this.pageSize = pageSize;
@@ -56,6 +59,7 @@ public final class ListDatasetsRequest {
         this.sortBy = sortBy;
         this.sortOrder = sortOrder;
         this.ownership = ownership;
+        this.projectId = projectId;
         this.additionalProperties = additionalProperties;
     }
 
@@ -106,6 +110,14 @@ public final class ListDatasetsRequest {
         return ownership;
     }
 
+    /**
+     * @return Filter results to resources belonging to this project.
+     */
+    @JsonProperty("project_id")
+    public Optional<String> getProjectId() {
+        return projectId;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -124,13 +136,21 @@ public final class ListDatasetsRequest {
                 && latestStatus.equals(other.latestStatus)
                 && sortBy.equals(other.sortBy)
                 && sortOrder.equals(other.sortOrder)
-                && ownership.equals(other.ownership);
+                && ownership.equals(other.ownership)
+                && projectId.equals(other.projectId);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.page, this.pageSize, this.search, this.latestStatus, this.sortBy, this.sortOrder, this.ownership);
+                this.page,
+                this.pageSize,
+                this.search,
+                this.latestStatus,
+                this.sortBy,
+                this.sortOrder,
+                this.ownership,
+                this.projectId);
     }
 
     @java.lang.Override
@@ -158,6 +178,8 @@ public final class ListDatasetsRequest {
 
         private Optional<OwnershipFilter> ownership = Optional.empty();
 
+        private Optional<String> projectId = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -171,6 +193,7 @@ public final class ListDatasetsRequest {
             sortBy(other.getSortBy());
             sortOrder(other.getSortOrder());
             ownership(other.getOwnership());
+            projectId(other.getProjectId());
             return this;
         }
 
@@ -263,9 +286,31 @@ public final class ListDatasetsRequest {
             return this;
         }
 
+        /**
+         * <p>Filter results to resources belonging to this project.</p>
+         */
+        @JsonSetter(value = "project_id", nulls = Nulls.SKIP)
+        public Builder projectId(Optional<String> projectId) {
+            this.projectId = projectId;
+            return this;
+        }
+
+        public Builder projectId(String projectId) {
+            this.projectId = Optional.ofNullable(projectId);
+            return this;
+        }
+
         public ListDatasetsRequest build() {
             return new ListDatasetsRequest(
-                    page, pageSize, search, latestStatus, sortBy, sortOrder, ownership, additionalProperties);
+                    page,
+                    pageSize,
+                    search,
+                    latestStatus,
+                    sortBy,
+                    sortOrder,
+                    ownership,
+                    projectId,
+                    additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

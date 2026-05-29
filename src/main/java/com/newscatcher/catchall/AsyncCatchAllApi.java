@@ -10,6 +10,8 @@ import com.newscatcher.catchall.resources.entities.AsyncEntitiesClient;
 import com.newscatcher.catchall.resources.jobs.AsyncJobsClient;
 import com.newscatcher.catchall.resources.meta.AsyncMetaClient;
 import com.newscatcher.catchall.resources.monitors.AsyncMonitorsClient;
+import com.newscatcher.catchall.resources.projects.AsyncProjectsClient;
+import com.newscatcher.catchall.resources.webhooks.AsyncWebhooksClient;
 import java.util.function.Supplier;
 
 public class AsyncCatchAllApi {
@@ -19,9 +21,13 @@ public class AsyncCatchAllApi {
 
     protected final Supplier<AsyncMonitorsClient> monitorsClient;
 
+    protected final Supplier<AsyncWebhooksClient> webhooksClient;
+
     protected final Supplier<AsyncEntitiesClient> entitiesClient;
 
     protected final Supplier<AsyncDatasetsClient> datasetsClient;
+
+    protected final Supplier<AsyncProjectsClient> projectsClient;
 
     protected final Supplier<AsyncMetaClient> metaClient;
 
@@ -29,8 +35,10 @@ public class AsyncCatchAllApi {
         this.clientOptions = clientOptions;
         this.jobsClient = Suppliers.memoize(() -> new AsyncJobsClient(clientOptions));
         this.monitorsClient = Suppliers.memoize(() -> new AsyncMonitorsClient(clientOptions));
+        this.webhooksClient = Suppliers.memoize(() -> new AsyncWebhooksClient(clientOptions));
         this.entitiesClient = Suppliers.memoize(() -> new AsyncEntitiesClient(clientOptions));
         this.datasetsClient = Suppliers.memoize(() -> new AsyncDatasetsClient(clientOptions));
+        this.projectsClient = Suppliers.memoize(() -> new AsyncProjectsClient(clientOptions));
         this.metaClient = Suppliers.memoize(() -> new AsyncMetaClient(clientOptions));
     }
 
@@ -42,12 +50,20 @@ public class AsyncCatchAllApi {
         return this.monitorsClient.get();
     }
 
+    public AsyncWebhooksClient webhooks() {
+        return this.webhooksClient.get();
+    }
+
     public AsyncEntitiesClient entities() {
         return this.entitiesClient.get();
     }
 
     public AsyncDatasetsClient datasets() {
         return this.datasetsClient.get();
+    }
+
+    public AsyncProjectsClient projects() {
+        return this.projectsClient.get();
     }
 
     public AsyncMetaClient meta() {

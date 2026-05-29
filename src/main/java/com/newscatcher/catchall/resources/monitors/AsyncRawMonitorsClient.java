@@ -103,6 +103,10 @@ public class AsyncRawMonitorsClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "ownership", request.getOwnership().get(), false);
         }
+        if (request.getProjectId().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "project_id", request.getProjectId().get(), false);
+        }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);

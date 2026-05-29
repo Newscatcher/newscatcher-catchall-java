@@ -100,7 +100,7 @@ public final class ConnectedEntity {
 
     /**
      * @return The stored attributes for this entity. Present only when attributes exist in the database.
-     * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code> field.</p>
+     * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code>  field.</p>
      */
     @JsonProperty("company")
     public Optional<CompanyAttributes> getCompany() {
@@ -193,7 +193,7 @@ public final class ConnectedEntity {
 
         /**
          * <p>The stored attributes for this entity. Present only when attributes exist in the database.</p>
-         * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code> field.</p>
+         * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code>  field.</p>
          */
         _FinalStage company(Optional<CompanyAttributes> company);
 
@@ -305,7 +305,7 @@ public final class ConnectedEntity {
 
         /**
          * <p>The stored attributes for this entity. Present only when attributes exist in the database.</p>
-         * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code> field.</p>
+         * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code>  field.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -316,7 +316,7 @@ public final class ConnectedEntity {
 
         /**
          * <p>The stored attributes for this entity. Present only when attributes exist in the database.</p>
-         * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code> field.</p>
+         * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code>  field.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "company", nulls = Nulls.SKIP)

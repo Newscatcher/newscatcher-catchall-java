@@ -12,8 +12,8 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
-import com.newscatcher.catchall.types.WebhookDto;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,25 +21,26 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UpdateMonitorRequestDto.Builder.class)
 public final class UpdateMonitorRequestDto {
-    private final Optional<WebhookDto> webhook;
+    private final Optional<List<String>> webhookIds;
 
     private final Optional<Integer> limit;
 
     private final Map<String, Object> additionalProperties;
 
     private UpdateMonitorRequestDto(
-            Optional<WebhookDto> webhook, Optional<Integer> limit, Map<String, Object> additionalProperties) {
-        this.webhook = webhook;
+            Optional<List<String>> webhookIds, Optional<Integer> limit, Map<String, Object> additionalProperties) {
+        this.webhookIds = webhookIds;
         this.limit = limit;
         this.additionalProperties = additionalProperties;
     }
 
     /**
-     * @return Updated webhook configuration.
+     * @return Updated list of centralized webhook IDs for this monitor.
+     * <p>Replaces all existing webhook assignments. Pass an empty array <code>[]</code> to clear all assignments. Omit to leave existing assignments unchanged.</p>
      */
-    @JsonProperty("webhook")
-    public Optional<WebhookDto> getWebhook() {
-        return webhook;
+    @JsonProperty("webhook_ids")
+    public Optional<List<String>> getWebhookIds() {
+        return webhookIds;
     }
 
     /**
@@ -62,12 +63,12 @@ public final class UpdateMonitorRequestDto {
     }
 
     private boolean equalTo(UpdateMonitorRequestDto other) {
-        return webhook.equals(other.webhook) && limit.equals(other.limit);
+        return webhookIds.equals(other.webhookIds) && limit.equals(other.limit);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.webhook, this.limit);
+        return Objects.hash(this.webhookIds, this.limit);
     }
 
     @java.lang.Override
@@ -81,7 +82,7 @@ public final class UpdateMonitorRequestDto {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<WebhookDto> webhook = Optional.empty();
+        private Optional<List<String>> webhookIds = Optional.empty();
 
         private Optional<Integer> limit = Optional.empty();
 
@@ -91,22 +92,23 @@ public final class UpdateMonitorRequestDto {
         private Builder() {}
 
         public Builder from(UpdateMonitorRequestDto other) {
-            webhook(other.getWebhook());
+            webhookIds(other.getWebhookIds());
             limit(other.getLimit());
             return this;
         }
 
         /**
-         * <p>Updated webhook configuration.</p>
+         * <p>Updated list of centralized webhook IDs for this monitor.</p>
+         * <p>Replaces all existing webhook assignments. Pass an empty array <code>[]</code> to clear all assignments. Omit to leave existing assignments unchanged.</p>
          */
-        @JsonSetter(value = "webhook", nulls = Nulls.SKIP)
-        public Builder webhook(Optional<WebhookDto> webhook) {
-            this.webhook = webhook;
+        @JsonSetter(value = "webhook_ids", nulls = Nulls.SKIP)
+        public Builder webhookIds(Optional<List<String>> webhookIds) {
+            this.webhookIds = webhookIds;
             return this;
         }
 
-        public Builder webhook(WebhookDto webhook) {
-            this.webhook = Optional.ofNullable(webhook);
+        public Builder webhookIds(List<String> webhookIds) {
+            this.webhookIds = Optional.ofNullable(webhookIds);
             return this;
         }
 
@@ -125,7 +127,7 @@ public final class UpdateMonitorRequestDto {
         }
 
         public UpdateMonitorRequestDto build() {
-            return new UpdateMonitorRequestDto(webhook, limit, additionalProperties);
+            return new UpdateMonitorRequestDto(webhookIds, limit, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

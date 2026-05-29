@@ -101,7 +101,7 @@ public final class MonitorListItemDto {
     }
 
     /**
-     * @return Whether the monitor is currently active.
+     * @return True if the monitor is currently active; false otherwise.
      */
     @JsonProperty("enabled")
     public boolean getEnabled() {
@@ -248,7 +248,7 @@ public final class MonitorListItemDto {
 
     public interface EnabledStage {
         /**
-         * <p>Whether the monitor is currently active.</p>
+         * <p>True if the monitor is currently active; false otherwise.</p>
          */
         _FinalStage enabled(boolean enabled);
     }
@@ -395,8 +395,8 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Whether the monitor is currently active.</p>
-         * <p>Whether the monitor is currently active.</p>
+         * <p>True if the monitor is currently active; false otherwise.</p>
+         * <p>True if the monitor is currently active; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

@@ -43,7 +43,7 @@ public final class DeleteMonitorResponseDto {
     }
 
     /**
-     * @return Whether the delete operation succeeded.
+     * @return True if the delete operation succeeded; false otherwise.
      */
     @JsonProperty("success")
     public boolean getSuccess() {
@@ -115,7 +115,7 @@ public final class DeleteMonitorResponseDto {
 
     public interface SuccessStage {
         /**
-         * <p>Whether the delete operation succeeded.</p>
+         * <p>True if the delete operation succeeded; false otherwise.</p>
          */
         _FinalStage success(boolean success);
 
@@ -170,8 +170,8 @@ public final class DeleteMonitorResponseDto {
         }
 
         /**
-         * <p>Whether the delete operation succeeded.</p>
-         * <p>Whether the delete operation succeeded.</p>
+         * <p>True if the delete operation succeeded; false otherwise.</p>
+         * <p>True if the delete operation succeeded; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

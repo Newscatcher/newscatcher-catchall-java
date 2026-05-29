@@ -46,6 +46,10 @@ public final class SubmitRequestDto {
 
     private final Optional<Integer> edScoreMin;
 
+    private final Optional<String> projectId;
+
+    private final Optional<List<String>> webhookIds;
+
     private final Map<String, Object> additionalProperties;
 
     private SubmitRequestDto(
@@ -59,6 +63,8 @@ public final class SubmitRequestDto {
             Optional<SubmitRequestDtoMode> mode,
             Optional<List<String>> connectedDatasetIds,
             Optional<Integer> edScoreMin,
+            Optional<String> projectId,
+            Optional<List<String>> webhookIds,
             Map<String, Object> additionalProperties) {
         this.query = query;
         this.context = context;
@@ -70,6 +76,8 @@ public final class SubmitRequestDto {
         this.mode = mode;
         this.connectedDatasetIds = connectedDatasetIds;
         this.edScoreMin = edScoreMin;
+        this.projectId = projectId;
+        this.webhookIds = webhookIds;
         this.additionalProperties = additionalProperties;
     }
 
@@ -146,6 +154,22 @@ public final class SubmitRequestDto {
         return edScoreMin;
     }
 
+    /**
+     * @return Project to assign this job to. The job appears in the project's resource list immediately after submission.
+     */
+    @JsonProperty("project_id")
+    public Optional<String> getProjectId() {
+        return projectId;
+    }
+
+    /**
+     * @return IDs of webhooks to notify when the job completes. Maximum 5 per job.
+     */
+    @JsonProperty("webhook_ids")
+    public Optional<List<String>> getWebhookIds() {
+        return webhookIds;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -167,7 +191,9 @@ public final class SubmitRequestDto {
                 && enrichments.equals(other.enrichments)
                 && mode.equals(other.mode)
                 && connectedDatasetIds.equals(other.connectedDatasetIds)
-                && edScoreMin.equals(other.edScoreMin);
+                && edScoreMin.equals(other.edScoreMin)
+                && projectId.equals(other.projectId)
+                && webhookIds.equals(other.webhookIds);
     }
 
     @java.lang.Override
@@ -182,7 +208,9 @@ public final class SubmitRequestDto {
                 this.enrichments,
                 this.mode,
                 this.connectedDatasetIds,
-                this.edScoreMin);
+                this.edScoreMin,
+                this.projectId,
+                this.webhookIds);
     }
 
     @java.lang.Override
@@ -265,11 +293,29 @@ public final class SubmitRequestDto {
         _FinalStage edScoreMin(Optional<Integer> edScoreMin);
 
         _FinalStage edScoreMin(Integer edScoreMin);
+
+        /**
+         * <p>Project to assign this job to. The job appears in the project's resource list immediately after submission.</p>
+         */
+        _FinalStage projectId(Optional<String> projectId);
+
+        _FinalStage projectId(String projectId);
+
+        /**
+         * <p>IDs of webhooks to notify when the job completes. Maximum 5 per job.</p>
+         */
+        _FinalStage webhookIds(Optional<List<String>> webhookIds);
+
+        _FinalStage webhookIds(List<String> webhookIds);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements QueryStage, _FinalStage {
         private String query;
+
+        private Optional<List<String>> webhookIds = Optional.empty();
+
+        private Optional<String> projectId = Optional.empty();
 
         private Optional<Integer> edScoreMin = Optional.empty();
 
@@ -306,6 +352,8 @@ public final class SubmitRequestDto {
             mode(other.getMode());
             connectedDatasetIds(other.getConnectedDatasetIds());
             edScoreMin(other.getEdScoreMin());
+            projectId(other.getProjectId());
+            webhookIds(other.getWebhookIds());
             return this;
         }
 
@@ -313,6 +361,46 @@ public final class SubmitRequestDto {
         @JsonSetter("query")
         public _FinalStage query(@NotNull String query) {
             this.query = Objects.requireNonNull(query, "query must not be null");
+            return this;
+        }
+
+        /**
+         * <p>IDs of webhooks to notify when the job completes. Maximum 5 per job.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage webhookIds(List<String> webhookIds) {
+            this.webhookIds = Optional.ofNullable(webhookIds);
+            return this;
+        }
+
+        /**
+         * <p>IDs of webhooks to notify when the job completes. Maximum 5 per job.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "webhook_ids", nulls = Nulls.SKIP)
+        public _FinalStage webhookIds(Optional<List<String>> webhookIds) {
+            this.webhookIds = webhookIds;
+            return this;
+        }
+
+        /**
+         * <p>Project to assign this job to. The job appears in the project's resource list immediately after submission.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage projectId(String projectId) {
+            this.projectId = Optional.ofNullable(projectId);
+            return this;
+        }
+
+        /**
+         * <p>Project to assign this job to. The job appears in the project's resource list immediately after submission.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "project_id", nulls = Nulls.SKIP)
+        public _FinalStage projectId(Optional<String> projectId) {
+            this.projectId = projectId;
             return this;
         }
 
@@ -497,6 +585,8 @@ public final class SubmitRequestDto {
                     mode,
                     connectedDatasetIds,
                     edScoreMin,
+                    projectId,
+                    webhookIds,
                     additionalProperties);
         }
 
