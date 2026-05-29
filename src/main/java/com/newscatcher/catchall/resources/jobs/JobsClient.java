@@ -12,6 +12,7 @@ import com.newscatcher.catchall.resources.jobs.requests.GetJobStatusRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetUserJobsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.InitializeRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
+import com.newscatcher.catchall.resources.jobs.requests.ValidateQueryRequestDto;
 import com.newscatcher.catchall.types.ContinueResponseDto;
 import com.newscatcher.catchall.types.DeleteJobResponseDto;
 import com.newscatcher.catchall.types.InitializeResponseDto;
@@ -19,6 +20,7 @@ import com.newscatcher.catchall.types.ListUserJobsResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
 import com.newscatcher.catchall.types.StatusResponseDto;
 import com.newscatcher.catchall.types.SubmitResponseDto;
+import com.newscatcher.catchall.types.ValidateQueryResponseDto;
 
 public class JobsClient {
     protected final ClientOptions clientOptions;
@@ -63,6 +65,22 @@ public class JobsClient {
      */
     public ListUserJobsResponseDto getUserJobs(GetUserJobsRequest request, RequestOptions requestOptions) {
         return this.rawClient.getUserJobs(request, requestOptions).body();
+    }
+
+    /**
+     * Checks whether a query is well-formed and likely to produce good results before submitting a job.
+     * <p>Returns a quality assessment with a status level, identified issues, and actionable suggestions.</p>
+     */
+    public ValidateQueryResponseDto validateQuery(ValidateQueryRequestDto request) {
+        return this.rawClient.validateQuery(request).body();
+    }
+
+    /**
+     * Checks whether a query is well-formed and likely to produce good results before submitting a job.
+     * <p>Returns a quality assessment with a status level, identified issues, and actionable suggestions.</p>
+     */
+    public ValidateQueryResponseDto validateQuery(ValidateQueryRequestDto request, RequestOptions requestOptions) {
+        return this.rawClient.validateQuery(request, requestOptions).body();
     }
 
     /**

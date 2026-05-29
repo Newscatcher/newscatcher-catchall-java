@@ -10,6 +10,8 @@ import com.newscatcher.catchall.resources.entities.EntitiesClient;
 import com.newscatcher.catchall.resources.jobs.JobsClient;
 import com.newscatcher.catchall.resources.meta.MetaClient;
 import com.newscatcher.catchall.resources.monitors.MonitorsClient;
+import com.newscatcher.catchall.resources.projects.ProjectsClient;
+import com.newscatcher.catchall.resources.webhooks.WebhooksClient;
 import java.util.function.Supplier;
 
 public class CatchAllApi {
@@ -19,9 +21,13 @@ public class CatchAllApi {
 
     protected final Supplier<MonitorsClient> monitorsClient;
 
+    protected final Supplier<WebhooksClient> webhooksClient;
+
     protected final Supplier<EntitiesClient> entitiesClient;
 
     protected final Supplier<DatasetsClient> datasetsClient;
+
+    protected final Supplier<ProjectsClient> projectsClient;
 
     protected final Supplier<MetaClient> metaClient;
 
@@ -29,8 +35,10 @@ public class CatchAllApi {
         this.clientOptions = clientOptions;
         this.jobsClient = Suppliers.memoize(() -> new JobsClient(clientOptions));
         this.monitorsClient = Suppliers.memoize(() -> new MonitorsClient(clientOptions));
+        this.webhooksClient = Suppliers.memoize(() -> new WebhooksClient(clientOptions));
         this.entitiesClient = Suppliers.memoize(() -> new EntitiesClient(clientOptions));
         this.datasetsClient = Suppliers.memoize(() -> new DatasetsClient(clientOptions));
+        this.projectsClient = Suppliers.memoize(() -> new ProjectsClient(clientOptions));
         this.metaClient = Suppliers.memoize(() -> new MetaClient(clientOptions));
     }
 
@@ -42,12 +50,20 @@ public class CatchAllApi {
         return this.monitorsClient.get();
     }
 
+    public WebhooksClient webhooks() {
+        return this.webhooksClient.get();
+    }
+
     public EntitiesClient entities() {
         return this.entitiesClient.get();
     }
 
     public DatasetsClient datasets() {
         return this.datasetsClient.get();
+    }
+
+    public ProjectsClient projects() {
+        return this.projectsClient.get();
     }
 
     public MetaClient meta() {

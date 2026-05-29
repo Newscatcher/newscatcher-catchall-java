@@ -6,3 +6,6 @@ changelog.md
 
 # CI
 .github/workflows/sdk-release.yml
+.fern/replay.lock
+.fern/replay.yml
+.gitattributes

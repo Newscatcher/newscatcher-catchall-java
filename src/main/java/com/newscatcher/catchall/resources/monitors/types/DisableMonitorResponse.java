@@ -36,7 +36,7 @@ public final class DisableMonitorResponse {
     }
 
     /**
-     * @return Whether the operation succeeded.
+     * @return True if the operation succeeded; false otherwise.
      */
     @JsonProperty("success")
     public boolean getSuccess() {
@@ -90,7 +90,7 @@ public final class DisableMonitorResponse {
 
     public interface SuccessStage {
         /**
-         * <p>Whether the operation succeeded.</p>
+         * <p>True if the operation succeeded; false otherwise.</p>
          */
         MessageStage success(boolean success);
 
@@ -141,8 +141,8 @@ public final class DisableMonitorResponse {
         }
 
         /**
-         * <p>Whether the operation succeeded.</p>
-         * <p>Whether the operation succeeded.</p>
+         * <p>True if the operation succeeded; false otherwise.</p>
+         * <p>True if the operation succeeded; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

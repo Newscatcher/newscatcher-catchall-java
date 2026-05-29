@@ -52,7 +52,7 @@ public final class MonitorStatusHistoryResponseDto {
     }
 
     /**
-     * @return Whether the request succeeded.
+     * @return True if the request succeeded; false otherwise.
      */
     @JsonProperty("success")
     public boolean getSuccess() {
@@ -162,7 +162,7 @@ public final class MonitorStatusHistoryResponseDto {
 
     public interface SuccessStage {
         /**
-         * <p>Whether the request succeeded.</p>
+         * <p>True if the request succeeded; false otherwise.</p>
          */
         _FinalStage success(boolean success);
 
@@ -241,8 +241,8 @@ public final class MonitorStatusHistoryResponseDto {
         }
 
         /**
-         * <p>Whether the request succeeded.</p>
-         * <p>Whether the request succeeded.</p>
+         * <p>True if the request succeeded; false otherwise.</p>
+         * <p>True if the request succeeded; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
