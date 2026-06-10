@@ -29,6 +29,8 @@ public final class ConnectedEntity {
 
     private final String relation;
 
+    private final Optional<String> associationType;
+
     private final String type;
 
     private final Optional<CompanyAttributes> company;
@@ -40,6 +42,7 @@ public final class ConnectedEntity {
             String name,
             int edScore,
             String relation,
+            Optional<String> associationType,
             String type,
             Optional<CompanyAttributes> company,
             Map<String, Object> additionalProperties) {
@@ -47,6 +50,7 @@ public final class ConnectedEntity {
         this.name = name;
         this.edScore = edScore;
         this.relation = relation;
+        this.associationType = associationType;
         this.type = type;
         this.company = company;
         this.additionalProperties = additionalProperties;
@@ -91,6 +95,14 @@ public final class ConnectedEntity {
     }
 
     /**
+     * @return How the entity relates to the event: <code>event_associated</code> if the entity is a direct actor, <code>mention</code> if merely referenced.
+     */
+    @JsonProperty("association_type")
+    public Optional<String> getAssociationType() {
+        return associationType;
+    }
+
+    /**
      * @return The entity type.
      */
     @JsonProperty("type")
@@ -123,13 +135,15 @@ public final class ConnectedEntity {
                 && name.equals(other.name)
                 && edScore == other.edScore
                 && relation.equals(other.relation)
+                && associationType.equals(other.associationType)
                 && type.equals(other.type)
                 && company.equals(other.company);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.entityId, this.name, this.edScore, this.relation, this.type, this.company);
+        return Objects.hash(
+                this.entityId, this.name, this.edScore, this.relation, this.associationType, this.type, this.company);
     }
 
     @java.lang.Override
@@ -192,6 +206,13 @@ public final class ConnectedEntity {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
+         * <p>How the entity relates to the event: <code>event_associated</code> if the entity is a direct actor, <code>mention</code> if merely referenced.</p>
+         */
+        _FinalStage associationType(Optional<String> associationType);
+
+        _FinalStage associationType(String associationType);
+
+        /**
          * <p>The stored attributes for this entity. Present only when attributes exist in the database.</p>
          * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code>  field.</p>
          */
@@ -215,6 +236,8 @@ public final class ConnectedEntity {
 
         private Optional<CompanyAttributes> company = Optional.empty();
 
+        private Optional<String> associationType = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -226,6 +249,7 @@ public final class ConnectedEntity {
             name(other.getName());
             edScore(other.getEdScore());
             relation(other.getRelation());
+            associationType(other.getAssociationType());
             type(other.getType());
             company(other.getCompany());
             return this;
@@ -325,9 +349,30 @@ public final class ConnectedEntity {
             return this;
         }
 
+        /**
+         * <p>How the entity relates to the event: <code>event_associated</code> if the entity is a direct actor, <code>mention</code> if merely referenced.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage associationType(String associationType) {
+            this.associationType = Optional.ofNullable(associationType);
+            return this;
+        }
+
+        /**
+         * <p>How the entity relates to the event: <code>event_associated</code> if the entity is a direct actor, <code>mention</code> if merely referenced.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "association_type", nulls = Nulls.SKIP)
+        public _FinalStage associationType(Optional<String> associationType) {
+            this.associationType = associationType;
+            return this;
+        }
+
         @java.lang.Override
         public ConnectedEntity build() {
-            return new ConnectedEntity(entityId, name, edScore, relation, type, company, additionalProperties);
+            return new ConnectedEntity(
+                    entityId, name, edScore, relation, associationType, type, company, additionalProperties);
         }
 
         @java.lang.Override

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,11 +26,22 @@ public final class InitializeRequestDto {
 
     private final Optional<String> context;
 
+    private final Optional<List<String>> connectedDatasetIds;
+
+    private final Optional<Boolean> fetchAllWatchlistNews;
+
     private final Map<String, Object> additionalProperties;
 
-    private InitializeRequestDto(String query, Optional<String> context, Map<String, Object> additionalProperties) {
+    private InitializeRequestDto(
+            String query,
+            Optional<String> context,
+            Optional<List<String>> connectedDatasetIds,
+            Optional<Boolean> fetchAllWatchlistNews,
+            Map<String, Object> additionalProperties) {
         this.query = query;
         this.context = context;
+        this.connectedDatasetIds = connectedDatasetIds;
+        this.fetchAllWatchlistNews = fetchAllWatchlistNews;
         this.additionalProperties = additionalProperties;
     }
 
@@ -41,6 +53,23 @@ public final class InitializeRequestDto {
     @JsonProperty("context")
     public Optional<String> getContext() {
         return context;
+    }
+
+    /**
+     * @return Optional list of watchlist dataset IDs connected to this job.
+     */
+    @JsonProperty("connected_dataset_ids")
+    public Optional<List<String>> getConnectedDatasetIds() {
+        return connectedDatasetIds;
+    }
+
+    /**
+     * @return When true, returns generic news validators and enrichments suitable for
+     * watchlist-based article collection instead of query-specific fields.
+     */
+    @JsonProperty("fetch_all_watchlist_news")
+    public Optional<Boolean> getFetchAllWatchlistNews() {
+        return fetchAllWatchlistNews;
     }
 
     @java.lang.Override
@@ -55,12 +84,15 @@ public final class InitializeRequestDto {
     }
 
     private boolean equalTo(InitializeRequestDto other) {
-        return query.equals(other.query) && context.equals(other.context);
+        return query.equals(other.query)
+                && context.equals(other.context)
+                && connectedDatasetIds.equals(other.connectedDatasetIds)
+                && fetchAllWatchlistNews.equals(other.fetchAllWatchlistNews);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.query, this.context);
+        return Objects.hash(this.query, this.context, this.connectedDatasetIds, this.fetchAllWatchlistNews);
     }
 
     @java.lang.Override
@@ -88,11 +120,30 @@ public final class InitializeRequestDto {
         _FinalStage context(Optional<String> context);
 
         _FinalStage context(String context);
+
+        /**
+         * <p>Optional list of watchlist dataset IDs connected to this job.</p>
+         */
+        _FinalStage connectedDatasetIds(Optional<List<String>> connectedDatasetIds);
+
+        _FinalStage connectedDatasetIds(List<String> connectedDatasetIds);
+
+        /**
+         * <p>When true, returns generic news validators and enrichments suitable for
+         * watchlist-based article collection instead of query-specific fields.</p>
+         */
+        _FinalStage fetchAllWatchlistNews(Optional<Boolean> fetchAllWatchlistNews);
+
+        _FinalStage fetchAllWatchlistNews(Boolean fetchAllWatchlistNews);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements QueryStage, _FinalStage {
         private String query;
+
+        private Optional<Boolean> fetchAllWatchlistNews = Optional.empty();
+
+        private Optional<List<String>> connectedDatasetIds = Optional.empty();
 
         private Optional<String> context = Optional.empty();
 
@@ -105,6 +156,8 @@ public final class InitializeRequestDto {
         public Builder from(InitializeRequestDto other) {
             query(other.getQuery());
             context(other.getContext());
+            connectedDatasetIds(other.getConnectedDatasetIds());
+            fetchAllWatchlistNews(other.getFetchAllWatchlistNews());
             return this;
         }
 
@@ -112,6 +165,48 @@ public final class InitializeRequestDto {
         @JsonSetter("query")
         public _FinalStage query(@NotNull String query) {
             this.query = Objects.requireNonNull(query, "query must not be null");
+            return this;
+        }
+
+        /**
+         * <p>When true, returns generic news validators and enrichments suitable for
+         * watchlist-based article collection instead of query-specific fields.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage fetchAllWatchlistNews(Boolean fetchAllWatchlistNews) {
+            this.fetchAllWatchlistNews = Optional.ofNullable(fetchAllWatchlistNews);
+            return this;
+        }
+
+        /**
+         * <p>When true, returns generic news validators and enrichments suitable for
+         * watchlist-based article collection instead of query-specific fields.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "fetch_all_watchlist_news", nulls = Nulls.SKIP)
+        public _FinalStage fetchAllWatchlistNews(Optional<Boolean> fetchAllWatchlistNews) {
+            this.fetchAllWatchlistNews = fetchAllWatchlistNews;
+            return this;
+        }
+
+        /**
+         * <p>Optional list of watchlist dataset IDs connected to this job.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage connectedDatasetIds(List<String> connectedDatasetIds) {
+            this.connectedDatasetIds = Optional.ofNullable(connectedDatasetIds);
+            return this;
+        }
+
+        /**
+         * <p>Optional list of watchlist dataset IDs connected to this job.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "connected_dataset_ids", nulls = Nulls.SKIP)
+        public _FinalStage connectedDatasetIds(Optional<List<String>> connectedDatasetIds) {
+            this.connectedDatasetIds = connectedDatasetIds;
             return this;
         }
 
@@ -130,7 +225,8 @@ public final class InitializeRequestDto {
 
         @java.lang.Override
         public InitializeRequestDto build() {
-            return new InitializeRequestDto(query, context, additionalProperties);
+            return new InitializeRequestDto(
+                    query, context, connectedDatasetIds, fetchAllWatchlistNews, additionalProperties);
         }
 
         @java.lang.Override
