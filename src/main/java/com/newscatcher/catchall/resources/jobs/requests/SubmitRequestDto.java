@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
 import com.newscatcher.catchall.resources.jobs.types.SubmitRequestDtoMode;
 import com.newscatcher.catchall.types.EnrichmentSchema;
+import com.newscatcher.catchall.types.EntityAssociationType;
 import com.newscatcher.catchall.types.ValidatorSchema;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -50,6 +51,10 @@ public final class SubmitRequestDto {
 
     private final Optional<List<String>> webhookIds;
 
+    private final Optional<Boolean> fetchAllWatchlistNews;
+
+    private final Optional<EntityAssociationType> edAssociationType;
+
     private final Map<String, Object> additionalProperties;
 
     private SubmitRequestDto(
@@ -65,6 +70,8 @@ public final class SubmitRequestDto {
             Optional<Integer> edScoreMin,
             Optional<String> projectId,
             Optional<List<String>> webhookIds,
+            Optional<Boolean> fetchAllWatchlistNews,
+            Optional<EntityAssociationType> edAssociationType,
             Map<String, Object> additionalProperties) {
         this.query = query;
         this.context = context;
@@ -78,6 +85,8 @@ public final class SubmitRequestDto {
         this.edScoreMin = edScoreMin;
         this.projectId = projectId;
         this.webhookIds = webhookIds;
+        this.fetchAllWatchlistNews = fetchAllWatchlistNews;
+        this.edAssociationType = edAssociationType;
         this.additionalProperties = additionalProperties;
     }
 
@@ -170,6 +179,26 @@ public final class SubmitRequestDto {
         return webhookIds;
     }
 
+    /**
+     * @return When true, retrieves all news for connected Company Watchlist entities
+     * without topic filtering. Requires connected_dataset_ids to be set.
+     */
+    @JsonProperty("fetch_all_watchlist_news")
+    public Optional<Boolean> getFetchAllWatchlistNews() {
+        return fetchAllWatchlistNews;
+    }
+
+    /**
+     * @return Filter events by entity association type. <code>event_associated</code> keeps only
+     * events where the entity is a direct actor. <code>mention</code> keeps only events
+     * where the entity is merely referenced. Only relevant when
+     * connected_dataset_ids is set.
+     */
+    @JsonProperty("ed_association_type")
+    public Optional<EntityAssociationType> getEdAssociationType() {
+        return edAssociationType;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -193,7 +222,9 @@ public final class SubmitRequestDto {
                 && connectedDatasetIds.equals(other.connectedDatasetIds)
                 && edScoreMin.equals(other.edScoreMin)
                 && projectId.equals(other.projectId)
-                && webhookIds.equals(other.webhookIds);
+                && webhookIds.equals(other.webhookIds)
+                && fetchAllWatchlistNews.equals(other.fetchAllWatchlistNews)
+                && edAssociationType.equals(other.edAssociationType);
     }
 
     @java.lang.Override
@@ -210,7 +241,9 @@ public final class SubmitRequestDto {
                 this.connectedDatasetIds,
                 this.edScoreMin,
                 this.projectId,
-                this.webhookIds);
+                this.webhookIds,
+                this.fetchAllWatchlistNews,
+                this.edAssociationType);
     }
 
     @java.lang.Override
@@ -307,11 +340,33 @@ public final class SubmitRequestDto {
         _FinalStage webhookIds(Optional<List<String>> webhookIds);
 
         _FinalStage webhookIds(List<String> webhookIds);
+
+        /**
+         * <p>When true, retrieves all news for connected Company Watchlist entities
+         * without topic filtering. Requires connected_dataset_ids to be set.</p>
+         */
+        _FinalStage fetchAllWatchlistNews(Optional<Boolean> fetchAllWatchlistNews);
+
+        _FinalStage fetchAllWatchlistNews(Boolean fetchAllWatchlistNews);
+
+        /**
+         * <p>Filter events by entity association type. <code>event_associated</code> keeps only
+         * events where the entity is a direct actor. <code>mention</code> keeps only events
+         * where the entity is merely referenced. Only relevant when
+         * connected_dataset_ids is set.</p>
+         */
+        _FinalStage edAssociationType(Optional<EntityAssociationType> edAssociationType);
+
+        _FinalStage edAssociationType(EntityAssociationType edAssociationType);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements QueryStage, _FinalStage {
         private String query;
+
+        private Optional<EntityAssociationType> edAssociationType = Optional.empty();
+
+        private Optional<Boolean> fetchAllWatchlistNews = Optional.empty();
 
         private Optional<List<String>> webhookIds = Optional.empty();
 
@@ -354,6 +409,8 @@ public final class SubmitRequestDto {
             edScoreMin(other.getEdScoreMin());
             projectId(other.getProjectId());
             webhookIds(other.getWebhookIds());
+            fetchAllWatchlistNews(other.getFetchAllWatchlistNews());
+            edAssociationType(other.getEdAssociationType());
             return this;
         }
 
@@ -361,6 +418,54 @@ public final class SubmitRequestDto {
         @JsonSetter("query")
         public _FinalStage query(@NotNull String query) {
             this.query = Objects.requireNonNull(query, "query must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Filter events by entity association type. <code>event_associated</code> keeps only
+         * events where the entity is a direct actor. <code>mention</code> keeps only events
+         * where the entity is merely referenced. Only relevant when
+         * connected_dataset_ids is set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage edAssociationType(EntityAssociationType edAssociationType) {
+            this.edAssociationType = Optional.ofNullable(edAssociationType);
+            return this;
+        }
+
+        /**
+         * <p>Filter events by entity association type. <code>event_associated</code> keeps only
+         * events where the entity is a direct actor. <code>mention</code> keeps only events
+         * where the entity is merely referenced. Only relevant when
+         * connected_dataset_ids is set.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "ed_association_type", nulls = Nulls.SKIP)
+        public _FinalStage edAssociationType(Optional<EntityAssociationType> edAssociationType) {
+            this.edAssociationType = edAssociationType;
+            return this;
+        }
+
+        /**
+         * <p>When true, retrieves all news for connected Company Watchlist entities
+         * without topic filtering. Requires connected_dataset_ids to be set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage fetchAllWatchlistNews(Boolean fetchAllWatchlistNews) {
+            this.fetchAllWatchlistNews = Optional.ofNullable(fetchAllWatchlistNews);
+            return this;
+        }
+
+        /**
+         * <p>When true, retrieves all news for connected Company Watchlist entities
+         * without topic filtering. Requires connected_dataset_ids to be set.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "fetch_all_watchlist_news", nulls = Nulls.SKIP)
+        public _FinalStage fetchAllWatchlistNews(Optional<Boolean> fetchAllWatchlistNews) {
+            this.fetchAllWatchlistNews = fetchAllWatchlistNews;
             return this;
         }
 
@@ -587,6 +692,8 @@ public final class SubmitRequestDto {
                     edScoreMin,
                     projectId,
                     webhookIds,
+                    fetchAllWatchlistNews,
+                    edAssociationType,
                     additionalProperties);
         }
 
