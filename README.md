@@ -35,7 +35,7 @@ Add the dependency in your `build.gradle` file:
 
 ```groovy
 dependencies {
-  implementation 'com.newscatcherapi:newscatcher-catchall-sdk:0.0.0-fern-placeholder'
+  implementation 'com.newscatcherapi:newscatcher-catchall-sdk:3.0.2'
 }
 ```
 
@@ -47,7 +47,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.newscatcherapi</groupId>
   <artifactId>newscatcher-catchall-sdk</artifactId>
-  <version>0.0.0-fern-placeholder</version>
+  <version>3.0.2</version>
 </dependency>
 ```
 
