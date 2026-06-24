@@ -12,6 +12,7 @@ import com.newscatcher.catchall.resources.monitors.requests.EnableMonitorRequest
 import com.newscatcher.catchall.resources.monitors.requests.GetMonitorStatusHistoryRequest;
 import com.newscatcher.catchall.resources.monitors.requests.ListMonitorJobsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.ListMonitorsRequest;
+import com.newscatcher.catchall.resources.monitors.requests.PullMonitorResultsCsvRequest;
 import com.newscatcher.catchall.resources.monitors.requests.PullMonitorResultsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.UpdateMonitorRequestDto;
 import com.newscatcher.catchall.resources.monitors.types.DisableMonitorResponse;
@@ -116,6 +117,37 @@ public class AsyncMonitorsClient {
             String monitorId, PullMonitorResultsRequest request, RequestOptions requestOptions) {
         return this.rawClient
                 .pullMonitorResults(monitorId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     */
+    public CompletableFuture<String> pullMonitorResultsCsv(String monitorId) {
+        return this.rawClient.pullMonitorResultsCsv(monitorId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     */
+    public CompletableFuture<String> pullMonitorResultsCsv(String monitorId, RequestOptions requestOptions) {
+        return this.rawClient.pullMonitorResultsCsv(monitorId, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     */
+    public CompletableFuture<String> pullMonitorResultsCsv(String monitorId, PullMonitorResultsCsvRequest request) {
+        return this.rawClient.pullMonitorResultsCsv(monitorId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     */
+    public CompletableFuture<String> pullMonitorResultsCsv(
+            String monitorId, PullMonitorResultsCsvRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .pullMonitorResultsCsv(monitorId, request, requestOptions)
                 .thenApply(response -> response.body());
     }
 

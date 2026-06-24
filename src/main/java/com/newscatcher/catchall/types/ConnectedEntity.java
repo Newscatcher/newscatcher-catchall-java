@@ -5,12 +5,15 @@ package com.newscatcher.catchall.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.newscatcher.catchall.core.Nullable;
+import com.newscatcher.catchall.core.NullableNonemptyFilter;
 import com.newscatcher.catchall.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +36,8 @@ public final class ConnectedEntity {
 
     private final String type;
 
+    private final Optional<String> externalEntityId;
+
     private final Optional<CompanyAttributes> company;
 
     private final Map<String, Object> additionalProperties;
@@ -44,6 +49,7 @@ public final class ConnectedEntity {
             String relation,
             Optional<String> associationType,
             String type,
+            Optional<String> externalEntityId,
             Optional<CompanyAttributes> company,
             Map<String, Object> additionalProperties) {
         this.entityId = entityId;
@@ -52,6 +58,7 @@ public final class ConnectedEntity {
         this.relation = relation;
         this.associationType = associationType;
         this.type = type;
+        this.externalEntityId = externalEntityId;
         this.company = company;
         this.additionalProperties = additionalProperties;
     }
@@ -111,12 +118,29 @@ public final class ConnectedEntity {
     }
 
     /**
+     * @return External identifier for this entity. Null when not set.
+     */
+    @JsonIgnore
+    public Optional<String> getExternalEntityId() {
+        if (externalEntityId == null) {
+            return Optional.empty();
+        }
+        return externalEntityId;
+    }
+
+    /**
      * @return The stored attributes for this entity. Present only when attributes exist in the database.
      * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code>  field.</p>
      */
     @JsonProperty("company")
     public Optional<CompanyAttributes> getCompany() {
         return company;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("external_entity_id")
+    private Optional<String> _getExternalEntityId() {
+        return externalEntityId;
     }
 
     @java.lang.Override
@@ -137,13 +161,21 @@ public final class ConnectedEntity {
                 && relation.equals(other.relation)
                 && associationType.equals(other.associationType)
                 && type.equals(other.type)
+                && externalEntityId.equals(other.externalEntityId)
                 && company.equals(other.company);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.entityId, this.name, this.edScore, this.relation, this.associationType, this.type, this.company);
+                this.entityId,
+                this.name,
+                this.edScore,
+                this.relation,
+                this.associationType,
+                this.type,
+                this.externalEntityId,
+                this.company);
     }
 
     @java.lang.Override
@@ -213,6 +245,15 @@ public final class ConnectedEntity {
         _FinalStage associationType(String associationType);
 
         /**
+         * <p>External identifier for this entity. Null when not set.</p>
+         */
+        _FinalStage externalEntityId(Optional<String> externalEntityId);
+
+        _FinalStage externalEntityId(String externalEntityId);
+
+        _FinalStage externalEntityId(Nullable<String> externalEntityId);
+
+        /**
          * <p>The stored attributes for this entity. Present only when attributes exist in the database.</p>
          * <p>The field name matches the value of <code>type</code> — for example, <code>&quot;company&quot;</code> type entities have a <code>company</code>  field.</p>
          */
@@ -236,6 +277,8 @@ public final class ConnectedEntity {
 
         private Optional<CompanyAttributes> company = Optional.empty();
 
+        private Optional<String> externalEntityId = Optional.empty();
+
         private Optional<String> associationType = Optional.empty();
 
         @JsonAnySetter
@@ -251,6 +294,7 @@ public final class ConnectedEntity {
             relation(other.getRelation());
             associationType(other.getAssociationType());
             type(other.getType());
+            externalEntityId(other.getExternalEntityId());
             company(other.getCompany());
             return this;
         }
@@ -350,6 +394,42 @@ public final class ConnectedEntity {
         }
 
         /**
+         * <p>External identifier for this entity. Null when not set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage externalEntityId(Nullable<String> externalEntityId) {
+            if (externalEntityId.isNull()) {
+                this.externalEntityId = null;
+            } else if (externalEntityId.isEmpty()) {
+                this.externalEntityId = Optional.empty();
+            } else {
+                this.externalEntityId = Optional.of(externalEntityId.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>External identifier for this entity. Null when not set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage externalEntityId(String externalEntityId) {
+            this.externalEntityId = Optional.ofNullable(externalEntityId);
+            return this;
+        }
+
+        /**
+         * <p>External identifier for this entity. Null when not set.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "external_entity_id", nulls = Nulls.SKIP)
+        public _FinalStage externalEntityId(Optional<String> externalEntityId) {
+            this.externalEntityId = externalEntityId;
+            return this;
+        }
+
+        /**
          * <p>How the entity relates to the event: <code>event_associated</code> if the entity is a direct actor, <code>mention</code> if merely referenced.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -372,7 +452,15 @@ public final class ConnectedEntity {
         @java.lang.Override
         public ConnectedEntity build() {
             return new ConnectedEntity(
-                    entityId, name, edScore, relation, associationType, type, company, additionalProperties);
+                    entityId,
+                    name,
+                    edScore,
+                    relation,
+                    associationType,
+                    type,
+                    externalEntityId,
+                    company,
+                    additionalProperties);
         }
 
         @java.lang.Override

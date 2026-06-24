@@ -27,6 +27,8 @@ public final class CreateEntityRequest {
 
     private final Optional<String> description;
 
+    private final Optional<String> externalEntityId;
+
     private final Optional<AdditionalAttributes> additionalAttributes;
 
     private final Map<String, Object> additionalProperties;
@@ -35,11 +37,13 @@ public final class CreateEntityRequest {
             String name,
             Optional<EntityType> entityType,
             Optional<String> description,
+            Optional<String> externalEntityId,
             Optional<AdditionalAttributes> additionalAttributes,
             Map<String, Object> additionalProperties) {
         this.name = name;
         this.entityType = entityType;
         this.description = description;
+        this.externalEntityId = externalEntityId;
         this.additionalAttributes = additionalAttributes;
         this.additionalProperties = additionalProperties;
     }
@@ -65,6 +69,14 @@ public final class CreateEntityRequest {
         return description;
     }
 
+    /**
+     * @return Optional external identifier for this entity. Free-form string, not enforced as unique. Use it to store your own CRM, data warehouse, or internal database ID so you can join CatchAll results back to your systems.
+     */
+    @JsonProperty("external_entity_id")
+    public Optional<String> getExternalEntityId() {
+        return externalEntityId;
+    }
+
     @JsonProperty("additional_attributes")
     public Optional<AdditionalAttributes> getAdditionalAttributes() {
         return additionalAttributes;
@@ -85,12 +97,14 @@ public final class CreateEntityRequest {
         return name.equals(other.name)
                 && entityType.equals(other.entityType)
                 && description.equals(other.description)
+                && externalEntityId.equals(other.externalEntityId)
                 && additionalAttributes.equals(other.additionalAttributes);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.name, this.entityType, this.description, this.additionalAttributes);
+        return Objects.hash(
+                this.name, this.entityType, this.description, this.externalEntityId, this.additionalAttributes);
     }
 
     @java.lang.Override
@@ -129,6 +143,13 @@ public final class CreateEntityRequest {
 
         _FinalStage description(String description);
 
+        /**
+         * <p>Optional external identifier for this entity. Free-form string, not enforced as unique. Use it to store your own CRM, data warehouse, or internal database ID so you can join CatchAll results back to your systems.</p>
+         */
+        _FinalStage externalEntityId(Optional<String> externalEntityId);
+
+        _FinalStage externalEntityId(String externalEntityId);
+
         _FinalStage additionalAttributes(Optional<AdditionalAttributes> additionalAttributes);
 
         _FinalStage additionalAttributes(AdditionalAttributes additionalAttributes);
@@ -139,6 +160,8 @@ public final class CreateEntityRequest {
         private String name;
 
         private Optional<AdditionalAttributes> additionalAttributes = Optional.empty();
+
+        private Optional<String> externalEntityId = Optional.empty();
 
         private Optional<String> description = Optional.empty();
 
@@ -154,6 +177,7 @@ public final class CreateEntityRequest {
             name(other.getName());
             entityType(other.getEntityType());
             description(other.getDescription());
+            externalEntityId(other.getExternalEntityId());
             additionalAttributes(other.getAdditionalAttributes());
             return this;
         }
@@ -180,6 +204,26 @@ public final class CreateEntityRequest {
         @JsonSetter(value = "additional_attributes", nulls = Nulls.SKIP)
         public _FinalStage additionalAttributes(Optional<AdditionalAttributes> additionalAttributes) {
             this.additionalAttributes = additionalAttributes;
+            return this;
+        }
+
+        /**
+         * <p>Optional external identifier for this entity. Free-form string, not enforced as unique. Use it to store your own CRM, data warehouse, or internal database ID so you can join CatchAll results back to your systems.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage externalEntityId(String externalEntityId) {
+            this.externalEntityId = Optional.ofNullable(externalEntityId);
+            return this;
+        }
+
+        /**
+         * <p>Optional external identifier for this entity. Free-form string, not enforced as unique. Use it to store your own CRM, data warehouse, or internal database ID so you can join CatchAll results back to your systems.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "external_entity_id", nulls = Nulls.SKIP)
+        public _FinalStage externalEntityId(Optional<String> externalEntityId) {
+            this.externalEntityId = externalEntityId;
             return this;
         }
 
@@ -218,7 +262,8 @@ public final class CreateEntityRequest {
 
         @java.lang.Override
         public CreateEntityRequest build() {
-            return new CreateEntityRequest(name, entityType, description, additionalAttributes, additionalProperties);
+            return new CreateEntityRequest(
+                    name, entityType, description, externalEntityId, additionalAttributes, additionalProperties);
         }
 
         @java.lang.Override

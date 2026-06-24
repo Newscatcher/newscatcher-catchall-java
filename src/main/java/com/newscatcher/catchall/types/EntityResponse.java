@@ -35,6 +35,8 @@ public final class EntityResponse {
 
     private final Optional<String> description;
 
+    private final Optional<String> externalEntityId;
+
     private final Optional<AdditionalAttributes> additionalAttributes;
 
     private final EntityStatus status;
@@ -53,6 +55,7 @@ public final class EntityResponse {
             String organizationId,
             String name,
             Optional<String> description,
+            Optional<String> externalEntityId,
             Optional<AdditionalAttributes> additionalAttributes,
             EntityStatus status,
             Optional<String> createdByUserId,
@@ -64,6 +67,7 @@ public final class EntityResponse {
         this.organizationId = organizationId;
         this.name = name;
         this.description = description;
+        this.externalEntityId = externalEntityId;
         this.additionalAttributes = additionalAttributes;
         this.status = status;
         this.createdByUserId = createdByUserId;
@@ -112,6 +116,17 @@ public final class EntityResponse {
         return description;
     }
 
+    /**
+     * @return External identifier for this entity. Null when not set.
+     */
+    @JsonIgnore
+    public Optional<String> getExternalEntityId() {
+        if (externalEntityId == null) {
+            return Optional.empty();
+        }
+        return externalEntityId;
+    }
+
     @JsonProperty("additional_attributes")
     public Optional<AdditionalAttributes> getAdditionalAttributes() {
         return additionalAttributes;
@@ -152,6 +167,12 @@ public final class EntityResponse {
         return description;
     }
 
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("external_entity_id")
+    private Optional<String> _getExternalEntityId() {
+        return externalEntityId;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -169,6 +190,7 @@ public final class EntityResponse {
                 && organizationId.equals(other.organizationId)
                 && name.equals(other.name)
                 && description.equals(other.description)
+                && externalEntityId.equals(other.externalEntityId)
                 && additionalAttributes.equals(other.additionalAttributes)
                 && status.equals(other.status)
                 && createdByUserId.equals(other.createdByUserId)
@@ -184,6 +206,7 @@ public final class EntityResponse {
                 this.organizationId,
                 this.name,
                 this.description,
+                this.externalEntityId,
                 this.additionalAttributes,
                 this.status,
                 this.createdByUserId,
@@ -247,6 +270,15 @@ public final class EntityResponse {
 
         _FinalStage description(Nullable<String> description);
 
+        /**
+         * <p>External identifier for this entity. Null when not set.</p>
+         */
+        _FinalStage externalEntityId(Optional<String> externalEntityId);
+
+        _FinalStage externalEntityId(String externalEntityId);
+
+        _FinalStage externalEntityId(Nullable<String> externalEntityId);
+
         _FinalStage additionalAttributes(Optional<AdditionalAttributes> additionalAttributes);
 
         _FinalStage additionalAttributes(AdditionalAttributes additionalAttributes);
@@ -294,6 +326,8 @@ public final class EntityResponse {
 
         private Optional<AdditionalAttributes> additionalAttributes = Optional.empty();
 
+        private Optional<String> externalEntityId = Optional.empty();
+
         private Optional<String> description = Optional.empty();
 
         @JsonAnySetter
@@ -308,6 +342,7 @@ public final class EntityResponse {
             organizationId(other.getOrganizationId());
             name(other.getName());
             description(other.getDescription());
+            externalEntityId(other.getExternalEntityId());
             additionalAttributes(other.getAdditionalAttributes());
             status(other.getStatus());
             createdByUserId(other.getCreatedByUserId());
@@ -440,6 +475,42 @@ public final class EntityResponse {
         }
 
         /**
+         * <p>External identifier for this entity. Null when not set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage externalEntityId(Nullable<String> externalEntityId) {
+            if (externalEntityId.isNull()) {
+                this.externalEntityId = null;
+            } else if (externalEntityId.isEmpty()) {
+                this.externalEntityId = Optional.empty();
+            } else {
+                this.externalEntityId = Optional.of(externalEntityId.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>External identifier for this entity. Null when not set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage externalEntityId(String externalEntityId) {
+            this.externalEntityId = Optional.ofNullable(externalEntityId);
+            return this;
+        }
+
+        /**
+         * <p>External identifier for this entity. Null when not set.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "external_entity_id", nulls = Nulls.SKIP)
+        public _FinalStage externalEntityId(Optional<String> externalEntityId) {
+            this.externalEntityId = externalEntityId;
+            return this;
+        }
+
+        /**
          * <p>Free-text description.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -483,6 +554,7 @@ public final class EntityResponse {
                     organizationId,
                     name,
                     description,
+                    externalEntityId,
                     additionalAttributes,
                     status,
                     createdByUserId,

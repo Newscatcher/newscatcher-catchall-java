@@ -59,6 +59,10 @@ public final class PullJobResponseDto {
 
     private final Optional<PullJobResponseDtoMode> mode;
 
+    private final Optional<List<ConnectedDataset>> connectedDatasets;
+
+    private final Optional<Boolean> isAllNewsQuery;
+
     private final Optional<SharingInfo> sharingInfo;
 
     private final Optional<List<Record>> allRecords;
@@ -83,6 +87,8 @@ public final class PullJobResponseDto {
             Optional<Integer> pageSize,
             Optional<Integer> totalPages,
             Optional<PullJobResponseDtoMode> mode,
+            Optional<List<ConnectedDataset>> connectedDatasets,
+            Optional<Boolean> isAllNewsQuery,
             Optional<SharingInfo> sharingInfo,
             Optional<List<Record>> allRecords,
             Map<String, Object> additionalProperties) {
@@ -103,6 +109,8 @@ public final class PullJobResponseDto {
         this.pageSize = pageSize;
         this.totalPages = totalPages;
         this.mode = mode;
+        this.connectedDatasets = connectedDatasets;
+        this.isAllNewsQuery = isAllNewsQuery;
         this.sharingInfo = sharingInfo;
         this.allRecords = allRecords;
         this.additionalProperties = additionalProperties;
@@ -249,6 +257,22 @@ public final class PullJobResponseDto {
     }
 
     /**
+     * @return Datasets used to narrow retrieval scope, each with <code>id</code> and <code>name</code>.
+     */
+    @JsonProperty("connected_datasets")
+    public Optional<List<ConnectedDataset>> getConnectedDatasets() {
+        return connectedDatasets;
+    }
+
+    /**
+     * @return True when the query was submitted as an all-news (watchlist-generic) query.
+     */
+    @JsonProperty("is_all_news_query")
+    public Optional<Boolean> getIsAllNewsQuery() {
+        return isAllNewsQuery;
+    }
+
+    /**
      * @return Present when the job was shared with the authenticated user by another organization member. <code>null</code> when the user owns the job.
      */
     @JsonIgnore
@@ -314,6 +338,8 @@ public final class PullJobResponseDto {
                 && pageSize.equals(other.pageSize)
                 && totalPages.equals(other.totalPages)
                 && mode.equals(other.mode)
+                && connectedDatasets.equals(other.connectedDatasets)
+                && isAllNewsQuery.equals(other.isAllNewsQuery)
                 && sharingInfo.equals(other.sharingInfo)
                 && allRecords.equals(other.allRecords);
     }
@@ -338,6 +364,8 @@ public final class PullJobResponseDto {
                 this.pageSize,
                 this.totalPages,
                 this.mode,
+                this.connectedDatasets,
+                this.isAllNewsQuery,
                 this.sharingInfo,
                 this.allRecords);
     }
@@ -482,6 +510,20 @@ public final class PullJobResponseDto {
         _FinalStage mode(PullJobResponseDtoMode mode);
 
         /**
+         * <p>Datasets used to narrow retrieval scope, each with <code>id</code> and <code>name</code>.</p>
+         */
+        _FinalStage connectedDatasets(Optional<List<ConnectedDataset>> connectedDatasets);
+
+        _FinalStage connectedDatasets(List<ConnectedDataset> connectedDatasets);
+
+        /**
+         * <p>True when the query was submitted as an all-news (watchlist-generic) query.</p>
+         */
+        _FinalStage isAllNewsQuery(Optional<Boolean> isAllNewsQuery);
+
+        _FinalStage isAllNewsQuery(Boolean isAllNewsQuery);
+
+        /**
          * <p>Present when the job was shared with the authenticated user by another organization member. <code>null</code> when the user owns the job.</p>
          */
         _FinalStage sharingInfo(Optional<SharingInfo> sharingInfo);
@@ -505,6 +547,10 @@ public final class PullJobResponseDto {
         private Optional<List<Record>> allRecords = Optional.empty();
 
         private Optional<SharingInfo> sharingInfo = Optional.empty();
+
+        private Optional<Boolean> isAllNewsQuery = Optional.empty();
+
+        private Optional<List<ConnectedDataset>> connectedDatasets = Optional.empty();
 
         private Optional<PullJobResponseDtoMode> mode = Optional.empty();
 
@@ -562,6 +608,8 @@ public final class PullJobResponseDto {
             pageSize(other.getPageSize());
             totalPages(other.getTotalPages());
             mode(other.getMode());
+            connectedDatasets(other.getConnectedDatasets());
+            isAllNewsQuery(other.getIsAllNewsQuery());
             sharingInfo(other.getSharingInfo());
             allRecords(other.getAllRecords());
             return this;
@@ -632,6 +680,46 @@ public final class PullJobResponseDto {
         @JsonSetter(value = "sharing_info", nulls = Nulls.SKIP)
         public _FinalStage sharingInfo(Optional<SharingInfo> sharingInfo) {
             this.sharingInfo = sharingInfo;
+            return this;
+        }
+
+        /**
+         * <p>True when the query was submitted as an all-news (watchlist-generic) query.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage isAllNewsQuery(Boolean isAllNewsQuery) {
+            this.isAllNewsQuery = Optional.ofNullable(isAllNewsQuery);
+            return this;
+        }
+
+        /**
+         * <p>True when the query was submitted as an all-news (watchlist-generic) query.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "is_all_news_query", nulls = Nulls.SKIP)
+        public _FinalStage isAllNewsQuery(Optional<Boolean> isAllNewsQuery) {
+            this.isAllNewsQuery = isAllNewsQuery;
+            return this;
+        }
+
+        /**
+         * <p>Datasets used to narrow retrieval scope, each with <code>id</code> and <code>name</code>.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage connectedDatasets(List<ConnectedDataset> connectedDatasets) {
+            this.connectedDatasets = Optional.ofNullable(connectedDatasets);
+            return this;
+        }
+
+        /**
+         * <p>Datasets used to narrow retrieval scope, each with <code>id</code> and <code>name</code>.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "connected_datasets", nulls = Nulls.SKIP)
+        public _FinalStage connectedDatasets(Optional<List<ConnectedDataset>> connectedDatasets) {
+            this.connectedDatasets = connectedDatasets;
             return this;
         }
 
@@ -1003,6 +1091,8 @@ public final class PullJobResponseDto {
                     pageSize,
                     totalPages,
                     mode,
+                    connectedDatasets,
+                    isAllNewsQuery,
                     sharingInfo,
                     allRecords,
                     additionalProperties);
