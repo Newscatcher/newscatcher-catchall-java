@@ -43,6 +43,10 @@ public final class PullMonitorResponseDto {
 
     private final Optional<Integer> limit;
 
+    private final Optional<List<ConnectedDataset>> connectedDatasets;
+
+    private final Optional<Boolean> isAllNewsQuery;
+
     private final Map<String, Object> additionalProperties;
 
     private PullMonitorResponseDto(
@@ -55,6 +59,8 @@ public final class PullMonitorResponseDto {
             String status,
             Optional<List<MonitorRecord>> allRecords,
             Optional<Integer> limit,
+            Optional<List<ConnectedDataset>> connectedDatasets,
+            Optional<Boolean> isAllNewsQuery,
             Map<String, Object> additionalProperties) {
         this.monitorId = monitorId;
         this.cronExpression = cronExpression;
@@ -65,6 +71,8 @@ public final class PullMonitorResponseDto {
         this.status = status;
         this.allRecords = allRecords;
         this.limit = limit;
+        this.connectedDatasets = connectedDatasets;
+        this.isAllNewsQuery = isAllNewsQuery;
         this.additionalProperties = additionalProperties;
     }
 
@@ -141,6 +149,22 @@ public final class PullMonitorResponseDto {
         return limit;
     }
 
+    /**
+     * @return Datasets used to narrow retrieval scope, each with <code>id</code> and <code>name</code>.
+     */
+    @JsonProperty("connected_datasets")
+    public Optional<List<ConnectedDataset>> getConnectedDatasets() {
+        return connectedDatasets;
+    }
+
+    /**
+     * @return True when the reference job was submitted as an all-news (watchlist-generic) query.
+     */
+    @JsonProperty("is_all_news_query")
+    public Optional<Boolean> getIsAllNewsQuery() {
+        return isAllNewsQuery;
+    }
+
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("limit")
     private Optional<Integer> _getLimit() {
@@ -167,7 +191,9 @@ public final class PullMonitorResponseDto {
                 && records.equals(other.records)
                 && status.equals(other.status)
                 && allRecords.equals(other.allRecords)
-                && limit.equals(other.limit);
+                && limit.equals(other.limit)
+                && connectedDatasets.equals(other.connectedDatasets)
+                && isAllNewsQuery.equals(other.isAllNewsQuery);
     }
 
     @java.lang.Override
@@ -181,7 +207,9 @@ public final class PullMonitorResponseDto {
                 this.records,
                 this.status,
                 this.allRecords,
-                this.limit);
+                this.limit,
+                this.connectedDatasets,
+                this.isAllNewsQuery);
     }
 
     @java.lang.Override
@@ -264,6 +292,20 @@ public final class PullMonitorResponseDto {
         _FinalStage limit(Integer limit);
 
         _FinalStage limit(Nullable<Integer> limit);
+
+        /**
+         * <p>Datasets used to narrow retrieval scope, each with <code>id</code> and <code>name</code>.</p>
+         */
+        _FinalStage connectedDatasets(Optional<List<ConnectedDataset>> connectedDatasets);
+
+        _FinalStage connectedDatasets(List<ConnectedDataset> connectedDatasets);
+
+        /**
+         * <p>True when the reference job was submitted as an all-news (watchlist-generic) query.</p>
+         */
+        _FinalStage isAllNewsQuery(Optional<Boolean> isAllNewsQuery);
+
+        _FinalStage isAllNewsQuery(Boolean isAllNewsQuery);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -273,6 +315,10 @@ public final class PullMonitorResponseDto {
         private ReferenceJob referenceJob;
 
         private String status;
+
+        private Optional<Boolean> isAllNewsQuery = Optional.empty();
+
+        private Optional<List<ConnectedDataset>> connectedDatasets = Optional.empty();
 
         private Optional<Integer> limit = Optional.empty();
 
@@ -302,6 +348,8 @@ public final class PullMonitorResponseDto {
             status(other.getStatus());
             allRecords(other.getAllRecords());
             limit(other.getLimit());
+            connectedDatasets(other.getConnectedDatasets());
+            isAllNewsQuery(other.getIsAllNewsQuery());
             return this;
         }
 
@@ -333,6 +381,46 @@ public final class PullMonitorResponseDto {
         @JsonSetter("status")
         public _FinalStage status(@NotNull String status) {
             this.status = Objects.requireNonNull(status, "status must not be null");
+            return this;
+        }
+
+        /**
+         * <p>True when the reference job was submitted as an all-news (watchlist-generic) query.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage isAllNewsQuery(Boolean isAllNewsQuery) {
+            this.isAllNewsQuery = Optional.ofNullable(isAllNewsQuery);
+            return this;
+        }
+
+        /**
+         * <p>True when the reference job was submitted as an all-news (watchlist-generic) query.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "is_all_news_query", nulls = Nulls.SKIP)
+        public _FinalStage isAllNewsQuery(Optional<Boolean> isAllNewsQuery) {
+            this.isAllNewsQuery = isAllNewsQuery;
+            return this;
+        }
+
+        /**
+         * <p>Datasets used to narrow retrieval scope, each with <code>id</code> and <code>name</code>.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage connectedDatasets(List<ConnectedDataset> connectedDatasets) {
+            this.connectedDatasets = Optional.ofNullable(connectedDatasets);
+            return this;
+        }
+
+        /**
+         * <p>Datasets used to narrow retrieval scope, each with <code>id</code> and <code>name</code>.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "connected_datasets", nulls = Nulls.SKIP)
+        public _FinalStage connectedDatasets(Optional<List<ConnectedDataset>> connectedDatasets) {
+            this.connectedDatasets = connectedDatasets;
             return this;
         }
 
@@ -486,6 +574,8 @@ public final class PullMonitorResponseDto {
                     status,
                     allRecords,
                     limit,
+                    connectedDatasets,
+                    isAllNewsQuery,
                     additionalProperties);
         }
 

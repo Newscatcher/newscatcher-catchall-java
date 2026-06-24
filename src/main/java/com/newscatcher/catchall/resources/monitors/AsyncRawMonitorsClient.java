@@ -23,6 +23,7 @@ import com.newscatcher.catchall.resources.monitors.requests.EnableMonitorRequest
 import com.newscatcher.catchall.resources.monitors.requests.GetMonitorStatusHistoryRequest;
 import com.newscatcher.catchall.resources.monitors.requests.ListMonitorJobsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.ListMonitorsRequest;
+import com.newscatcher.catchall.resources.monitors.requests.PullMonitorResultsCsvRequest;
 import com.newscatcher.catchall.resources.monitors.requests.PullMonitorResultsRequest;
 import com.newscatcher.catchall.resources.monitors.requests.UpdateMonitorRequestDto;
 import com.newscatcher.catchall.resources.monitors.types.DisableMonitorResponse;
@@ -317,6 +318,99 @@ public class AsyncRawMonitorsClient {
                                 future.completeExceptionally(new UnprocessableEntityError(
                                         ObjectMappers.JSON_MAPPER.readValue(
                                                 responseBodyString, ValidationErrorResponse.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new CatchAllApiApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (IOException e) {
+                    future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<String>> pullMonitorResultsCsv(String monitorId) {
+        return pullMonitorResultsCsv(
+                monitorId, PullMonitorResultsCsvRequest.builder().build());
+    }
+
+    /**
+     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<String>> pullMonitorResultsCsv(
+            String monitorId, RequestOptions requestOptions) {
+        return pullMonitorResultsCsv(
+                monitorId, PullMonitorResultsCsvRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<String>> pullMonitorResultsCsv(
+            String monitorId, PullMonitorResultsCsvRequest request) {
+        return pullMonitorResultsCsv(monitorId, request, null);
+    }
+
+    /**
+     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<String>> pullMonitorResultsCsv(
+            String monitorId, PullMonitorResultsCsvRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/monitors/pull")
+                .addPathSegment(monitorId)
+                .addPathSegments("csv");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        CompletableFuture<CatchAllApiHttpResponse<String>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new CatchAllApiHttpResponse<>(responseBodyString, response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
                                         response));
                                 return;
                         }

@@ -25,6 +25,8 @@ public final class UpdateEntityRequest {
 
     private final Optional<String> description;
 
+    private final Optional<String> externalEntityId;
+
     private final Optional<AdditionalAttributes> additionalAttributes;
 
     private final Map<String, Object> additionalProperties;
@@ -32,10 +34,12 @@ public final class UpdateEntityRequest {
     private UpdateEntityRequest(
             Optional<String> name,
             Optional<String> description,
+            Optional<String> externalEntityId,
             Optional<AdditionalAttributes> additionalAttributes,
             Map<String, Object> additionalProperties) {
         this.name = name;
         this.description = description;
+        this.externalEntityId = externalEntityId;
         this.additionalAttributes = additionalAttributes;
         this.additionalProperties = additionalProperties;
     }
@@ -54,6 +58,14 @@ public final class UpdateEntityRequest {
     @JsonProperty("description")
     public Optional<String> getDescription() {
         return description;
+    }
+
+    /**
+     * @return Updated external identifier for this entity.
+     */
+    @JsonProperty("external_entity_id")
+    public Optional<String> getExternalEntityId() {
+        return externalEntityId;
     }
 
     @JsonProperty("additional_attributes")
@@ -75,12 +87,13 @@ public final class UpdateEntityRequest {
     private boolean equalTo(UpdateEntityRequest other) {
         return name.equals(other.name)
                 && description.equals(other.description)
+                && externalEntityId.equals(other.externalEntityId)
                 && additionalAttributes.equals(other.additionalAttributes);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.name, this.description, this.additionalAttributes);
+        return Objects.hash(this.name, this.description, this.externalEntityId, this.additionalAttributes);
     }
 
     @java.lang.Override
@@ -98,6 +111,8 @@ public final class UpdateEntityRequest {
 
         private Optional<String> description = Optional.empty();
 
+        private Optional<String> externalEntityId = Optional.empty();
+
         private Optional<AdditionalAttributes> additionalAttributes = Optional.empty();
 
         @JsonAnySetter
@@ -108,6 +123,7 @@ public final class UpdateEntityRequest {
         public Builder from(UpdateEntityRequest other) {
             name(other.getName());
             description(other.getDescription());
+            externalEntityId(other.getExternalEntityId());
             additionalAttributes(other.getAdditionalAttributes());
             return this;
         }
@@ -140,6 +156,20 @@ public final class UpdateEntityRequest {
             return this;
         }
 
+        /**
+         * <p>Updated external identifier for this entity.</p>
+         */
+        @JsonSetter(value = "external_entity_id", nulls = Nulls.SKIP)
+        public Builder externalEntityId(Optional<String> externalEntityId) {
+            this.externalEntityId = externalEntityId;
+            return this;
+        }
+
+        public Builder externalEntityId(String externalEntityId) {
+            this.externalEntityId = Optional.ofNullable(externalEntityId);
+            return this;
+        }
+
         @JsonSetter(value = "additional_attributes", nulls = Nulls.SKIP)
         public Builder additionalAttributes(Optional<AdditionalAttributes> additionalAttributes) {
             this.additionalAttributes = additionalAttributes;
@@ -152,7 +182,8 @@ public final class UpdateEntityRequest {
         }
 
         public UpdateEntityRequest build() {
-            return new UpdateEntityRequest(name, description, additionalAttributes, additionalProperties);
+            return new UpdateEntityRequest(
+                    name, description, externalEntityId, additionalAttributes, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

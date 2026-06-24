@@ -570,6 +570,65 @@ client.jobs().getJobResults(
 </dl>
 </details>
 
+<details><summary><code>client.jobs.getJobResultsCsv(jobId) -> String</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into `event_associated_entities` and `mention_entities` JSON columns.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.jobs().getJobResultsCsv(
+    "job_id",
+    GetJobResultsCsvRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**jobId:** `String` — Unique job identifier returned from [`POST /catchAll/submit`](https://www.newscatcherapi.com/docs/web-search-api/api-reference/jobs/create-job).
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.jobs.continueJob(request) -> ContinueResponseDto</code></summary>
 <dl>
 <dd>
@@ -956,6 +1015,65 @@ Retrieve aggregated results from all jobs executed by a monitor.
 client.monitors().pullMonitorResults(
     "monitor_id",
     PullMonitorResultsRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**monitorId:** `String` — Monitor identifier.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.monitors.pullMonitorResultsCsv(monitorId) -> String</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into `event_associated_entities` and `mention_entities` JSON columns.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.monitors().pullMonitorResultsCsv(
+    "monitor_id",
+    PullMonitorResultsCsvRequest
         .builder()
         .build()
 );
@@ -2878,6 +2996,14 @@ client.entities().updateEntity(
 <dd>
 
 **description:** `Optional<String>` — Updated description.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**externalEntityId:** `Optional<String>` — Updated external identifier for this entity.
     
 </dd>
 </dl>

@@ -7,6 +7,7 @@ import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.jobs.requests.ContinueRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.DeleteJobRequest;
+import com.newscatcher.catchall.resources.jobs.requests.GetJobResultsCsvRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobResultsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobStatusRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetUserJobsRequest;
@@ -165,6 +166,34 @@ public class JobsClient {
      */
     public PullJobResponseDto getJobResults(String jobId, GetJobResultsRequest request, RequestOptions requestOptions) {
         return this.rawClient.getJobResults(jobId, request, requestOptions).body();
+    }
+
+    /**
+     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     */
+    public String getJobResultsCsv(String jobId) {
+        return this.rawClient.getJobResultsCsv(jobId).body();
+    }
+
+    /**
+     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     */
+    public String getJobResultsCsv(String jobId, RequestOptions requestOptions) {
+        return this.rawClient.getJobResultsCsv(jobId, requestOptions).body();
+    }
+
+    /**
+     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     */
+    public String getJobResultsCsv(String jobId, GetJobResultsCsvRequest request) {
+        return this.rawClient.getJobResultsCsv(jobId, request).body();
+    }
+
+    /**
+     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     */
+    public String getJobResultsCsv(String jobId, GetJobResultsCsvRequest request, RequestOptions requestOptions) {
+        return this.rawClient.getJobResultsCsv(jobId, request, requestOptions).body();
     }
 
     /**

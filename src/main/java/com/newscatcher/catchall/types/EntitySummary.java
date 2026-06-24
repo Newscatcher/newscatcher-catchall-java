@@ -34,6 +34,8 @@ public final class EntitySummary {
 
     private final Optional<String> description;
 
+    private final Optional<String> externalEntityId;
+
     private final Optional<CompanyAttributes> attributes;
 
     private final Map<String, Object> additionalProperties;
@@ -44,6 +46,7 @@ public final class EntitySummary {
             EntityType entityType,
             EntityStatus status,
             Optional<String> description,
+            Optional<String> externalEntityId,
             Optional<CompanyAttributes> attributes,
             Map<String, Object> additionalProperties) {
         this.id = id;
@@ -51,6 +54,7 @@ public final class EntitySummary {
         this.entityType = entityType;
         this.status = status;
         this.description = description;
+        this.externalEntityId = externalEntityId;
         this.attributes = attributes;
         this.additionalProperties = additionalProperties;
     }
@@ -92,6 +96,17 @@ public final class EntitySummary {
         return description;
     }
 
+    /**
+     * @return External identifier for this entity. Null when not set.
+     */
+    @JsonIgnore
+    public Optional<String> getExternalEntityId() {
+        if (externalEntityId == null) {
+            return Optional.empty();
+        }
+        return externalEntityId;
+    }
+
     @JsonProperty("attributes")
     public Optional<CompanyAttributes> getAttributes() {
         return attributes;
@@ -101,6 +116,12 @@ public final class EntitySummary {
     @JsonProperty("description")
     private Optional<String> _getDescription() {
         return description;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("external_entity_id")
+    private Optional<String> _getExternalEntityId() {
+        return externalEntityId;
     }
 
     @java.lang.Override
@@ -120,12 +141,20 @@ public final class EntitySummary {
                 && entityType.equals(other.entityType)
                 && status.equals(other.status)
                 && description.equals(other.description)
+                && externalEntityId.equals(other.externalEntityId)
                 && attributes.equals(other.attributes);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name, this.entityType, this.status, this.description, this.attributes);
+        return Objects.hash(
+                this.id,
+                this.name,
+                this.entityType,
+                this.status,
+                this.description,
+                this.externalEntityId,
+                this.attributes);
     }
 
     @java.lang.Override
@@ -177,6 +206,15 @@ public final class EntitySummary {
 
         _FinalStage description(Nullable<String> description);
 
+        /**
+         * <p>External identifier for this entity. Null when not set.</p>
+         */
+        _FinalStage externalEntityId(Optional<String> externalEntityId);
+
+        _FinalStage externalEntityId(String externalEntityId);
+
+        _FinalStage externalEntityId(Nullable<String> externalEntityId);
+
         _FinalStage attributes(Optional<CompanyAttributes> attributes);
 
         _FinalStage attributes(CompanyAttributes attributes);
@@ -194,6 +232,8 @@ public final class EntitySummary {
 
         private Optional<CompanyAttributes> attributes = Optional.empty();
 
+        private Optional<String> externalEntityId = Optional.empty();
+
         private Optional<String> description = Optional.empty();
 
         @JsonAnySetter
@@ -208,6 +248,7 @@ public final class EntitySummary {
             entityType(other.getEntityType());
             status(other.getStatus());
             description(other.getDescription());
+            externalEntityId(other.getExternalEntityId());
             attributes(other.getAttributes());
             return this;
         }
@@ -264,6 +305,42 @@ public final class EntitySummary {
         }
 
         /**
+         * <p>External identifier for this entity. Null when not set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage externalEntityId(Nullable<String> externalEntityId) {
+            if (externalEntityId.isNull()) {
+                this.externalEntityId = null;
+            } else if (externalEntityId.isEmpty()) {
+                this.externalEntityId = Optional.empty();
+            } else {
+                this.externalEntityId = Optional.of(externalEntityId.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>External identifier for this entity. Null when not set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage externalEntityId(String externalEntityId) {
+            this.externalEntityId = Optional.ofNullable(externalEntityId);
+            return this;
+        }
+
+        /**
+         * <p>External identifier for this entity. Null when not set.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "external_entity_id", nulls = Nulls.SKIP)
+        public _FinalStage externalEntityId(Optional<String> externalEntityId) {
+            this.externalEntityId = externalEntityId;
+            return this;
+        }
+
+        /**
          * <p>Free-text description.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -301,7 +378,8 @@ public final class EntitySummary {
 
         @java.lang.Override
         public EntitySummary build() {
-            return new EntitySummary(id, name, entityType, status, description, attributes, additionalProperties);
+            return new EntitySummary(
+                    id, name, entityType, status, description, externalEntityId, attributes, additionalProperties);
         }
 
         @java.lang.Override
