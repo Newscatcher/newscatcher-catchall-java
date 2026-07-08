@@ -57,7 +57,7 @@ java {
 
 group = 'com.newscatcherapi'
 
-version = '0.0.0-fern-placeholder'
+version = '3.0.3'
 
 jar {
     dependsOn(":generatePomFileForMavenPublication")
@@ -88,7 +88,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'com.newscatcherapi'
             artifactId = 'newscatcher-catchall-sdk'
-            version = '0.0.0-fern-placeholder'
+            version = '3.0.3'
             from components.java
             pom {
                 name = 'newscatcher'
