@@ -172,7 +172,6 @@ public final class ContinueResponseDto {
 
         /**
          * <p>Job identifier for the continued job.</p>
-         * <p>Job identifier for the continued job.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -184,7 +183,6 @@ public final class ContinueResponseDto {
 
         /**
          * <p>New record limit after continuation.</p>
-         * <p>New record limit after continuation.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -195,7 +193,6 @@ public final class ContinueResponseDto {
         }
 
         /**
-         * <p>Confirmation that the continuation request was accepted.</p>
          * <p>Confirmation that the continuation request was accepted.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

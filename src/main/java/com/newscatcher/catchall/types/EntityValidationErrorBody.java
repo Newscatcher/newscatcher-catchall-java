@@ -145,8 +145,6 @@ public final class EntityValidationErrorBody {
         /**
          * <p>Human-readable description of all validation errors, including
          * field path, failure message, and error type.</p>
-         * <p>Human-readable description of all validation errors, including
-         * field path, failure message, and error type.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -158,7 +156,6 @@ public final class EntityValidationErrorBody {
 
         /**
          * <p>HTTP status text.</p>
-         * <p>HTTP status text.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -169,7 +166,6 @@ public final class EntityValidationErrorBody {
         }
 
         /**
-         * <p>HTTP status code.</p>
          * <p>HTTP status code.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

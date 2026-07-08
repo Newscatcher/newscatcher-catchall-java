@@ -355,7 +355,6 @@ public final class PullMonitorResponseDto {
 
         /**
          * <p>Unique identifier for the monitor.</p>
-         * <p>Unique identifier for the monitor.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -373,7 +372,6 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Current monitor status or error message if monitor creation failed.</p>
          * <p>Current monitor status or error message if monitor creation failed.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

@@ -177,8 +177,6 @@ public final class ValidationReport {
         /**
          * <p>Total number of data rows in the uploaded CSV (excluding the
          * header row).</p>
-         * <p>Total number of data rows in the uploaded CSV (excluding the
-         * header row).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -190,7 +188,6 @@ public final class ValidationReport {
 
         /**
          * <p>Number of rows successfully processed into entities.</p>
-         * <p>Number of rows successfully processed into entities.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -201,7 +198,6 @@ public final class ValidationReport {
         }
 
         /**
-         * <p>Number of rows skipped due to validation errors.</p>
          * <p>Number of rows skipped due to validation errors.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

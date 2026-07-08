@@ -142,7 +142,6 @@ public final class EnableMonitorResponse {
 
         /**
          * <p>True if the operation succeeded; false otherwise.</p>
-         * <p>True if the operation succeeded; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -154,7 +153,6 @@ public final class EnableMonitorResponse {
 
         /**
          * <p>Human-readable success message.</p>
-         * <p>Human-readable success message.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -165,7 +163,6 @@ public final class EnableMonitorResponse {
         }
 
         /**
-         * <p>ID of the enabled monitor.</p>
          * <p>ID of the enabled monitor.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

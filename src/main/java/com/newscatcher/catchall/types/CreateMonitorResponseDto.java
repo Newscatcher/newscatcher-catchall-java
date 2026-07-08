@@ -137,7 +137,6 @@ public final class CreateMonitorResponseDto {
 
         /**
          * <p>Creation status or error message</p>
-         * <p>Creation status or error message</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

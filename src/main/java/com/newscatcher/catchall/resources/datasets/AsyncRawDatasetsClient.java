@@ -13,6 +13,7 @@ import com.newscatcher.catchall.core.MediaTypes;
 import com.newscatcher.catchall.core.ObjectMappers;
 import com.newscatcher.catchall.core.QueryStringMapper;
 import com.newscatcher.catchall.core.RequestOptions;
+import com.newscatcher.catchall.core.RetryInterceptor;
 import com.newscatcher.catchall.errors.BadRequestError;
 import com.newscatcher.catchall.errors.ForbiddenError;
 import com.newscatcher.catchall.errors.NotFoundError;
@@ -138,6 +139,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<DatasetListResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -163,6 +173,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -177,7 +190,8 @@ public class AsyncRawDatasetsClient {
     }
 
     /**
-     * Creates a new dataset from a list of existing entity IDs.
+     * Creates a new dataset from a list of existing entity IDs. The optional <code>description</code> field here describes the dataset itself — it is separate from the entity-level <code>description</code> used for matching.
+     * <p>Entities must be created before adding them to a dataset. Each entity requires a <code>name</code> plus at least one of: a <code>description</code> or a <code>domain</code>. Use <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/entities/create-entity">Create entity</a> or <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/entities/create-entities-batch">Create entities batch</a> to create entities first.</p>
      * <p>If any of the provided entity IDs do not exist or do not belong to
      * your organization, the request fails with <code>400</code>. All entity IDs must
      * be valid before the dataset is created.</p>
@@ -189,7 +203,8 @@ public class AsyncRawDatasetsClient {
     }
 
     /**
-     * Creates a new dataset from a list of existing entity IDs.
+     * Creates a new dataset from a list of existing entity IDs. The optional <code>description</code> field here describes the dataset itself — it is separate from the entity-level <code>description</code> used for matching.
+     * <p>Entities must be created before adding them to a dataset. Each entity requires a <code>name</code> plus at least one of: a <code>description</code> or a <code>domain</code>. Use <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/entities/create-entity">Create entity</a> or <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/entities/create-entities-batch">Create entities batch</a> to create entities first.</p>
      * <p>If any of the provided entity IDs do not exist or do not belong to
      * your organization, the request fails with <code>400</code>. All entity IDs must
      * be valid before the dataset is created.</p>
@@ -223,6 +238,15 @@ public class AsyncRawDatasetsClient {
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
@@ -262,6 +286,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -276,10 +303,10 @@ public class AsyncRawDatasetsClient {
     }
 
     /**
-     * Creates a new dataset by uploading a CSV file. Each row in the CSV becomes an entity. The <code>name</code> and <code>domain</code>columns are required; all other columns are optional.
+     * Creates a new dataset by uploading a CSV file. Each row in the CSV becomes an entity. Each row requires a <code>name</code> plus at least one of: a <code>description</code> or a <code>domain</code>; all other columns are optional. Note: <code>description</code> in the CSV is the entity's matching description — it is separate from the dataset-level <code>description</code> field in the form data.
      * <p><strong>CSV format:</strong></p>
      * <pre><code class="language-csv">name,description,domain,alternative_names,key_persons
-     * NewsCatcher,&quot;AI-powered news data provider&quot;,newscatcherapi.com,&quot;NC;NewsCatcher API&quot;,&quot;Artem Bugara;Maksym Sugonyaka&quot;
+     * NewsCatcher,&quot;NewsCatcher is a data-as-a-service company providing news intelligence APIs including the CatchAll Web Search API (2B+ web pages indexed) and News API (140,000+ sources, 100+ countries).&quot;,newscatcherapi.com,&quot;NewsCatcher CatchAll;NewsCatcher API&quot;,&quot;Artem Bugara;Maksym Sugonyaka&quot;
      * OpenAI,&quot;Artificial intelligence research company&quot;,openai.com,&quot;Open AI&quot;,&quot;Sam Altman&quot;
      * </code></pre>
      * <p>Use semicolons (<code>;</code>) to separate multiple values in <code>alternative_names</code> and <code>key_persons</code>. Rows with empty <code>name</code> are skipped and reported in <code>validation_report</code>.</p>
@@ -291,10 +318,10 @@ public class AsyncRawDatasetsClient {
     }
 
     /**
-     * Creates a new dataset by uploading a CSV file. Each row in the CSV becomes an entity. The <code>name</code> and <code>domain</code>columns are required; all other columns are optional.
+     * Creates a new dataset by uploading a CSV file. Each row in the CSV becomes an entity. Each row requires a <code>name</code> plus at least one of: a <code>description</code> or a <code>domain</code>; all other columns are optional. Note: <code>description</code> in the CSV is the entity's matching description — it is separate from the dataset-level <code>description</code> field in the form data.
      * <p><strong>CSV format:</strong></p>
      * <pre><code class="language-csv">name,description,domain,alternative_names,key_persons
-     * NewsCatcher,&quot;AI-powered news data provider&quot;,newscatcherapi.com,&quot;NC;NewsCatcher API&quot;,&quot;Artem Bugara;Maksym Sugonyaka&quot;
+     * NewsCatcher,&quot;NewsCatcher is a data-as-a-service company providing news intelligence APIs including the CatchAll Web Search API (2B+ web pages indexed) and News API (140,000+ sources, 100+ countries).&quot;,newscatcherapi.com,&quot;NewsCatcher CatchAll;NewsCatcher API&quot;,&quot;Artem Bugara;Maksym Sugonyaka&quot;
      * OpenAI,&quot;Artificial intelligence research company&quot;,openai.com,&quot;Open AI&quot;,&quot;Sam Altman&quot;
      * </code></pre>
      * <p>Use semicolons (<code>;</code>) to separate multiple values in <code>alternative_names</code> and <code>key_persons</code>. Rows with empty <code>name</code> are skipped and reported in <code>validation_report</code>.</p>
@@ -334,6 +361,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -367,6 +403,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -428,6 +467,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -489,6 +531,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -525,6 +570,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -558,6 +612,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -594,6 +651,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -627,6 +693,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -687,6 +756,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -719,6 +797,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -787,6 +868,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<Void>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -817,6 +907,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -885,6 +978,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -923,6 +1025,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -977,6 +1082,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<ManageEntitiesResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -1015,6 +1129,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -1069,6 +1186,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<ManageEntitiesResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -1107,6 +1233,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -1180,6 +1309,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<DatasetEntityListResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -1219,6 +1357,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -1283,6 +1424,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<DatasetStatusHistoryResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -1316,6 +1466,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -1373,6 +1526,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -1412,6 +1574,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -1481,6 +1646,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -1550,6 +1718,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -1588,6 +1759,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -1627,6 +1807,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -1665,6 +1848,15 @@ public class AsyncRawDatasetsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -1704,6 +1896,9 @@ public class AsyncRawDatasetsClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }

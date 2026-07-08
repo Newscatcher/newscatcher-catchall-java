@@ -99,7 +99,6 @@ public final class ValidateQueryRequestDto {
 
         /**
          * <p>Plain text query to validate.</p>
-         * <p>Plain text query to validate.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

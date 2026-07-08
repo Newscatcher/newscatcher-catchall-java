@@ -144,7 +144,6 @@ public final class ConnectedDataset {
 
         /**
          * <p>Dataset identifier.</p>
-         * <p>Dataset identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -155,7 +154,6 @@ public final class ConnectedDataset {
         }
 
         /**
-         * <p>Dataset name as stored. Check <code>is_deleted</code> to determine whether the dataset is still active.</p>
          * <p>Dataset name as stored. Check <code>is_deleted</code> to determine whether the dataset is still active.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

@@ -301,7 +301,6 @@ public final class ConnectedEntity {
 
         /**
          * <p>Unique identifier of the matched entity.</p>
-         * <p>Unique identifier of the matched entity.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -312,7 +311,6 @@ public final class ConnectedEntity {
         }
 
         /**
-         * <p>Name of the matched entity.</p>
          * <p>Name of the matched entity.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -331,13 +329,6 @@ public final class ConnectedEntity {
          * | 7–9 | Major impact (earnings, product launch, senior hire) |
          * | 4–6 | Routine update (minor product news, mid-level changes) |
          * | 1–3 | Indirect mention (listed with others, stock noise) |</p>
-         * <p>Relevance score indicating how directly the entity is associated with this event.</p>
-         * <p>| Score | Meaning |
-         * |-------|---------|
-         * | 10 | Direct mention, critical event (merger, CEO change, major lawsuit) |
-         * | 7–9 | Major impact (earnings, product launch, senior hire) |
-         * | 4–6 | Routine update (minor product news, mid-level changes) |
-         * | 1–3 | Indirect mention (listed with others, stock noise) |</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -349,7 +340,6 @@ public final class ConnectedEntity {
 
         /**
          * <p>Short explanation (up to 100 characters) of why this entity is associated with the event.</p>
-         * <p>Short explanation (up to 100 characters) of why this entity is associated with the event.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -360,7 +350,6 @@ public final class ConnectedEntity {
         }
 
         /**
-         * <p>The entity type.</p>
          * <p>The entity type.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

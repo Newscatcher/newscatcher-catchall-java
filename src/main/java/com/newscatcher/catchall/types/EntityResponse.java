@@ -353,7 +353,6 @@ public final class EntityResponse {
 
         /**
          * <p>Unique identifier of the entity.</p>
-         * <p>Unique identifier of the entity.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -372,7 +371,6 @@ public final class EntityResponse {
 
         /**
          * <p>Organization that owns this entity.</p>
-         * <p>Organization that owns this entity.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -383,7 +381,6 @@ public final class EntityResponse {
         }
 
         /**
-         * <p>Entity name.</p>
          * <p>Entity name.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

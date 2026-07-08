@@ -150,7 +150,6 @@ public final class AddResourceResponseDto {
 
         /**
          * <p>True if the overall operation succeeded.</p>
-         * <p>True if the overall operation succeeded.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -161,7 +160,6 @@ public final class AddResourceResponseDto {
         }
 
         /**
-         * <p>Top-level result message.</p>
          * <p>Top-level result message.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

@@ -287,7 +287,6 @@ public final class ProjectResponseDto {
 
         /**
          * <p>True if the operation succeeded; false otherwise.</p>
-         * <p>True if the operation succeeded; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -298,7 +297,6 @@ public final class ProjectResponseDto {
         }
 
         /**
-         * <p>Human-readable result message.</p>
          * <p>Human-readable result message.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -311,7 +309,6 @@ public final class ProjectResponseDto {
 
         /**
          * <p>Project identifier.</p>
-         * <p>Project identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -322,7 +319,6 @@ public final class ProjectResponseDto {
         }
 
         /**
-         * <p>Project name.</p>
          * <p>Project name.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

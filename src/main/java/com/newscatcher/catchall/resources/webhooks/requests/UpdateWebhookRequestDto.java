@@ -17,6 +17,7 @@ import com.newscatcher.catchall.core.NullableNonemptyFilter;
 import com.newscatcher.catchall.core.ObjectMappers;
 import com.newscatcher.catchall.resources.webhooks.types.UpdateWebhookRequestDtoAuth;
 import com.newscatcher.catchall.types.DeliveryMode;
+import com.newscatcher.catchall.types.FormatterConfigDto;
 import com.newscatcher.catchall.types.HttpMethod;
 import com.newscatcher.catchall.types.WebhookType;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public final class UpdateWebhookRequestDto {
 
     private final Optional<UpdateWebhookRequestDtoAuth> auth;
 
-    private final Optional<Map<String, Object>> formatterConfig;
+    private final Optional<FormatterConfigDto> formatterConfig;
 
     private final Optional<Boolean> isActive;
 
@@ -58,7 +59,7 @@ public final class UpdateWebhookRequestDto {
             Optional<Map<String, String>> headers,
             Optional<Map<String, String>> params,
             Optional<UpdateWebhookRequestDtoAuth> auth,
-            Optional<Map<String, Object>> formatterConfig,
+            Optional<FormatterConfigDto> formatterConfig,
             Optional<Boolean> isActive,
             Map<String, Object> additionalProperties) {
         this.name = name;
@@ -130,10 +131,10 @@ public final class UpdateWebhookRequestDto {
     }
 
     /**
-     * @return Updated formatter configuration.
+     * @return Updated custom payload formatter. Set only when <code>type</code> is <code>custom</code>.
      */
     @JsonIgnore
-    public Optional<Map<String, Object>> getFormatterConfig() {
+    public Optional<FormatterConfigDto> getFormatterConfig() {
         if (formatterConfig == null) {
             return Optional.empty();
         }
@@ -150,7 +151,7 @@ public final class UpdateWebhookRequestDto {
 
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("formatter_config")
-    private Optional<Map<String, Object>> _getFormatterConfig() {
+    private Optional<FormatterConfigDto> _getFormatterConfig() {
         return formatterConfig;
     }
 
@@ -220,7 +221,7 @@ public final class UpdateWebhookRequestDto {
 
         private Optional<UpdateWebhookRequestDtoAuth> auth = Optional.empty();
 
-        private Optional<Map<String, Object>> formatterConfig = Optional.empty();
+        private Optional<FormatterConfigDto> formatterConfig = Optional.empty();
 
         private Optional<Boolean> isActive = Optional.empty();
 
@@ -347,20 +348,20 @@ public final class UpdateWebhookRequestDto {
         }
 
         /**
-         * <p>Updated formatter configuration.</p>
+         * <p>Updated custom payload formatter. Set only when <code>type</code> is <code>custom</code>.</p>
          */
         @JsonSetter(value = "formatter_config", nulls = Nulls.SKIP)
-        public Builder formatterConfig(Optional<Map<String, Object>> formatterConfig) {
+        public Builder formatterConfig(Optional<FormatterConfigDto> formatterConfig) {
             this.formatterConfig = formatterConfig;
             return this;
         }
 
-        public Builder formatterConfig(Map<String, Object> formatterConfig) {
+        public Builder formatterConfig(FormatterConfigDto formatterConfig) {
             this.formatterConfig = Optional.ofNullable(formatterConfig);
             return this;
         }
 
-        public Builder formatterConfig(Nullable<Map<String, Object>> formatterConfig) {
+        public Builder formatterConfig(Nullable<FormatterConfigDto> formatterConfig) {
             if (formatterConfig.isNull()) {
                 this.formatterConfig = null;
             } else if (formatterConfig.isEmpty()) {

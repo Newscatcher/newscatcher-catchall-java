@@ -99,7 +99,6 @@ public final class BearerAuthDto {
 
         /**
          * <p>Bearer token sent in the <code>Authorization</code> header.</p>
-         * <p>Bearer token sent in the <code>Authorization</code> header.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

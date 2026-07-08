@@ -195,7 +195,6 @@ public final class PlanFeature {
 
         /**
          * <p>Human-readable feature name.</p>
-         * <p>Human-readable feature name.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -206,7 +205,6 @@ public final class PlanFeature {
         }
 
         /**
-         * <p>Machine-readable feature identifier.</p>
          * <p>Machine-readable feature identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

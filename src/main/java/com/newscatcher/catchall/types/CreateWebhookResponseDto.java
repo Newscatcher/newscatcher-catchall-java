@@ -147,7 +147,6 @@ public final class CreateWebhookResponseDto {
 
         /**
          * <p>True if the webhook was created; false otherwise.</p>
-         * <p>True if the webhook was created; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -158,7 +157,6 @@ public final class CreateWebhookResponseDto {
         }
 
         /**
-         * <p>Human-readable result message.</p>
          * <p>Human-readable result message.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

@@ -235,18 +235,6 @@ public final class MonitorStatusEntry {
          * <code>additional_information</code> contains <code>nb_existing_records</code>,
          * <code>nb_final_records</code>, and optionally <code>webhook</code>.</li>
          * </ul>
-         * <p>Type of lifecycle event.</p>
-         * <ul>
-         * <li><code>created</code>: Monitor was created.</li>
-         * <li><code>enable</code>: Monitor was enabled.</li>
-         * <li><code>disable</code>: Monitor was disabled.</li>
-         * <li><code>scheduled</code>: A job was triggered for execution.
-         * <code>additional_information</code> contains <code>job_id</code>, <code>start_date</code>,
-         * and <code>end_date</code>.</li>
-         * <li><code>dump</code>: Results were collected after a job completed.
-         * <code>additional_information</code> contains <code>nb_existing_records</code>,
-         * <code>nb_final_records</code>, and optionally <code>webhook</code>.</li>
-         * </ul>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -257,7 +245,6 @@ public final class MonitorStatusEntry {
         }
 
         /**
-         * <p>Timestamp of this event in ISO 8601 format with UTC timezone.</p>
          * <p>Timestamp of this event in ISO 8601 format with UTC timezone.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

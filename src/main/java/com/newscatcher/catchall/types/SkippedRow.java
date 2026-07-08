@@ -123,8 +123,6 @@ public final class SkippedRow {
         /**
          * <p>1-based row number in the CSV file (including the header row).</p>
          * <p>A value of <code>3</code> means the third line of the file (second data row).</p>
-         * <p>1-based row number in the CSV file (including the header row).</p>
-         * <p>A value of <code>3</code> means the third line of the file (second data row).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -135,7 +133,6 @@ public final class SkippedRow {
         }
 
         /**
-         * <p>Human-readable explanation of why the row was skipped.</p>
          * <p>Human-readable explanation of why the row was skipped.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

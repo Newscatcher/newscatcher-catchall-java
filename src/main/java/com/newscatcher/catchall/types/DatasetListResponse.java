@@ -174,7 +174,6 @@ public final class DatasetListResponse {
 
         /**
          * <p>Total number of datasets matching the filter criteria.</p>
-         * <p>Total number of datasets matching the filter criteria.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -186,7 +185,6 @@ public final class DatasetListResponse {
 
         /**
          * <p>Current page number.</p>
-         * <p>Current page number.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -197,7 +195,6 @@ public final class DatasetListResponse {
         }
 
         /**
-         * <p>Number of datasets per page.</p>
          * <p>Number of datasets per page.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

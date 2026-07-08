@@ -146,7 +146,6 @@ public final class Citation implements ICitation {
 
         /**
          * <p>The title of the source document.</p>
-         * <p>The title of the source document.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -158,7 +157,6 @@ public final class Citation implements ICitation {
 
         /**
          * <p>URL to the source document.</p>
-         * <p>URL to the source document.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -169,7 +167,6 @@ public final class Citation implements ICitation {
         }
 
         /**
-         * <p>The publication date of the source document in ISO 8601 format (UTC timezone).</p>
          * <p>The publication date of the source document in ISO 8601 format (UTC timezone).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

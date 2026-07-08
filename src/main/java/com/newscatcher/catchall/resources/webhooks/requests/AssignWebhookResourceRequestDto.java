@@ -122,7 +122,6 @@ public final class AssignWebhookResourceRequestDto {
 
         /**
          * <p>Type of resource to assign.</p>
-         * <p>Type of resource to assign.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -133,7 +132,6 @@ public final class AssignWebhookResourceRequestDto {
         }
 
         /**
-         * <p>ID of the resource to assign.</p>
          * <p>ID of the resource to assign.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

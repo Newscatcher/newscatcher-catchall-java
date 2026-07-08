@@ -26,8 +26,6 @@ import java.util.Optional;
 public final class CompanyAttributes {
     private final Optional<String> domain;
 
-    private final Optional<String> description;
-
     private final Optional<List<String>> keyPersons;
 
     private final Optional<List<String>> alternativeNames;
@@ -36,12 +34,10 @@ public final class CompanyAttributes {
 
     private CompanyAttributes(
             Optional<String> domain,
-            Optional<String> description,
             Optional<List<String>> keyPersons,
             Optional<List<String>> alternativeNames,
             Map<String, Object> additionalProperties) {
         this.domain = domain;
-        this.description = description;
         this.keyPersons = keyPersons;
         this.alternativeNames = alternativeNames;
         this.additionalProperties = additionalProperties;
@@ -57,17 +53,6 @@ public final class CompanyAttributes {
             return Optional.empty();
         }
         return domain;
-    }
-
-    /**
-     * @return Detailed description of the company used for matching.
-     */
-    @JsonIgnore
-    public Optional<String> getDescription() {
-        if (description == null) {
-            return Optional.empty();
-        }
-        return description;
     }
 
     /**
@@ -99,12 +84,6 @@ public final class CompanyAttributes {
     }
 
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("description")
-    private Optional<String> _getDescription() {
-        return description;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("key_persons")
     private Optional<List<String>> _getKeyPersons() {
         return keyPersons;
@@ -129,14 +108,13 @@ public final class CompanyAttributes {
 
     private boolean equalTo(CompanyAttributes other) {
         return domain.equals(other.domain)
-                && description.equals(other.description)
                 && keyPersons.equals(other.keyPersons)
                 && alternativeNames.equals(other.alternativeNames);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.domain, this.description, this.keyPersons, this.alternativeNames);
+        return Objects.hash(this.domain, this.keyPersons, this.alternativeNames);
     }
 
     @java.lang.Override
@@ -152,8 +130,6 @@ public final class CompanyAttributes {
     public static final class Builder {
         private Optional<String> domain = Optional.empty();
 
-        private Optional<String> description = Optional.empty();
-
         private Optional<List<String>> keyPersons = Optional.empty();
 
         private Optional<List<String>> alternativeNames = Optional.empty();
@@ -165,7 +141,6 @@ public final class CompanyAttributes {
 
         public Builder from(CompanyAttributes other) {
             domain(other.getDomain());
-            description(other.getDescription());
             keyPersons(other.getKeyPersons());
             alternativeNames(other.getAlternativeNames());
             return this;
@@ -193,31 +168,6 @@ public final class CompanyAttributes {
                 this.domain = Optional.empty();
             } else {
                 this.domain = Optional.of(domain.get());
-            }
-            return this;
-        }
-
-        /**
-         * <p>Detailed description of the company used for matching.</p>
-         */
-        @JsonSetter(value = "description", nulls = Nulls.SKIP)
-        public Builder description(Optional<String> description) {
-            this.description = description;
-            return this;
-        }
-
-        public Builder description(String description) {
-            this.description = Optional.ofNullable(description);
-            return this;
-        }
-
-        public Builder description(Nullable<String> description) {
-            if (description.isNull()) {
-                this.description = null;
-            } else if (description.isEmpty()) {
-                this.description = Optional.empty();
-            } else {
-                this.description = Optional.of(description.get());
             }
             return this;
         }
@@ -273,7 +223,7 @@ public final class CompanyAttributes {
         }
 
         public CompanyAttributes build() {
-            return new CompanyAttributes(domain, description, keyPersons, alternativeNames, additionalProperties);
+            return new CompanyAttributes(domain, keyPersons, alternativeNames, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -125,7 +125,6 @@ public final class CreateEntitiesBatchResponse {
 
         /**
          * <p>Total number of entities created.</p>
-         * <p>Total number of entities created.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

@@ -196,7 +196,6 @@ public final class ResourceResultDto {
 
         /**
          * <p>Type of the resource.</p>
-         * <p>Type of the resource.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -207,7 +206,6 @@ public final class ResourceResultDto {
         }
 
         /**
-         * <p>Resource identifier.</p>
          * <p>Resource identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -220,7 +218,6 @@ public final class ResourceResultDto {
 
         /**
          * <p>True if this resource was processed successfully.</p>
-         * <p>True if this resource was processed successfully.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -231,7 +228,6 @@ public final class ResourceResultDto {
         }
 
         /**
-         * <p>Per-resource result message.</p>
          * <p>Per-resource result message.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

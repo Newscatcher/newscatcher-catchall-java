@@ -17,6 +17,7 @@ import com.newscatcher.catchall.core.NullableNonemptyFilter;
 import com.newscatcher.catchall.core.ObjectMappers;
 import com.newscatcher.catchall.resources.webhooks.types.CreateWebhookRequestDtoAuth;
 import com.newscatcher.catchall.types.DeliveryMode;
+import com.newscatcher.catchall.types.FormatterConfigDto;
 import com.newscatcher.catchall.types.HttpMethod;
 import com.newscatcher.catchall.types.WebhookType;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public final class CreateWebhookRequestDto {
 
     private final Optional<CreateWebhookRequestDtoAuth> auth;
 
-    private final Optional<Map<String, Object>> formatterConfig;
+    private final Optional<FormatterConfigDto> formatterConfig;
 
     private final Map<String, Object> additionalProperties;
 
@@ -57,7 +58,7 @@ public final class CreateWebhookRequestDto {
             Optional<Map<String, String>> headers,
             Optional<Map<String, String>> params,
             Optional<CreateWebhookRequestDtoAuth> auth,
-            Optional<Map<String, Object>> formatterConfig,
+            Optional<FormatterConfigDto> formatterConfig,
             Map<String, Object> additionalProperties) {
         this.name = name;
         this.url = url;
@@ -140,10 +141,10 @@ public final class CreateWebhookRequestDto {
     }
 
     /**
-     * @return Custom payload transformation configuration. Required only when <code>type</code> is <code>custom</code>.
+     * @return Custom payload formatter. Required when <code>type</code> is <code>custom</code>.
      */
     @JsonIgnore
-    public Optional<Map<String, Object>> getFormatterConfig() {
+    public Optional<FormatterConfigDto> getFormatterConfig() {
         if (formatterConfig == null) {
             return Optional.empty();
         }
@@ -152,7 +153,7 @@ public final class CreateWebhookRequestDto {
 
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("formatter_config")
-    private Optional<Map<String, Object>> _getFormatterConfig() {
+    private Optional<FormatterConfigDto> _getFormatterConfig() {
         return formatterConfig;
     }
 
@@ -272,13 +273,13 @@ public final class CreateWebhookRequestDto {
         _FinalStage auth(CreateWebhookRequestDtoAuth auth);
 
         /**
-         * <p>Custom payload transformation configuration. Required only when <code>type</code> is <code>custom</code>.</p>
+         * <p>Custom payload formatter. Required when <code>type</code> is <code>custom</code>.</p>
          */
-        _FinalStage formatterConfig(Optional<Map<String, Object>> formatterConfig);
+        _FinalStage formatterConfig(Optional<FormatterConfigDto> formatterConfig);
 
-        _FinalStage formatterConfig(Map<String, Object> formatterConfig);
+        _FinalStage formatterConfig(FormatterConfigDto formatterConfig);
 
-        _FinalStage formatterConfig(Nullable<Map<String, Object>> formatterConfig);
+        _FinalStage formatterConfig(Nullable<FormatterConfigDto> formatterConfig);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -287,7 +288,7 @@ public final class CreateWebhookRequestDto {
 
         private String url;
 
-        private Optional<Map<String, Object>> formatterConfig = Optional.empty();
+        private Optional<FormatterConfigDto> formatterConfig = Optional.empty();
 
         private Optional<CreateWebhookRequestDtoAuth> auth = Optional.empty();
 
@@ -322,7 +323,6 @@ public final class CreateWebhookRequestDto {
 
         /**
          * <p>Human-readable label for this webhook.</p>
-         * <p>Human-readable label for this webhook.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -342,15 +342,6 @@ public final class CreateWebhookRequestDto {
          * <li><code>custom</code>: Any valid HTTPS domain.</li>
          * </ul>
          * <p>When <code>type</code> is omitted, it is auto-detected from the URL.</p>
-         * <p>Destination URL that receives the payload. Must use HTTPS. IP addresses are not accepted.</p>
-         * <p>Type-specific URL requirements:</p>
-         * <ul>
-         * <li><code>slack</code>: Must start with <code>https://hooks.slack.com/</code>.</li>
-         * <li><code>teams</code>: Hostname must match <code>*.webhook.office.com</code> or <code>*.webhook.office365.com</code>.</li>
-         * <li><code>generic</code>: Any valid HTTPS domain.</li>
-         * <li><code>custom</code>: Any valid HTTPS domain.</li>
-         * </ul>
-         * <p>When <code>type</code> is omitted, it is auto-detected from the URL.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -361,11 +352,11 @@ public final class CreateWebhookRequestDto {
         }
 
         /**
-         * <p>Custom payload transformation configuration. Required only when <code>type</code> is <code>custom</code>.</p>
+         * <p>Custom payload formatter. Required when <code>type</code> is <code>custom</code>.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage formatterConfig(Nullable<Map<String, Object>> formatterConfig) {
+        public _FinalStage formatterConfig(Nullable<FormatterConfigDto> formatterConfig) {
             if (formatterConfig.isNull()) {
                 this.formatterConfig = null;
             } else if (formatterConfig.isEmpty()) {
@@ -377,21 +368,21 @@ public final class CreateWebhookRequestDto {
         }
 
         /**
-         * <p>Custom payload transformation configuration. Required only when <code>type</code> is <code>custom</code>.</p>
+         * <p>Custom payload formatter. Required when <code>type</code> is <code>custom</code>.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage formatterConfig(Map<String, Object> formatterConfig) {
+        public _FinalStage formatterConfig(FormatterConfigDto formatterConfig) {
             this.formatterConfig = Optional.ofNullable(formatterConfig);
             return this;
         }
 
         /**
-         * <p>Custom payload transformation configuration. Required only when <code>type</code> is <code>custom</code>.</p>
+         * <p>Custom payload formatter. Required when <code>type</code> is <code>custom</code>.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "formatter_config", nulls = Nulls.SKIP)
-        public _FinalStage formatterConfig(Optional<Map<String, Object>> formatterConfig) {
+        public _FinalStage formatterConfig(Optional<FormatterConfigDto> formatterConfig) {
             this.formatterConfig = formatterConfig;
             return this;
         }

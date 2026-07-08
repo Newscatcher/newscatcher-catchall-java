@@ -41,7 +41,7 @@ public final class WebhookResponseDto {
 
     private final Optional<Map<String, String>> params;
 
-    private final Optional<Map<String, Object>> formatterConfig;
+    private final Optional<FormatterConfigDto> formatterConfig;
 
     private final boolean isActive;
 
@@ -64,7 +64,7 @@ public final class WebhookResponseDto {
             HttpMethod method,
             Optional<Map<String, String>> headers,
             Optional<Map<String, String>> params,
-            Optional<Map<String, Object>> formatterConfig,
+            Optional<FormatterConfigDto> formatterConfig,
             boolean isActive,
             Optional<String> organizationId,
             Optional<String> createdByUserId,
@@ -144,10 +144,10 @@ public final class WebhookResponseDto {
     }
 
     /**
-     * @return Custom payload transformation configuration. Used only when <code>type</code> is <code>custom</code>.
+     * @return Custom payload formatter. Set only when <code>type</code> is <code>custom</code>.
      */
     @JsonIgnore
-    public Optional<Map<String, Object>> getFormatterConfig() {
+    public Optional<FormatterConfigDto> getFormatterConfig() {
         if (formatterConfig == null) {
             return Optional.empty();
         }
@@ -196,7 +196,7 @@ public final class WebhookResponseDto {
 
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("formatter_config")
-    private Optional<Map<String, Object>> _getFormatterConfig() {
+    private Optional<FormatterConfigDto> _getFormatterConfig() {
         return formatterConfig;
     }
 
@@ -320,13 +320,13 @@ public final class WebhookResponseDto {
         _FinalStage params(Map<String, String> params);
 
         /**
-         * <p>Custom payload transformation configuration. Used only when <code>type</code> is <code>custom</code>.</p>
+         * <p>Custom payload formatter. Set only when <code>type</code> is <code>custom</code>.</p>
          */
-        _FinalStage formatterConfig(Optional<Map<String, Object>> formatterConfig);
+        _FinalStage formatterConfig(Optional<FormatterConfigDto> formatterConfig);
 
-        _FinalStage formatterConfig(Map<String, Object> formatterConfig);
+        _FinalStage formatterConfig(FormatterConfigDto formatterConfig);
 
-        _FinalStage formatterConfig(Nullable<Map<String, Object>> formatterConfig);
+        _FinalStage formatterConfig(Nullable<FormatterConfigDto> formatterConfig);
 
         /**
          * <p>Organization that owns this webhook.</p>
@@ -389,7 +389,7 @@ public final class WebhookResponseDto {
 
         private Optional<String> organizationId = Optional.empty();
 
-        private Optional<Map<String, Object>> formatterConfig = Optional.empty();
+        private Optional<FormatterConfigDto> formatterConfig = Optional.empty();
 
         private Optional<Map<String, String>> params = Optional.empty();
 
@@ -421,7 +421,6 @@ public final class WebhookResponseDto {
 
         /**
          * <p>Webhook identifier.</p>
-         * <p>Webhook identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -433,7 +432,6 @@ public final class WebhookResponseDto {
 
         /**
          * <p>Human-readable label for this webhook.</p>
-         * <p>Human-readable label for this webhook.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -444,7 +442,6 @@ public final class WebhookResponseDto {
         }
 
         /**
-         * <p>Destination URL that receives the payload.</p>
          * <p>Destination URL that receives the payload.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -477,7 +474,6 @@ public final class WebhookResponseDto {
         }
 
         /**
-         * <p>True if the webhook is active; false otherwise.</p>
          * <p>True if the webhook is active; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -569,11 +565,11 @@ public final class WebhookResponseDto {
         }
 
         /**
-         * <p>Custom payload transformation configuration. Used only when <code>type</code> is <code>custom</code>.</p>
+         * <p>Custom payload formatter. Set only when <code>type</code> is <code>custom</code>.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage formatterConfig(Nullable<Map<String, Object>> formatterConfig) {
+        public _FinalStage formatterConfig(Nullable<FormatterConfigDto> formatterConfig) {
             if (formatterConfig.isNull()) {
                 this.formatterConfig = null;
             } else if (formatterConfig.isEmpty()) {
@@ -585,21 +581,21 @@ public final class WebhookResponseDto {
         }
 
         /**
-         * <p>Custom payload transformation configuration. Used only when <code>type</code> is <code>custom</code>.</p>
+         * <p>Custom payload formatter. Set only when <code>type</code> is <code>custom</code>.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage formatterConfig(Map<String, Object> formatterConfig) {
+        public _FinalStage formatterConfig(FormatterConfigDto formatterConfig) {
             this.formatterConfig = Optional.ofNullable(formatterConfig);
             return this;
         }
 
         /**
-         * <p>Custom payload transformation configuration. Used only when <code>type</code> is <code>custom</code>.</p>
+         * <p>Custom payload formatter. Set only when <code>type</code> is <code>custom</code>.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "formatter_config", nulls = Nulls.SKIP)
-        public _FinalStage formatterConfig(Optional<Map<String, Object>> formatterConfig) {
+        public _FinalStage formatterConfig(Optional<FormatterConfigDto> formatterConfig) {
             this.formatterConfig = formatterConfig;
             return this;
         }

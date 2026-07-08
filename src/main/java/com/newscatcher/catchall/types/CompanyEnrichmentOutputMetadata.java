@@ -176,7 +176,6 @@ public final class CompanyEnrichmentOutputMetadata {
 
         /**
          * <p>Normalized company name.</p>
-         * <p>Normalized company name.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

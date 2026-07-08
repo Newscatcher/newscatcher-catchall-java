@@ -262,8 +262,6 @@ public final class CreateMonitorRequestDto {
         /**
          * <p>Job ID to use as template for scheduled runs. Defines the query, validators, and enrichments used for each scheduled run.</p>
          * <p>If <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/monitors/create-monitor#body-backfill"><code>backfill</code></a> is true, the job's <code>end_date</code> must be within the last 7 days.</p>
-         * <p>Job ID to use as template for scheduled runs. Defines the query, validators, and enrichments used for each scheduled run.</p>
-         * <p>If <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/monitors/create-monitor#body-backfill"><code>backfill</code></a> is true, the job's <code>end_date</code> must be within the last 7 days.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -274,7 +272,6 @@ public final class CreateMonitorRequestDto {
         }
 
         /**
-         * <p>Monitor schedule in plain text format. Minimum frequency depends on your plan.</p>
          * <p>Monitor schedule in plain text format. Minimum frequency depends on your plan.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

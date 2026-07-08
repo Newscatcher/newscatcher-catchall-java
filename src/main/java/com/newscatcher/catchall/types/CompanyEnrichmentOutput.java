@@ -139,7 +139,6 @@ public final class CompanyEnrichmentOutput {
 
         /**
          * <p>The text span in the source document where the company was identified.</p>
-         * <p>The text span in the source document where the company was identified.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -150,7 +149,6 @@ public final class CompanyEnrichmentOutput {
         }
 
         /**
-         * <p>Confidence score for the company identification.</p>
          * <p>Confidence score for the company identification.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

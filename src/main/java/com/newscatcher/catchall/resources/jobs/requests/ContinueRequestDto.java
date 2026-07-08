@@ -122,7 +122,6 @@ public final class ContinueRequestDto {
 
         /**
          * <p>Job identifier of the completed job to continue.</p>
-         * <p>Job identifier of the completed job to continue.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

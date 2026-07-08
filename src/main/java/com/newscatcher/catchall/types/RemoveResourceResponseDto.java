@@ -120,7 +120,6 @@ public final class RemoveResourceResponseDto {
 
         /**
          * <p>True if the operation succeeded; false otherwise.</p>
-         * <p>True if the operation succeeded; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -131,7 +130,6 @@ public final class RemoveResourceResponseDto {
         }
 
         /**
-         * <p>Human-readable result message.</p>
          * <p>Human-readable result message.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

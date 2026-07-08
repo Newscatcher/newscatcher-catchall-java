@@ -165,7 +165,6 @@ public final class CreateDatasetCsvResponse {
 
         /**
          * <p>Unique identifier of the created dataset.</p>
-         * <p>Unique identifier of the created dataset.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -177,7 +176,6 @@ public final class CreateDatasetCsvResponse {
 
         /**
          * <p>Name of the created dataset.</p>
-         * <p>Name of the created dataset.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -188,7 +186,6 @@ public final class CreateDatasetCsvResponse {
         }
 
         /**
-         * <p>Number of entities successfully created from the CSV.</p>
          * <p>Number of entities successfully created from the CSV.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

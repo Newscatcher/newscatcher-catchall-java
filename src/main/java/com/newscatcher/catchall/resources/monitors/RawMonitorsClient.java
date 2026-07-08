@@ -12,6 +12,7 @@ import com.newscatcher.catchall.core.MediaTypes;
 import com.newscatcher.catchall.core.ObjectMappers;
 import com.newscatcher.catchall.core.QueryStringMapper;
 import com.newscatcher.catchall.core.RequestOptions;
+import com.newscatcher.catchall.core.RetryInterceptor;
 import com.newscatcher.catchall.errors.ForbiddenError;
 import com.newscatcher.catchall.errors.NotFoundError;
 import com.newscatcher.catchall.errors.UnauthorizedError;
@@ -117,6 +118,15 @@ public class RawMonitorsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -141,6 +151,8 @@ public class RawMonitorsClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -184,6 +196,15 @@ public class RawMonitorsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -204,6 +225,8 @@ public class RawMonitorsClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -256,6 +279,15 @@ public class RawMonitorsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -280,6 +312,8 @@ public class RawMonitorsClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -334,6 +368,15 @@ public class RawMonitorsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -355,6 +398,8 @@ public class RawMonitorsClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -412,6 +457,15 @@ public class RawMonitorsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -436,6 +490,8 @@ public class RawMonitorsClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -491,6 +547,15 @@ public class RawMonitorsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -514,6 +579,8 @@ public class RawMonitorsClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -575,6 +642,15 @@ public class RawMonitorsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -601,6 +677,8 @@ public class RawMonitorsClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -654,6 +732,15 @@ public class RawMonitorsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -681,6 +768,8 @@ public class RawMonitorsClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -753,6 +842,15 @@ public class RawMonitorsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -776,6 +874,8 @@ public class RawMonitorsClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -836,6 +936,15 @@ public class RawMonitorsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -863,6 +972,8 @@ public class RawMonitorsClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }

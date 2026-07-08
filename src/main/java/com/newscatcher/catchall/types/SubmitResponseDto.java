@@ -99,7 +99,6 @@ public final class SubmitResponseDto {
 
         /**
          * <p>Unique identifier for the created job. Use this to check status and retrieve results.</p>
-         * <p>Unique identifier for the created job. Use this to check status and retrieve results.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

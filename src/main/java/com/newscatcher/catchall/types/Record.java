@@ -207,7 +207,6 @@ public final class Record implements IBaseRecord {
 
         /**
          * <p>Unique identifier for the record.</p>
-         * <p>Unique identifier for the record.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -219,7 +218,6 @@ public final class Record implements IBaseRecord {
 
         /**
          * <p>Short title summarizing the record.</p>
-         * <p>Short title summarizing the record.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -230,9 +228,6 @@ public final class Record implements IBaseRecord {
         }
 
         /**
-         * <p>Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
-         * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
-         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
          * <p>Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
          * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
          * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>

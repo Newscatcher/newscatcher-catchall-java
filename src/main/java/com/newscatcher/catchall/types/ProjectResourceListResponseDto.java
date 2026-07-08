@@ -197,7 +197,6 @@ public final class ProjectResourceListResponseDto {
 
         /**
          * <p>Total number of resources assigned to the project.</p>
-         * <p>Total number of resources assigned to the project.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -208,7 +207,6 @@ public final class ProjectResourceListResponseDto {
         }
 
         /**
-         * <p>Current page number.</p>
          * <p>Current page number.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -221,7 +219,6 @@ public final class ProjectResourceListResponseDto {
 
         /**
          * <p>Number of resources per page.</p>
-         * <p>Number of resources per page.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -232,7 +229,6 @@ public final class ProjectResourceListResponseDto {
         }
 
         /**
-         * <p>Total number of pages.</p>
          * <p>Total number of pages.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

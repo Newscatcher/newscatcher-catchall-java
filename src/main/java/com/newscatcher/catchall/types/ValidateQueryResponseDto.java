@@ -219,7 +219,6 @@ public final class ValidateQueryResponseDto {
 
         /**
          * <p>Overall quality level of the query.</p>
-         * <p>Overall quality level of the query.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -231,7 +230,6 @@ public final class ValidateQueryResponseDto {
 
         /**
          * <p>Short headline summarising the assessment.</p>
-         * <p>Short headline summarising the assessment.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -242,7 +240,6 @@ public final class ValidateQueryResponseDto {
         }
 
         /**
-         * <p>Confidence score for this assessment.</p>
          * <p>Confidence score for this assessment.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
