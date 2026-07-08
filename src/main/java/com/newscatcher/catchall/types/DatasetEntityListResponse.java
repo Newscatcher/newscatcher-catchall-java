@@ -170,7 +170,6 @@ public final class DatasetEntityListResponse {
 
         /**
          * <p>Total number of entities in the dataset.</p>
-         * <p>Total number of entities in the dataset.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -182,7 +181,6 @@ public final class DatasetEntityListResponse {
 
         /**
          * <p>Current page number.</p>
-         * <p>Current page number.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -193,7 +191,6 @@ public final class DatasetEntityListResponse {
         }
 
         /**
-         * <p>Number of entities per page.</p>
          * <p>Number of entities per page.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

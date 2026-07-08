@@ -221,7 +221,6 @@ public final class MonitorCitation implements ICitation {
 
         /**
          * <p>The title of the source document.</p>
-         * <p>The title of the source document.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -232,7 +231,6 @@ public final class MonitorCitation implements ICitation {
         }
 
         /**
-         * <p>URL to the source document.</p>
          * <p>URL to the source document.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -245,7 +243,6 @@ public final class MonitorCitation implements ICitation {
 
         /**
          * <p>The publication date of the source document in ISO 8601 format (UTC timezone).</p>
-         * <p>The publication date of the source document in ISO 8601 format (UTC timezone).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -256,7 +253,6 @@ public final class MonitorCitation implements ICitation {
         }
 
         /**
-         * <p>Unique identifier of the document in the search index.</p>
          * <p>Unique identifier of the document in the search index.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -269,7 +265,6 @@ public final class MonitorCitation implements ICitation {
 
         /**
          * <p>Job ID that found this citation.</p>
-         * <p>Job ID that found this citation.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -280,7 +275,6 @@ public final class MonitorCitation implements ICitation {
         }
 
         /**
-         * <p>The date when the citation was added to the record in ISO 8601 format with UTC timezone.</p>
          * <p>The date when the citation was added to the record in ISO 8601 format with UTC timezone.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

@@ -35,6 +35,12 @@ public final class DatasetResponse {
 
     private final Optional<Integer> entityCount;
 
+    private final Optional<Map<String, Integer>> entityStatusBreakdown;
+
+    private final Optional<Double> healthScore;
+
+    private final Optional<Map<String, Double>> healthBreakdown;
+
     private final Optional<DatasetStatus> latestStatus;
 
     private final Optional<String> createdByUserId;
@@ -51,6 +57,9 @@ public final class DatasetResponse {
             String name,
             Optional<String> description,
             Optional<Integer> entityCount,
+            Optional<Map<String, Integer>> entityStatusBreakdown,
+            Optional<Double> healthScore,
+            Optional<Map<String, Double>> healthBreakdown,
             Optional<DatasetStatus> latestStatus,
             Optional<String> createdByUserId,
             Optional<OffsetDateTime> createdAt,
@@ -61,6 +70,9 @@ public final class DatasetResponse {
         this.name = name;
         this.description = description;
         this.entityCount = entityCount;
+        this.entityStatusBreakdown = entityStatusBreakdown;
+        this.healthScore = healthScore;
+        this.healthBreakdown = healthBreakdown;
         this.latestStatus = latestStatus;
         this.createdByUserId = createdByUserId;
         this.createdAt = createdAt;
@@ -109,6 +121,33 @@ public final class DatasetResponse {
     @JsonProperty("entity_count")
     public Optional<Integer> getEntityCount() {
         return entityCount;
+    }
+
+    /**
+     * @return Count of entities grouped by processing status. Keys are status values
+     * (<code>ready</code>, <code>pending</code>, <code>enriching</code>, <code>failed</code>); values are entity counts.
+     */
+    @JsonProperty("entity_status_breakdown")
+    public Optional<Map<String, Integer>> getEntityStatusBreakdown() {
+        return entityStatusBreakdown;
+    }
+
+    /**
+     * @return Overall health score of the dataset, from 0 to 100. Reflects how many
+     * entities have sufficient identifying information for reliable matching.
+     */
+    @JsonProperty("health_score")
+    public Optional<Double> getHealthScore() {
+        return healthScore;
+    }
+
+    /**
+     * @return Health scores broken down by entity type. Keys are entity types
+     * (e.g. <code>company</code>); values are scores from 0 to 100.
+     */
+    @JsonProperty("health_breakdown")
+    public Optional<Map<String, Double>> getHealthBreakdown() {
+        return healthBreakdown;
     }
 
     @JsonProperty("latest_status")
@@ -163,6 +202,9 @@ public final class DatasetResponse {
                 && name.equals(other.name)
                 && description.equals(other.description)
                 && entityCount.equals(other.entityCount)
+                && entityStatusBreakdown.equals(other.entityStatusBreakdown)
+                && healthScore.equals(other.healthScore)
+                && healthBreakdown.equals(other.healthBreakdown)
                 && latestStatus.equals(other.latestStatus)
                 && createdByUserId.equals(other.createdByUserId)
                 && createdAt.equals(other.createdAt)
@@ -177,6 +219,9 @@ public final class DatasetResponse {
                 this.name,
                 this.description,
                 this.entityCount,
+                this.entityStatusBreakdown,
+                this.healthScore,
+                this.healthBreakdown,
                 this.latestStatus,
                 this.createdByUserId,
                 this.createdAt,
@@ -238,6 +283,30 @@ public final class DatasetResponse {
 
         _FinalStage entityCount(Integer entityCount);
 
+        /**
+         * <p>Count of entities grouped by processing status. Keys are status values
+         * (<code>ready</code>, <code>pending</code>, <code>enriching</code>, <code>failed</code>); values are entity counts.</p>
+         */
+        _FinalStage entityStatusBreakdown(Optional<Map<String, Integer>> entityStatusBreakdown);
+
+        _FinalStage entityStatusBreakdown(Map<String, Integer> entityStatusBreakdown);
+
+        /**
+         * <p>Overall health score of the dataset, from 0 to 100. Reflects how many
+         * entities have sufficient identifying information for reliable matching.</p>
+         */
+        _FinalStage healthScore(Optional<Double> healthScore);
+
+        _FinalStage healthScore(Double healthScore);
+
+        /**
+         * <p>Health scores broken down by entity type. Keys are entity types
+         * (e.g. <code>company</code>); values are scores from 0 to 100.</p>
+         */
+        _FinalStage healthBreakdown(Optional<Map<String, Double>> healthBreakdown);
+
+        _FinalStage healthBreakdown(Map<String, Double> healthBreakdown);
+
         _FinalStage latestStatus(Optional<DatasetStatus> latestStatus);
 
         _FinalStage latestStatus(DatasetStatus latestStatus);
@@ -280,6 +349,12 @@ public final class DatasetResponse {
 
         private Optional<DatasetStatus> latestStatus = Optional.empty();
 
+        private Optional<Map<String, Double>> healthBreakdown = Optional.empty();
+
+        private Optional<Double> healthScore = Optional.empty();
+
+        private Optional<Map<String, Integer>> entityStatusBreakdown = Optional.empty();
+
         private Optional<Integer> entityCount = Optional.empty();
 
         private Optional<String> description = Optional.empty();
@@ -296,6 +371,9 @@ public final class DatasetResponse {
             name(other.getName());
             description(other.getDescription());
             entityCount(other.getEntityCount());
+            entityStatusBreakdown(other.getEntityStatusBreakdown());
+            healthScore(other.getHealthScore());
+            healthBreakdown(other.getHealthBreakdown());
             latestStatus(other.getLatestStatus());
             createdByUserId(other.getCreatedByUserId());
             createdAt(other.getCreatedAt());
@@ -304,7 +382,6 @@ public final class DatasetResponse {
         }
 
         /**
-         * <p>Unique identifier of the dataset.</p>
          * <p>Unique identifier of the dataset.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -317,7 +394,6 @@ public final class DatasetResponse {
 
         /**
          * <p>Organization that owns this dataset.</p>
-         * <p>Organization that owns this dataset.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -328,7 +404,6 @@ public final class DatasetResponse {
         }
 
         /**
-         * <p>Dataset name.</p>
          * <p>Dataset name.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -413,6 +488,72 @@ public final class DatasetResponse {
         }
 
         /**
+         * <p>Health scores broken down by entity type. Keys are entity types
+         * (e.g. <code>company</code>); values are scores from 0 to 100.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage healthBreakdown(Map<String, Double> healthBreakdown) {
+            this.healthBreakdown = Optional.ofNullable(healthBreakdown);
+            return this;
+        }
+
+        /**
+         * <p>Health scores broken down by entity type. Keys are entity types
+         * (e.g. <code>company</code>); values are scores from 0 to 100.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "health_breakdown", nulls = Nulls.SKIP)
+        public _FinalStage healthBreakdown(Optional<Map<String, Double>> healthBreakdown) {
+            this.healthBreakdown = healthBreakdown;
+            return this;
+        }
+
+        /**
+         * <p>Overall health score of the dataset, from 0 to 100. Reflects how many
+         * entities have sufficient identifying information for reliable matching.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage healthScore(Double healthScore) {
+            this.healthScore = Optional.ofNullable(healthScore);
+            return this;
+        }
+
+        /**
+         * <p>Overall health score of the dataset, from 0 to 100. Reflects how many
+         * entities have sufficient identifying information for reliable matching.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "health_score", nulls = Nulls.SKIP)
+        public _FinalStage healthScore(Optional<Double> healthScore) {
+            this.healthScore = healthScore;
+            return this;
+        }
+
+        /**
+         * <p>Count of entities grouped by processing status. Keys are status values
+         * (<code>ready</code>, <code>pending</code>, <code>enriching</code>, <code>failed</code>); values are entity counts.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage entityStatusBreakdown(Map<String, Integer> entityStatusBreakdown) {
+            this.entityStatusBreakdown = Optional.ofNullable(entityStatusBreakdown);
+            return this;
+        }
+
+        /**
+         * <p>Count of entities grouped by processing status. Keys are status values
+         * (<code>ready</code>, <code>pending</code>, <code>enriching</code>, <code>failed</code>); values are entity counts.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "entity_status_breakdown", nulls = Nulls.SKIP)
+        public _FinalStage entityStatusBreakdown(Optional<Map<String, Integer>> entityStatusBreakdown) {
+            this.entityStatusBreakdown = entityStatusBreakdown;
+            return this;
+        }
+
+        /**
          * <p>Total number of entities in this dataset.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -476,6 +617,9 @@ public final class DatasetResponse {
                     name,
                     description,
                     entityCount,
+                    entityStatusBreakdown,
+                    healthScore,
+                    healthBreakdown,
                     latestStatus,
                     createdByUserId,
                     createdAt,

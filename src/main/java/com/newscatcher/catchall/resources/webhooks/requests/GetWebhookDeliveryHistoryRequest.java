@@ -173,7 +173,6 @@ public final class GetWebhookDeliveryHistoryRequest {
 
         /**
          * <p>Type of the resource to retrieve delivery history for.</p>
-         * <p>Type of the resource to retrieve delivery history for.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -184,7 +183,6 @@ public final class GetWebhookDeliveryHistoryRequest {
         }
 
         /**
-         * <p>Identifier of the resource to retrieve delivery history for.</p>
          * <p>Identifier of the resource to retrieve delivery history for.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

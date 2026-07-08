@@ -63,10 +63,9 @@ public class EntitiesClient {
 
     /**
      * Creates a new company entity and begins background enrichment.
+     * <p>Each entity requires a <code>name</code> plus at least one of: a <code>description</code> or a <code>domain</code>. Providing both is recommended — <code>domain</code> is the highest-signal identifier because it is unambiguous; a well-written <code>description</code> is the best alternative when no domain is available.</p>
      * <p>The entity status starts as <code>pending</code> and transitions to <code>ready</code> once
-     * enrichment completes. Provide as much identifying information as
-     * possible — <code>domain</code> is the highest-signal field because it is
-     * unambiguous.</p>
+     * enrichment completes.</p>
      */
     public CreateEntityResponse createEntity(CreateEntityRequest request) {
         return this.rawClient.createEntity(request).body();
@@ -74,10 +73,9 @@ public class EntitiesClient {
 
     /**
      * Creates a new company entity and begins background enrichment.
+     * <p>Each entity requires a <code>name</code> plus at least one of: a <code>description</code> or a <code>domain</code>. Providing both is recommended — <code>domain</code> is the highest-signal identifier because it is unambiguous; a well-written <code>description</code> is the best alternative when no domain is available.</p>
      * <p>The entity status starts as <code>pending</code> and transitions to <code>ready</code> once
-     * enrichment completes. Provide as much identifying information as
-     * possible — <code>domain</code> is the highest-signal field because it is
-     * unambiguous.</p>
+     * enrichment completes.</p>
      */
     public CreateEntityResponse createEntity(CreateEntityRequest request, RequestOptions requestOptions) {
         return this.rawClient.createEntity(request, requestOptions).body();
@@ -85,6 +83,7 @@ public class EntitiesClient {
 
     /**
      * Creates multiple entities in a single request. Each entity is processed independently — a failure in one does not affect others.
+     * <p>Each entity requires a <code>name</code> plus at least one of: a <code>description</code> or a <code>domain</code>. See <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/entities/create-entity">Create entity</a> for the full field reference.</p>
      * <p>Returns an array of <code>{id, status}</code> objects in the same order as the input array.</p>
      */
     public CreateEntitiesBatchResponse createEntitiesBatch(CreateEntitiesBatchRequest request) {
@@ -93,6 +92,7 @@ public class EntitiesClient {
 
     /**
      * Creates multiple entities in a single request. Each entity is processed independently — a failure in one does not affect others.
+     * <p>Each entity requires a <code>name</code> plus at least one of: a <code>description</code> or a <code>domain</code>. See <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/entities/create-entity">Create entity</a> for the full field reference.</p>
      * <p>Returns an array of <code>{id, status}</code> objects in the same order as the input array.</p>
      */
     public CreateEntitiesBatchResponse createEntitiesBatch(

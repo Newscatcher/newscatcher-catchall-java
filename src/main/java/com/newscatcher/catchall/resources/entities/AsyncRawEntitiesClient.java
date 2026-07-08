@@ -12,6 +12,7 @@ import com.newscatcher.catchall.core.MediaTypes;
 import com.newscatcher.catchall.core.ObjectMappers;
 import com.newscatcher.catchall.core.QueryStringMapper;
 import com.newscatcher.catchall.core.RequestOptions;
+import com.newscatcher.catchall.core.RetryInterceptor;
 import com.newscatcher.catchall.errors.BadRequestError;
 import com.newscatcher.catchall.errors.ForbiddenError;
 import com.newscatcher.catchall.errors.NotFoundError;
@@ -118,6 +119,15 @@ public class AsyncRawEntitiesClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<EntityListResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -143,6 +153,9 @@ public class AsyncRawEntitiesClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -158,10 +171,9 @@ public class AsyncRawEntitiesClient {
 
     /**
      * Creates a new company entity and begins background enrichment.
+     * <p>Each entity requires a <code>name</code> plus at least one of: a <code>description</code> or a <code>domain</code>. Providing both is recommended — <code>domain</code> is the highest-signal identifier because it is unambiguous; a well-written <code>description</code> is the best alternative when no domain is available.</p>
      * <p>The entity status starts as <code>pending</code> and transitions to <code>ready</code> once
-     * enrichment completes. Provide as much identifying information as
-     * possible — <code>domain</code> is the highest-signal field because it is
-     * unambiguous.</p>
+     * enrichment completes.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<CreateEntityResponse>> createEntity(CreateEntityRequest request) {
         return createEntity(request, null);
@@ -169,10 +181,9 @@ public class AsyncRawEntitiesClient {
 
     /**
      * Creates a new company entity and begins background enrichment.
+     * <p>Each entity requires a <code>name</code> plus at least one of: a <code>description</code> or a <code>domain</code>. Providing both is recommended — <code>domain</code> is the highest-signal identifier because it is unambiguous; a well-written <code>description</code> is the best alternative when no domain is available.</p>
      * <p>The entity status starts as <code>pending</code> and transitions to <code>ready</code> once
-     * enrichment completes. Provide as much identifying information as
-     * possible — <code>domain</code> is the highest-signal field because it is
-     * unambiguous.</p>
+     * enrichment completes.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<CreateEntityResponse>> createEntity(
             CreateEntityRequest request, RequestOptions requestOptions) {
@@ -201,6 +212,15 @@ public class AsyncRawEntitiesClient {
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<CreateEntityResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
@@ -234,6 +254,9 @@ public class AsyncRawEntitiesClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -249,6 +272,7 @@ public class AsyncRawEntitiesClient {
 
     /**
      * Creates multiple entities in a single request. Each entity is processed independently — a failure in one does not affect others.
+     * <p>Each entity requires a <code>name</code> plus at least one of: a <code>description</code> or a <code>domain</code>. See <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/entities/create-entity">Create entity</a> for the full field reference.</p>
      * <p>Returns an array of <code>{id, status}</code> objects in the same order as the input array.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<CreateEntitiesBatchResponse>> createEntitiesBatch(
@@ -258,6 +282,7 @@ public class AsyncRawEntitiesClient {
 
     /**
      * Creates multiple entities in a single request. Each entity is processed independently — a failure in one does not affect others.
+     * <p>Each entity requires a <code>name</code> plus at least one of: a <code>description</code> or a <code>domain</code>. See <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/entities/create-entity">Create entity</a> for the full field reference.</p>
      * <p>Returns an array of <code>{id, status}</code> objects in the same order as the input array.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<CreateEntitiesBatchResponse>> createEntitiesBatch(
@@ -287,6 +312,15 @@ public class AsyncRawEntitiesClient {
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<CreateEntitiesBatchResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
@@ -321,6 +355,9 @@ public class AsyncRawEntitiesClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -381,6 +418,15 @@ public class AsyncRawEntitiesClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<EntityResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -413,6 +459,9 @@ public class AsyncRawEntitiesClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -476,6 +525,15 @@ public class AsyncRawEntitiesClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<Void>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -506,6 +564,9 @@ public class AsyncRawEntitiesClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }
@@ -574,6 +635,15 @@ public class AsyncRawEntitiesClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         CompletableFuture<CatchAllApiHttpResponse<EntityResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -611,6 +681,9 @@ public class AsyncRawEntitiesClient {
                     future.completeExceptionally(new CatchAllApiApiException(
                             "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
                 } catch (IOException e) {
                     future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
                 }

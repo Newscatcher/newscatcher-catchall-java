@@ -243,7 +243,6 @@ public final class UserJob {
 
         /**
          * <p>Job identifier.</p>
-         * <p>Job identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -254,7 +253,6 @@ public final class UserJob {
         }
 
         /**
-         * <p>Plain text query for this job.</p>
          * <p>Plain text query for this job.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -267,7 +265,6 @@ public final class UserJob {
 
         /**
          * <p>Job creation timestamp in ISO 8601 format.</p>
-         * <p>Job creation timestamp in ISO 8601 format.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -278,7 +275,6 @@ public final class UserJob {
         }
 
         /**
-         * <p>Current processing status of the job.</p>
          * <p>Current processing status of the job.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

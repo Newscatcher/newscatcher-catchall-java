@@ -15,6 +15,7 @@ import com.newscatcher.catchall.resources.webhooks.requests.ListWebhooksForResou
 import com.newscatcher.catchall.resources.webhooks.requests.ListWebhooksRequest;
 import com.newscatcher.catchall.resources.webhooks.requests.RemoveWebhookResourceRequest;
 import com.newscatcher.catchall.resources.webhooks.requests.TestWebhookRequestDto;
+import com.newscatcher.catchall.resources.webhooks.requests.TriggerWebhookRequest;
 import com.newscatcher.catchall.resources.webhooks.requests.UpdateWebhookRequestDto;
 import com.newscatcher.catchall.types.AssignWebhookResourceResponseDto;
 import com.newscatcher.catchall.types.CreateWebhookResponseDto;
@@ -350,6 +351,34 @@ public class WebhooksClient {
             RequestOptions requestOptions) {
         return this.rawClient
                 .listWebhooksForResource(resourceType, resourceId, request, requestOptions)
+                .body();
+    }
+
+    /**
+     * Manually dispatches a webhook delivery for a resource on demand, without
+     * waiting for the next job or monitor cycle.
+     * <p>Use this to re-deliver results after a failed delivery, replay a specific
+     * job's results, or validate a webhook against live data. The webhook must
+     * already be assigned to the resource.</p>
+     */
+    public void triggerWebhook(MappableResourceType resourceType, String resourceId, TriggerWebhookRequest request) {
+        this.rawClient.triggerWebhook(resourceType, resourceId, request).body();
+    }
+
+    /**
+     * Manually dispatches a webhook delivery for a resource on demand, without
+     * waiting for the next job or monitor cycle.
+     * <p>Use this to re-deliver results after a failed delivery, replay a specific
+     * job's results, or validate a webhook against live data. The webhook must
+     * already be assigned to the resource.</p>
+     */
+    public void triggerWebhook(
+            MappableResourceType resourceType,
+            String resourceId,
+            TriggerWebhookRequest request,
+            RequestOptions requestOptions) {
+        this.rawClient
+                .triggerWebhook(resourceType, resourceId, request, requestOptions)
                 .body();
     }
 

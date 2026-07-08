@@ -172,7 +172,6 @@ public final class TestWebhookResponseDto {
 
         /**
          * <p>True if the test delivery received a 2xx response; false otherwise.</p>
-         * <p>True if the test delivery received a 2xx response; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -183,7 +182,6 @@ public final class TestWebhookResponseDto {
         }
 
         /**
-         * <p>Human-readable result message.</p>
          * <p>Human-readable result message.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

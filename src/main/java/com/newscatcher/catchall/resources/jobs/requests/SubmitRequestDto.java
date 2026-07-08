@@ -117,7 +117,11 @@ public final class SubmitRequestDto {
 
     /**
      * @return Custom validators for filtering web page clusters.
-     * <p>If not provided, validators are generated automatically based on the query.</p>
+     * <p>If not provided, validators are generated automatically based on the query.
+     * The system may also inject validators during the <code>analyzing</code> stage — for
+     * example, converting a relative time qualifier into an explicit event-date
+     * gate. The returned <code>validators[]</code> in the job status shows the complete
+     * applied set, including any system-added ones.</p>
      */
     @JsonProperty("validators")
     public Optional<List<ValidatorSchema>> getValidators() {
@@ -286,7 +290,11 @@ public final class SubmitRequestDto {
 
         /**
          * <p>Custom validators for filtering web page clusters.</p>
-         * <p>If not provided, validators are generated automatically based on the query.</p>
+         * <p>If not provided, validators are generated automatically based on the query.
+         * The system may also inject validators during the <code>analyzing</code> stage — for
+         * example, converting a relative time qualifier into an explicit event-date
+         * gate. The returned <code>validators[]</code> in the job status shows the complete
+         * applied set, including any system-added ones.</p>
          */
         _FinalStage validators(Optional<List<ValidatorSchema>> validators);
 
@@ -605,7 +613,11 @@ public final class SubmitRequestDto {
 
         /**
          * <p>Custom validators for filtering web page clusters.</p>
-         * <p>If not provided, validators are generated automatically based on the query.</p>
+         * <p>If not provided, validators are generated automatically based on the query.
+         * The system may also inject validators during the <code>analyzing</code> stage — for
+         * example, converting a relative time qualifier into an explicit event-date
+         * gate. The returned <code>validators[]</code> in the job status shows the complete
+         * applied set, including any system-added ones.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -616,7 +628,11 @@ public final class SubmitRequestDto {
 
         /**
          * <p>Custom validators for filtering web page clusters.</p>
-         * <p>If not provided, validators are generated automatically based on the query.</p>
+         * <p>If not provided, validators are generated automatically based on the query.
+         * The system may also inject validators during the <code>analyzing</code> stage — for
+         * example, converting a relative time qualifier into an explicit event-date
+         * gate. The returned <code>validators[]</code> in the job status shows the complete
+         * applied set, including any system-added ones.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "validators", nulls = Nulls.SKIP)

@@ -82,7 +82,10 @@ public final class InitializeResponseDto {
     }
 
     /**
-     * @return Suggested validators for filtering relevant web pages.
+     * @return Suggested validators for filtering relevant web pages. When the job is
+     * submitted, the system may inject additional validators during the <code>analyzing</code>
+     * stage — check the returned <code>validators[]</code> in the job status to see the
+     * complete applied set.
      */
     @JsonProperty("validators")
     public List<ValidatorSchema> getValidators() {
@@ -190,7 +193,10 @@ public final class InitializeResponseDto {
         _FinalStage context(Nullable<String> context);
 
         /**
-         * <p>Suggested validators for filtering relevant web pages.</p>
+         * <p>Suggested validators for filtering relevant web pages. When the job is
+         * submitted, the system may inject additional validators during the <code>analyzing</code>
+         * stage — check the returned <code>validators[]</code> in the job status to see the
+         * complete applied set.</p>
          */
         _FinalStage validators(List<ValidatorSchema> validators);
 
@@ -258,7 +264,6 @@ public final class InitializeResponseDto {
         }
 
         /**
-         * <p>Echo of the query from the request.</p>
          * <p>Echo of the query from the request.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -353,7 +358,10 @@ public final class InitializeResponseDto {
         }
 
         /**
-         * <p>Suggested validators for filtering relevant web pages.</p>
+         * <p>Suggested validators for filtering relevant web pages. When the job is
+         * submitted, the system may inject additional validators during the <code>analyzing</code>
+         * stage — check the returned <code>validators[]</code> in the job status to see the
+         * complete applied set.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -365,7 +373,10 @@ public final class InitializeResponseDto {
         }
 
         /**
-         * <p>Suggested validators for filtering relevant web pages.</p>
+         * <p>Suggested validators for filtering relevant web pages. When the job is
+         * submitted, the system may inject additional validators during the <code>analyzing</code>
+         * stage — check the returned <code>validators[]</code> in the job status to see the
+         * complete applied set.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -375,7 +386,10 @@ public final class InitializeResponseDto {
         }
 
         /**
-         * <p>Suggested validators for filtering relevant web pages.</p>
+         * <p>Suggested validators for filtering relevant web pages. When the job is
+         * submitted, the system may inject additional validators during the <code>analyzing</code>
+         * stage — check the returned <code>validators[]</code> in the job status to see the
+         * complete applied set.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "validators", nulls = Nulls.SKIP)

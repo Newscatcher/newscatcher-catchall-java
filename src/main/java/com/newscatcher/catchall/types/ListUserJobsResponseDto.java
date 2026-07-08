@@ -197,7 +197,6 @@ public final class ListUserJobsResponseDto {
 
         /**
          * <p>Total number of jobs for this user.</p>
-         * <p>Total number of jobs for this user.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -208,7 +207,6 @@ public final class ListUserJobsResponseDto {
         }
 
         /**
-         * <p>Current page number.</p>
          * <p>Current page number.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -221,7 +219,6 @@ public final class ListUserJobsResponseDto {
 
         /**
          * <p>Number of jobs per page.</p>
-         * <p>Number of jobs per page.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -232,7 +229,6 @@ public final class ListUserJobsResponseDto {
         }
 
         /**
-         * <p>Total number of pages available.</p>
          * <p>Total number of pages available.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

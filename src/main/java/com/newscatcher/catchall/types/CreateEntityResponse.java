@@ -120,7 +120,6 @@ public final class CreateEntityResponse {
 
         /**
          * <p>Unique identifier of the created entity.</p>
-         * <p>Unique identifier of the created entity.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -131,7 +130,6 @@ public final class CreateEntityResponse {
         }
 
         /**
-         * <p>Initial status of the entity. Always <code>pending</code> immediately after creation — enrichment happens asynchronously.</p>
          * <p>Initial status of the entity. Always <code>pending</code> immediately after creation — enrichment happens asynchronously.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

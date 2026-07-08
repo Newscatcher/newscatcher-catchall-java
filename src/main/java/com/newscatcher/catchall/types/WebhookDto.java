@@ -196,7 +196,6 @@ public final class WebhookDto {
 
         /**
          * <p>Webhook endpoint URL.</p>
-         * <p>Webhook endpoint URL.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

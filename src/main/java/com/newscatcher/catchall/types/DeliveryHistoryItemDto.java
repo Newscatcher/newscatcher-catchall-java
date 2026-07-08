@@ -379,7 +379,6 @@ public final class DeliveryHistoryItemDto {
 
         /**
          * <p>Delivery record identifier.</p>
-         * <p>Delivery record identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -390,7 +389,6 @@ public final class DeliveryHistoryItemDto {
         }
 
         /**
-         * <p>Identifier of the webhook that was dispatched.</p>
          * <p>Identifier of the webhook that was dispatched.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -403,7 +401,6 @@ public final class DeliveryHistoryItemDto {
 
         /**
          * <p>Type of the resource that triggered the delivery.</p>
-         * <p>Type of the resource that triggered the delivery.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -414,7 +411,6 @@ public final class DeliveryHistoryItemDto {
         }
 
         /**
-         * <p>Identifier of the resource that triggered the delivery.</p>
          * <p>Identifier of the resource that triggered the delivery.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -427,7 +423,6 @@ public final class DeliveryHistoryItemDto {
 
         /**
          * <p>HTTP response code returned by the webhook endpoint.</p>
-         * <p>HTTP response code returned by the webhook endpoint.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -438,7 +433,6 @@ public final class DeliveryHistoryItemDto {
         }
 
         /**
-         * <p>Delivery attempt number. 1 indicates the first attempt.</p>
          * <p>Delivery attempt number. 1 indicates the first attempt.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -451,7 +445,6 @@ public final class DeliveryHistoryItemDto {
 
         /**
          * <p>Time of the delivery attempt in ISO 8601 format with UTC timezone.</p>
-         * <p>Time of the delivery attempt in ISO 8601 format with UTC timezone.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -462,7 +455,6 @@ public final class DeliveryHistoryItemDto {
         }
 
         /**
-         * <p>Outcome of this delivery attempt.</p>
          * <p>Outcome of this delivery attempt.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

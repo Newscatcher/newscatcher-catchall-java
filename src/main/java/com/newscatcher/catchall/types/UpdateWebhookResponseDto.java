@@ -147,7 +147,6 @@ public final class UpdateWebhookResponseDto {
 
         /**
          * <p>True if the webhook was updated; false otherwise.</p>
-         * <p>True if the webhook was updated; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -158,7 +157,6 @@ public final class UpdateWebhookResponseDto {
         }
 
         /**
-         * <p>Human-readable result message.</p>
          * <p>Human-readable result message.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

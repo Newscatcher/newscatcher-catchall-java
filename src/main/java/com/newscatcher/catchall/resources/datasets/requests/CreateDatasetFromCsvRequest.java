@@ -123,7 +123,6 @@ public final class CreateDatasetFromCsvRequest {
 
         /**
          * <p>Name for the new dataset.</p>
-         * <p>Name for the new dataset.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

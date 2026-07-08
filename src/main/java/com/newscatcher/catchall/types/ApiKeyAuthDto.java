@@ -120,7 +120,6 @@ public final class ApiKeyAuthDto {
 
         /**
          * <p>HTTP header name for the API key.</p>
-         * <p>HTTP header name for the API key.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -131,7 +130,6 @@ public final class ApiKeyAuthDto {
         }
 
         /**
-         * <p>API key value.</p>
          * <p>API key value.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

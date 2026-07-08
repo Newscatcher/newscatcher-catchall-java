@@ -144,7 +144,6 @@ public final class ValidatorSchema {
 
         /**
          * <p>Validator field name (snake_case recommended).</p>
-         * <p>Validator field name (snake_case recommended).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -155,7 +154,6 @@ public final class ValidatorSchema {
         }
 
         /**
-         * <p>What this validator checks for in the web page.</p>
          * <p>What this validator checks for in the web page.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

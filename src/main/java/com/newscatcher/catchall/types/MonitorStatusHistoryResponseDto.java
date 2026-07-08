@@ -242,7 +242,6 @@ public final class MonitorStatusHistoryResponseDto {
 
         /**
          * <p>True if the request succeeded; false otherwise.</p>
-         * <p>True if the request succeeded; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

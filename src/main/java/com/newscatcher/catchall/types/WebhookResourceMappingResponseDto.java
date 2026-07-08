@@ -197,7 +197,6 @@ public final class WebhookResourceMappingResponseDto {
 
         /**
          * <p>Mapping identifier.</p>
-         * <p>Mapping identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -208,7 +207,6 @@ public final class WebhookResourceMappingResponseDto {
         }
 
         /**
-         * <p>Webhook identifier.</p>
          * <p>Webhook identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -221,7 +219,6 @@ public final class WebhookResourceMappingResponseDto {
 
         /**
          * <p>Type of the assigned resource.</p>
-         * <p>Type of the assigned resource.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -232,7 +229,6 @@ public final class WebhookResourceMappingResponseDto {
         }
 
         /**
-         * <p>Identifier of the assigned resource.</p>
          * <p>Identifier of the assigned resource.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

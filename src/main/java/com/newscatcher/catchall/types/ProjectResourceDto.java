@@ -199,7 +199,6 @@ public final class ProjectResourceDto {
 
         /**
          * <p>Resource identifier.</p>
-         * <p>Resource identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

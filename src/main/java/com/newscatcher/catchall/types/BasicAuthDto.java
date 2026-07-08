@@ -120,7 +120,6 @@ public final class BasicAuthDto {
 
         /**
          * <p>Basic auth username.</p>
-         * <p>Basic auth username.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -131,7 +130,6 @@ public final class BasicAuthDto {
         }
 
         /**
-         * <p>Basic auth password.</p>
          * <p>Basic auth password.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

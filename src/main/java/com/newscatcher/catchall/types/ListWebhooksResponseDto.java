@@ -197,7 +197,6 @@ public final class ListWebhooksResponseDto {
 
         /**
          * <p>Total number of webhooks in the organization.</p>
-         * <p>Total number of webhooks in the organization.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -208,7 +207,6 @@ public final class ListWebhooksResponseDto {
         }
 
         /**
-         * <p>Current page number.</p>
          * <p>Current page number.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -221,7 +219,6 @@ public final class ListWebhooksResponseDto {
 
         /**
          * <p>Number of webhooks per page.</p>
-         * <p>Number of webhooks per page.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -232,7 +229,6 @@ public final class ListWebhooksResponseDto {
         }
 
         /**
-         * <p>Total number of pages available.</p>
          * <p>Total number of pages available.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

@@ -62,7 +62,7 @@ public final class CreateEntityRequest {
     }
 
     /**
-     * @return Free-text description of the entity used for disambiguation when similar names exist.
+     * @return Free-text description of the entity used for disambiguation when similar names exist. See <a href="https://www.newscatcherapi.com/docs/web-search-api/concepts/company-search#writing-effective-descriptions">Writing effective descriptions</a> for guidance on improving matching quality.
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
@@ -137,7 +137,7 @@ public final class CreateEntityRequest {
         _FinalStage entityType(EntityType entityType);
 
         /**
-         * <p>Free-text description of the entity used for disambiguation when similar names exist.</p>
+         * <p>Free-text description of the entity used for disambiguation when similar names exist. See <a href="https://www.newscatcherapi.com/docs/web-search-api/concepts/company-search#writing-effective-descriptions">Writing effective descriptions</a> for guidance on improving matching quality.</p>
          */
         _FinalStage description(Optional<String> description);
 
@@ -184,7 +184,6 @@ public final class CreateEntityRequest {
 
         /**
          * <p>The company or person name. Required and must be non-empty.</p>
-         * <p>The company or person name. Required and must be non-empty.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -228,7 +227,7 @@ public final class CreateEntityRequest {
         }
 
         /**
-         * <p>Free-text description of the entity used for disambiguation when similar names exist.</p>
+         * <p>Free-text description of the entity used for disambiguation when similar names exist. See <a href="https://www.newscatcherapi.com/docs/web-search-api/concepts/company-search#writing-effective-descriptions">Writing effective descriptions</a> for guidance on improving matching quality.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -238,7 +237,7 @@ public final class CreateEntityRequest {
         }
 
         /**
-         * <p>Free-text description of the entity used for disambiguation when similar names exist.</p>
+         * <p>Free-text description of the entity used for disambiguation when similar names exist. See <a href="https://www.newscatcherapi.com/docs/web-search-api/concepts/company-search#writing-effective-descriptions">Writing effective descriptions</a> for guidance on improving matching quality.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "description", nulls = Nulls.SKIP)

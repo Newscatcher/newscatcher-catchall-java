@@ -120,7 +120,6 @@ public final class ManageEntitiesResponse {
 
         /**
          * <p>ID of the dataset that was modified.</p>
-         * <p>ID of the dataset that was modified.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -131,7 +130,6 @@ public final class ManageEntitiesResponse {
         }
 
         /**
-         * <p>Number of entities that were added or removed.</p>
          * <p>Number of entities that were added or removed.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

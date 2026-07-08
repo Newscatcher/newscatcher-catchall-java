@@ -150,7 +150,6 @@ public final class SharingInfo {
 
         /**
          * <p>When the resource was shared.</p>
-         * <p>When the resource was shared.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -162,7 +161,6 @@ public final class SharingInfo {
 
         /**
          * <p>Permission level granted to the recipient.</p>
-         * <p>Permission level granted to the recipient.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -173,8 +171,6 @@ public final class SharingInfo {
         }
 
         /**
-         * <p>Display name of the user who shared the resource (first + last
-         * name). Falls back to email address, then user ID.</p>
          * <p>Display name of the user who shared the resource (first + last
          * name). Falls back to email address, then user ID.</p>
          * @return Reference to {@code this} so that method calls can be chained together.

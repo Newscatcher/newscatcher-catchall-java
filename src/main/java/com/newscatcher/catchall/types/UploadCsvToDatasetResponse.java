@@ -142,7 +142,6 @@ public final class UploadCsvToDatasetResponse {
 
         /**
          * <p>ID of the dataset that was updated.</p>
-         * <p>ID of the dataset that was updated.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -153,7 +152,6 @@ public final class UploadCsvToDatasetResponse {
         }
 
         /**
-         * <p>Number of new entities created from the CSV.</p>
          * <p>Number of new entities created from the CSV.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

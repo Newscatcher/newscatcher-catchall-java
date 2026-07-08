@@ -12,6 +12,7 @@ import com.newscatcher.catchall.core.MediaTypes;
 import com.newscatcher.catchall.core.ObjectMappers;
 import com.newscatcher.catchall.core.QueryStringMapper;
 import com.newscatcher.catchall.core.RequestOptions;
+import com.newscatcher.catchall.core.RetryInterceptor;
 import com.newscatcher.catchall.errors.BadRequestError;
 import com.newscatcher.catchall.errors.ForbiddenError;
 import com.newscatcher.catchall.errors.NotFoundError;
@@ -26,6 +27,7 @@ import com.newscatcher.catchall.resources.webhooks.requests.ListWebhooksForResou
 import com.newscatcher.catchall.resources.webhooks.requests.ListWebhooksRequest;
 import com.newscatcher.catchall.resources.webhooks.requests.RemoveWebhookResourceRequest;
 import com.newscatcher.catchall.resources.webhooks.requests.TestWebhookRequestDto;
+import com.newscatcher.catchall.resources.webhooks.requests.TriggerWebhookRequest;
 import com.newscatcher.catchall.resources.webhooks.requests.UpdateWebhookRequestDto;
 import com.newscatcher.catchall.types.AssignWebhookResourceResponseDto;
 import com.newscatcher.catchall.types.CreateWebhookResponseDto;
@@ -110,6 +112,15 @@ public class RawWebhooksClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -134,6 +145,8 @@ public class RawWebhooksClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -177,6 +190,15 @@ public class RawWebhooksClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -201,6 +223,8 @@ public class RawWebhooksClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -251,6 +275,15 @@ public class RawWebhooksClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -277,6 +310,8 @@ public class RawWebhooksClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -331,6 +366,15 @@ public class RawWebhooksClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
@@ -352,6 +396,8 @@ public class RawWebhooksClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -412,6 +458,15 @@ public class RawWebhooksClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -439,6 +494,8 @@ public class RawWebhooksClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -504,6 +561,15 @@ public class RawWebhooksClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -531,6 +597,8 @@ public class RawWebhooksClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -598,6 +666,15 @@ public class RawWebhooksClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -625,6 +702,8 @@ public class RawWebhooksClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -677,6 +756,15 @@ public class RawWebhooksClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -707,6 +795,8 @@ public class RawWebhooksClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -783,6 +873,15 @@ public class RawWebhooksClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
@@ -804,6 +903,8 @@ public class RawWebhooksClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -881,6 +982,15 @@ public class RawWebhooksClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -908,6 +1018,98 @@ public class RawWebhooksClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new CatchAllApiException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Manually dispatches a webhook delivery for a resource on demand, without
+     * waiting for the next job or monitor cycle.
+     * <p>Use this to re-deliver results after a failed delivery, replay a specific
+     * job's results, or validate a webhook against live data. The webhook must
+     * already be assigned to the resource.</p>
+     */
+    public CatchAllApiHttpResponse<Void> triggerWebhook(
+            MappableResourceType resourceType, String resourceId, TriggerWebhookRequest request) {
+        return triggerWebhook(resourceType, resourceId, request, null);
+    }
+
+    /**
+     * Manually dispatches a webhook delivery for a resource on demand, without
+     * waiting for the next job or monitor cycle.
+     * <p>Use this to re-deliver results after a failed delivery, replay a specific
+     * job's results, or validate a webhook against live data. The webhook must
+     * already be assigned to the resource.</p>
+     */
+    public CatchAllApiHttpResponse<Void> triggerWebhook(
+            MappableResourceType resourceType,
+            String resourceId,
+            TriggerWebhookRequest request,
+            RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/webhook/trigger")
+                .addPathSegment(resourceType.toString())
+                .addPathSegment(resourceId);
+        QueryStringMapper.addQueryParameter(httpUrl, "webhook_id", request.getWebhookId(), false);
+        if (request.getJobId().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "job_id", request.getJobId().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", RequestBody.create("", null))
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return new CatchAllApiHttpResponse<>(null, response);
+            }
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                switch (response.code()) {
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidationErrorResponse.class),
+                                response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new CatchAllApiApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }
@@ -956,6 +1158,15 @@ public class RawWebhooksClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -983,6 +1194,8 @@ public class RawWebhooksClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new CatchAllApiApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new CatchAllApiException("Network error executing HTTP request", e);
         }

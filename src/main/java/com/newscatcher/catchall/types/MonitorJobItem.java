@@ -143,7 +143,6 @@ public final class MonitorJobItem {
 
         /**
          * <p>Unique identifier for this job execution.</p>
-         * <p>Unique identifier for this job execution.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -155,7 +154,6 @@ public final class MonitorJobItem {
 
         /**
          * <p>Start of the data collection time window for this job execution (based on monitor schedule) in ISO 8601 format with UTC timezone.</p>
-         * <p>Start of the data collection time window for this job execution (based on monitor schedule) in ISO 8601 format with UTC timezone.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -166,7 +164,6 @@ public final class MonitorJobItem {
         }
 
         /**
-         * <p>End of the data collection time window for this job execution (based on monitor schedule) in ISO 8601 format with UTC timezone.</p>
          * <p>End of the data collection time window for this job execution (based on monitor schedule) in ISO 8601 format with UTC timezone.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

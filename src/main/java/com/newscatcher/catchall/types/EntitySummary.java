@@ -255,7 +255,6 @@ public final class EntitySummary {
 
         /**
          * <p>Unique identifier of the entity.</p>
-         * <p>Unique identifier of the entity.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -266,7 +265,6 @@ public final class EntitySummary {
         }
 
         /**
-         * <p>Entity name.</p>
          * <p>Entity name.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

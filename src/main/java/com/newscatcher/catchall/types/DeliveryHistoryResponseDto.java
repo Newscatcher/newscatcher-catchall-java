@@ -252,7 +252,6 @@ public final class DeliveryHistoryResponseDto {
 
         /**
          * <p>Type of the queried resource.</p>
-         * <p>Type of the queried resource.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -263,7 +262,6 @@ public final class DeliveryHistoryResponseDto {
         }
 
         /**
-         * <p>Identifier of the queried resource.</p>
          * <p>Identifier of the queried resource.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -276,7 +274,6 @@ public final class DeliveryHistoryResponseDto {
 
         /**
          * <p>Total number of delivery records for this resource.</p>
-         * <p>Total number of delivery records for this resource.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -287,7 +284,6 @@ public final class DeliveryHistoryResponseDto {
         }
 
         /**
-         * <p>Current page number.</p>
          * <p>Current page number.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -300,7 +296,6 @@ public final class DeliveryHistoryResponseDto {
 
         /**
          * <p>Number of records per page.</p>
-         * <p>Number of records per page.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -311,7 +306,6 @@ public final class DeliveryHistoryResponseDto {
         }
 
         /**
-         * <p>Total number of pages available.</p>
          * <p>Total number of pages available.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

@@ -144,7 +144,6 @@ public final class Suggestion {
 
         /**
          * <p>The issue this suggestion addresses.</p>
-         * <p>The issue this suggestion addresses.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -155,7 +154,6 @@ public final class Suggestion {
         }
 
         /**
-         * <p>Specific guidance for improving the query.</p>
          * <p>Specific guidance for improving the query.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

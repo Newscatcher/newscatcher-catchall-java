@@ -360,7 +360,6 @@ public final class MonitorListItemDto {
 
         /**
          * <p>Monitor identifier.</p>
-         * <p>Monitor identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -371,7 +370,6 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Job identifier used as a reference for this monitor.</p>
          * <p>Job identifier used as a reference for this monitor.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -384,7 +382,6 @@ public final class MonitorListItemDto {
 
         /**
          * <p>Plain text query from the reference job.</p>
-         * <p>Plain text query from the reference job.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -395,7 +392,6 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>True if the monitor is currently active; false otherwise.</p>
          * <p>True if the monitor is currently active; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

@@ -136,7 +136,6 @@ public final class EnrichmentSchema {
 
         /**
          * <p>Enrichment field name (snake_case recommended).</p>
-         * <p>Enrichment field name (snake_case recommended).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -147,7 +146,6 @@ public final class EnrichmentSchema {
         }
 
         /**
-         * <p>What information this field extracts.</p>
          * <p>What information this field extracts.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

@@ -171,7 +171,6 @@ public final class DeleteJobResponseDto {
 
         /**
          * <p>True if the delete operation succeeded; false otherwise.</p>
-         * <p>True if the delete operation succeeded; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

@@ -176,7 +176,6 @@ public final class ListMonitorJobsResponse {
 
         /**
          * <p>Monitor identifier.</p>
-         * <p>Monitor identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -188,7 +187,6 @@ public final class ListMonitorJobsResponse {
 
         /**
          * <p>Sort order applied to results.</p>
-         * <p>Sort order applied to results.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -199,7 +197,6 @@ public final class ListMonitorJobsResponse {
         }
 
         /**
-         * <p>Total number of jobs for this monitor.</p>
          * <p>Total number of jobs for this monitor.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

@@ -121,7 +121,6 @@ public final class ProjectOverviewResponseDto {
 
         /**
          * <p>Project identifier.</p>
-         * <p>Project identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -132,7 +131,6 @@ public final class ProjectOverviewResponseDto {
         }
 
         /**
-         * <p>Resource counts grouped by type.</p>
          * <p>Resource counts grouped by type.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
