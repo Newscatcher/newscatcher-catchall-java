@@ -64,7 +64,7 @@ public final class ProjectResourceDto {
 
     /**
      * @return Resource display name. For jobs, this is the original query
-     * string. For monitors and datasets, this is the resource name.
+     * string. For monitors, datasets, and webhooks, this is the resource name.
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -142,7 +142,7 @@ public final class ProjectResourceDto {
 
         /**
          * <p>Resource display name. For jobs, this is the original query
-         * string. For monitors and datasets, this is the resource name.</p>
+         * string. For monitors, datasets, and webhooks, this is the resource name.</p>
          */
         _FinalStage name(Optional<String> name);
 
@@ -250,7 +250,7 @@ public final class ProjectResourceDto {
 
         /**
          * <p>Resource display name. For jobs, this is the original query
-         * string. For monitors and datasets, this is the resource name.</p>
+         * string. For monitors, datasets, and webhooks, this is the resource name.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -261,7 +261,7 @@ public final class ProjectResourceDto {
 
         /**
          * <p>Resource display name. For jobs, this is the original query
-         * string. For monitors and datasets, this is the resource name.</p>
+         * string. For monitors, datasets, and webhooks, this is the resource name.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "name", nulls = Nulls.SKIP)

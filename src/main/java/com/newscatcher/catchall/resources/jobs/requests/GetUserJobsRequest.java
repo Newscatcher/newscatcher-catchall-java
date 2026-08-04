@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.newscatcher.catchall.core.ObjectMappers;
+import com.newscatcher.catchall.resources.jobs.types.GetUserJobsRequestMode;
 import com.newscatcher.catchall.types.OwnershipFilter;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,8 @@ public final class GetUserJobsRequest {
 
     private final Optional<String> projectId;
 
+    private final Optional<GetUserJobsRequestMode> mode;
+
     private final Map<String, Object> additionalProperties;
 
     private GetUserJobsRequest(
@@ -39,12 +42,14 @@ public final class GetUserJobsRequest {
             Optional<String> search,
             Optional<OwnershipFilter> ownership,
             Optional<String> projectId,
+            Optional<GetUserJobsRequestMode> mode,
             Map<String, Object> additionalProperties) {
         this.page = page;
         this.pageSize = pageSize;
         this.search = search;
         this.ownership = ownership;
         this.projectId = projectId;
+        this.mode = mode;
         this.additionalProperties = additionalProperties;
     }
 
@@ -85,6 +90,14 @@ public final class GetUserJobsRequest {
         return projectId;
     }
 
+    /**
+     * @return Filter results by processing mode. Returns only jobs that ran in the specified mode.
+     */
+    @JsonProperty("mode")
+    public Optional<GetUserJobsRequestMode> getMode() {
+        return mode;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -101,12 +114,13 @@ public final class GetUserJobsRequest {
                 && pageSize.equals(other.pageSize)
                 && search.equals(other.search)
                 && ownership.equals(other.ownership)
-                && projectId.equals(other.projectId);
+                && projectId.equals(other.projectId)
+                && mode.equals(other.mode);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.page, this.pageSize, this.search, this.ownership, this.projectId);
+        return Objects.hash(this.page, this.pageSize, this.search, this.ownership, this.projectId, this.mode);
     }
 
     @java.lang.Override
@@ -130,6 +144,8 @@ public final class GetUserJobsRequest {
 
         private Optional<String> projectId = Optional.empty();
 
+        private Optional<GetUserJobsRequestMode> mode = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -141,6 +157,7 @@ public final class GetUserJobsRequest {
             search(other.getSearch());
             ownership(other.getOwnership());
             projectId(other.getProjectId());
+            mode(other.getMode());
             return this;
         }
 
@@ -211,8 +228,22 @@ public final class GetUserJobsRequest {
             return this;
         }
 
+        /**
+         * <p>Filter results by processing mode. Returns only jobs that ran in the specified mode.</p>
+         */
+        @JsonSetter(value = "mode", nulls = Nulls.SKIP)
+        public Builder mode(Optional<GetUserJobsRequestMode> mode) {
+            this.mode = mode;
+            return this;
+        }
+
+        public Builder mode(GetUserJobsRequestMode mode) {
+            this.mode = Optional.ofNullable(mode);
+            return this;
+        }
+
         public GetUserJobsRequest build() {
-            return new GetUserJobsRequest(page, pageSize, search, ownership, projectId, additionalProperties);
+            return new GetUserJobsRequest(page, pageSize, search, ownership, projectId, mode, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

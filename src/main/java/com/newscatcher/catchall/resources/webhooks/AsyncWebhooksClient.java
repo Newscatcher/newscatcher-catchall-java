@@ -76,6 +76,7 @@ public class AsyncWebhooksClient {
 
     /**
      * Creates a new webhook endpoint for the organization.
+     * <p>Optionally pass <code>project_id</code> to attach the webhook to a project in the same request.</p>
      */
     public CompletableFuture<CreateWebhookResponseDto> createWebhook(CreateWebhookRequestDto request) {
         return this.rawClient.createWebhook(request).thenApply(response -> response.body());
@@ -83,6 +84,7 @@ public class AsyncWebhooksClient {
 
     /**
      * Creates a new webhook endpoint for the organization.
+     * <p>Optionally pass <code>project_id</code> to attach the webhook to a project in the same request.</p>
      */
     public CompletableFuture<CreateWebhookResponseDto> createWebhook(
             CreateWebhookRequestDto request, RequestOptions requestOptions) {

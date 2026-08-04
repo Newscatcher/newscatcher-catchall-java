@@ -320,7 +320,8 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns and citations as a JSON column.
+     * <p>If the monitor's reference job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CatchAllApiHttpResponse<String> pullMonitorResultsCsv(String monitorId) {
         return pullMonitorResultsCsv(
@@ -328,7 +329,8 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns and citations as a JSON column.
+     * <p>If the monitor's reference job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CatchAllApiHttpResponse<String> pullMonitorResultsCsv(String monitorId, RequestOptions requestOptions) {
         return pullMonitorResultsCsv(
@@ -336,7 +338,8 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns and citations as a JSON column.
+     * <p>If the monitor's reference job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CatchAllApiHttpResponse<String> pullMonitorResultsCsv(
             String monitorId, PullMonitorResultsCsvRequest request) {
@@ -344,7 +347,8 @@ public class RawMonitorsClient {
     }
 
     /**
-     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     * Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns and citations as a JSON column.
+     * <p>If the monitor's reference job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CatchAllApiHttpResponse<String> pullMonitorResultsCsv(
             String monitorId, PullMonitorResultsCsvRequest request, RequestOptions requestOptions) {

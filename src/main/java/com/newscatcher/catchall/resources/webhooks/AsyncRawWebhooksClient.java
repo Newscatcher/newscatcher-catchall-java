@@ -178,6 +178,7 @@ public class AsyncRawWebhooksClient {
 
     /**
      * Creates a new webhook endpoint for the organization.
+     * <p>Optionally pass <code>project_id</code> to attach the webhook to a project in the same request.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<CreateWebhookResponseDto>> createWebhook(
             CreateWebhookRequestDto request) {
@@ -186,6 +187,7 @@ public class AsyncRawWebhooksClient {
 
     /**
      * Creates a new webhook endpoint for the organization.
+     * <p>Optionally pass <code>project_id</code> to attach the webhook to a project in the same request.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<CreateWebhookResponseDto>> createWebhook(
             CreateWebhookRequestDto request, RequestOptions requestOptions) {
@@ -240,6 +242,11 @@ public class AsyncRawWebhooksClient {
                         switch (response.code()) {
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
                                         response));
                                 return;

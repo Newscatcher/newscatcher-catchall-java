@@ -6,23 +6,21 @@ package com.newscatcher.catchall.types;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public final class ProjectResourceType {
-    public static final ProjectResourceType WEBHOOK = new ProjectResourceType(Value.WEBHOOK, "webhook");
+public final class WebhookHistoryResourceType {
+    public static final WebhookHistoryResourceType MONITOR = new WebhookHistoryResourceType(Value.MONITOR, "monitor");
 
-    public static final ProjectResourceType MONITOR = new ProjectResourceType(Value.MONITOR, "monitor");
+    public static final WebhookHistoryResourceType TEST = new WebhookHistoryResourceType(Value.TEST, "test");
 
-    public static final ProjectResourceType JOB = new ProjectResourceType(Value.JOB, "job");
+    public static final WebhookHistoryResourceType JOB = new WebhookHistoryResourceType(Value.JOB, "job");
 
-    public static final ProjectResourceType DATASET = new ProjectResourceType(Value.DATASET, "dataset");
-
-    public static final ProjectResourceType MONITOR_GROUP =
-            new ProjectResourceType(Value.MONITOR_GROUP, "monitor_group");
+    public static final WebhookHistoryResourceType MONITOR_GROUP =
+            new WebhookHistoryResourceType(Value.MONITOR_GROUP, "monitor_group");
 
     private final Value value;
 
     private final String string;
 
-    ProjectResourceType(Value value, String string) {
+    WebhookHistoryResourceType(Value value, String string) {
         this.value = value;
         this.string = string;
     }
@@ -40,7 +38,8 @@ public final class ProjectResourceType {
     @java.lang.Override
     public boolean equals(Object other) {
         return (this == other)
-                || (other instanceof ProjectResourceType && this.string.equals(((ProjectResourceType) other).string));
+                || (other instanceof WebhookHistoryResourceType
+                        && this.string.equals(((WebhookHistoryResourceType) other).string));
     }
 
     @java.lang.Override
@@ -50,14 +49,12 @@ public final class ProjectResourceType {
 
     public <T> T visit(Visitor<T> visitor) {
         switch (value) {
-            case WEBHOOK:
-                return visitor.visitWebhook();
             case MONITOR:
                 return visitor.visitMonitor();
+            case TEST:
+                return visitor.visitTest();
             case JOB:
                 return visitor.visitJob();
-            case DATASET:
-                return visitor.visitDataset();
             case MONITOR_GROUP:
                 return visitor.visitMonitorGroup();
             case UNKNOWN:
@@ -67,20 +64,18 @@ public final class ProjectResourceType {
     }
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static ProjectResourceType valueOf(String value) {
+    public static WebhookHistoryResourceType valueOf(String value) {
         switch (value) {
-            case "webhook":
-                return WEBHOOK;
             case "monitor":
                 return MONITOR;
+            case "test":
+                return TEST;
             case "job":
                 return JOB;
-            case "dataset":
-                return DATASET;
             case "monitor_group":
                 return MONITOR_GROUP;
             default:
-                return new ProjectResourceType(Value.UNKNOWN, value);
+                return new WebhookHistoryResourceType(Value.UNKNOWN, value);
         }
     }
 
@@ -89,11 +84,9 @@ public final class ProjectResourceType {
 
         MONITOR,
 
-        DATASET,
-
         MONITOR_GROUP,
 
-        WEBHOOK,
+        TEST,
 
         UNKNOWN
     }
@@ -103,11 +96,9 @@ public final class ProjectResourceType {
 
         T visitMonitor();
 
-        T visitDataset();
-
         T visitMonitorGroup();
 
-        T visitWebhook();
+        T visitTest();
 
         T visitUnknown(String unknownType);
     }

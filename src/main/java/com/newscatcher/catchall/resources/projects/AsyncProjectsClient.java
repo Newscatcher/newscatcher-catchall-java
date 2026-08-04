@@ -117,6 +117,7 @@ public class AsyncProjectsClient {
 
     /**
      * Deletes a project. By default, assigned resources are unassigned but not deleted.
+     * <p>Webhooks are an exception: they are never deleted by this operation, even when <code>delete_resources</code> is <code>true</code>. Any attached webhook is detached from the project and continues to exist and deliver, because the same webhook may be attached to other projects.</p>
      */
     public CompletableFuture<Void> deleteProject(String projectId) {
         return this.rawClient.deleteProject(projectId).thenApply(response -> response.body());
@@ -124,6 +125,7 @@ public class AsyncProjectsClient {
 
     /**
      * Deletes a project. By default, assigned resources are unassigned but not deleted.
+     * <p>Webhooks are an exception: they are never deleted by this operation, even when <code>delete_resources</code> is <code>true</code>. Any attached webhook is detached from the project and continues to exist and deliver, because the same webhook may be attached to other projects.</p>
      */
     public CompletableFuture<Void> deleteProject(String projectId, RequestOptions requestOptions) {
         return this.rawClient.deleteProject(projectId, requestOptions).thenApply(response -> response.body());
@@ -131,6 +133,7 @@ public class AsyncProjectsClient {
 
     /**
      * Deletes a project. By default, assigned resources are unassigned but not deleted.
+     * <p>Webhooks are an exception: they are never deleted by this operation, even when <code>delete_resources</code> is <code>true</code>. Any attached webhook is detached from the project and continues to exist and deliver, because the same webhook may be attached to other projects.</p>
      */
     public CompletableFuture<Void> deleteProject(String projectId, DeleteProjectRequest request) {
         return this.rawClient.deleteProject(projectId, request).thenApply(response -> response.body());
@@ -138,6 +141,7 @@ public class AsyncProjectsClient {
 
     /**
      * Deletes a project. By default, assigned resources are unassigned but not deleted.
+     * <p>Webhooks are an exception: they are never deleted by this operation, even when <code>delete_resources</code> is <code>true</code>. Any attached webhook is detached from the project and continues to exist and deliver, because the same webhook may be attached to other projects.</p>
      */
     public CompletableFuture<Void> deleteProject(
             String projectId, DeleteProjectRequest request, RequestOptions requestOptions) {
@@ -176,7 +180,7 @@ public class AsyncProjectsClient {
 
     /**
      * Returns resource counts for a project, grouped by type and status.
-     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code> and <code>monitor_groups</code>, only a <code>total</code> count is returned.</p>
+     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code>, <code>monitor_groups</code>, and <code>webhooks</code>, only a <code>total</code> count is returned.</p>
      */
     public CompletableFuture<ProjectOverviewResponseDto> getProjectOverview(String projectId) {
         return this.rawClient.getProjectOverview(projectId).thenApply(response -> response.body());
@@ -184,7 +188,7 @@ public class AsyncProjectsClient {
 
     /**
      * Returns resource counts for a project, grouped by type and status.
-     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code> and <code>monitor_groups</code>, only a <code>total</code> count is returned.</p>
+     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code>, <code>monitor_groups</code>, and <code>webhooks</code>, only a <code>total</code> count is returned.</p>
      */
     public CompletableFuture<ProjectOverviewResponseDto> getProjectOverview(
             String projectId, RequestOptions requestOptions) {
@@ -193,7 +197,7 @@ public class AsyncProjectsClient {
 
     /**
      * Returns resource counts for a project, grouped by type and status.
-     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code> and <code>monitor_groups</code>, only a <code>total</code> count is returned.</p>
+     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code>, <code>monitor_groups</code>, and <code>webhooks</code>, only a <code>total</code> count is returned.</p>
      */
     public CompletableFuture<ProjectOverviewResponseDto> getProjectOverview(
             String projectId, GetProjectOverviewRequest request) {
@@ -202,7 +206,7 @@ public class AsyncProjectsClient {
 
     /**
      * Returns resource counts for a project, grouped by type and status.
-     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code> and <code>monitor_groups</code>, only a <code>total</code> count is returned.</p>
+     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code>, <code>monitor_groups</code>, and <code>webhooks</code>, only a <code>total</code> count is returned.</p>
      */
     public CompletableFuture<ProjectOverviewResponseDto> getProjectOverview(
             String projectId, GetProjectOverviewRequest request, RequestOptions requestOptions) {

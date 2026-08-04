@@ -41,6 +41,8 @@ public final class WebhookResponseDto {
 
     private final Optional<Map<String, String>> params;
 
+    private final Optional<WebhookResponseDtoAuth> auth;
+
     private final Optional<FormatterConfigDto> formatterConfig;
 
     private final boolean isActive;
@@ -64,6 +66,7 @@ public final class WebhookResponseDto {
             HttpMethod method,
             Optional<Map<String, String>> headers,
             Optional<Map<String, String>> params,
+            Optional<WebhookResponseDtoAuth> auth,
             Optional<FormatterConfigDto> formatterConfig,
             boolean isActive,
             Optional<String> organizationId,
@@ -79,6 +82,7 @@ public final class WebhookResponseDto {
         this.method = method;
         this.headers = headers;
         this.params = params;
+        this.auth = auth;
         this.formatterConfig = formatterConfig;
         this.isActive = isActive;
         this.organizationId = organizationId;
@@ -144,6 +148,19 @@ public final class WebhookResponseDto {
     }
 
     /**
+     * @return Authentication configured for this webhook, discriminated by <code>type</code>.
+     * Secret values (<code>token</code>, <code>value</code>, <code>password</code>) are masked — the full
+     * credentials are never returned. Null when no authentication is set.
+     */
+    @JsonIgnore
+    public Optional<WebhookResponseDtoAuth> getAuth() {
+        if (auth == null) {
+            return Optional.empty();
+        }
+        return auth;
+    }
+
+    /**
      * @return Custom payload formatter. Set only when <code>type</code> is <code>custom</code>.
      */
     @JsonIgnore
@@ -195,6 +212,12 @@ public final class WebhookResponseDto {
     }
 
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("auth")
+    private Optional<WebhookResponseDtoAuth> _getAuth() {
+        return auth;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("formatter_config")
     private Optional<FormatterConfigDto> _getFormatterConfig() {
         return formatterConfig;
@@ -220,6 +243,7 @@ public final class WebhookResponseDto {
                 && method.equals(other.method)
                 && headers.equals(other.headers)
                 && params.equals(other.params)
+                && auth.equals(other.auth)
                 && formatterConfig.equals(other.formatterConfig)
                 && isActive == other.isActive
                 && organizationId.equals(other.organizationId)
@@ -239,6 +263,7 @@ public final class WebhookResponseDto {
                 this.method,
                 this.headers,
                 this.params,
+                this.auth,
                 this.formatterConfig,
                 this.isActive,
                 this.organizationId,
@@ -320,6 +345,17 @@ public final class WebhookResponseDto {
         _FinalStage params(Map<String, String> params);
 
         /**
+         * <p>Authentication configured for this webhook, discriminated by <code>type</code>.
+         * Secret values (<code>token</code>, <code>value</code>, <code>password</code>) are masked — the full
+         * credentials are never returned. Null when no authentication is set.</p>
+         */
+        _FinalStage auth(Optional<WebhookResponseDtoAuth> auth);
+
+        _FinalStage auth(WebhookResponseDtoAuth auth);
+
+        _FinalStage auth(Nullable<WebhookResponseDtoAuth> auth);
+
+        /**
          * <p>Custom payload formatter. Set only when <code>type</code> is <code>custom</code>.</p>
          */
         _FinalStage formatterConfig(Optional<FormatterConfigDto> formatterConfig);
@@ -391,6 +427,8 @@ public final class WebhookResponseDto {
 
         private Optional<FormatterConfigDto> formatterConfig = Optional.empty();
 
+        private Optional<WebhookResponseDtoAuth> auth = Optional.empty();
+
         private Optional<Map<String, String>> params = Optional.empty();
 
         private Optional<Map<String, String>> headers = Optional.empty();
@@ -410,6 +448,7 @@ public final class WebhookResponseDto {
             method(other.getMethod());
             headers(other.getHeaders());
             params(other.getParams());
+            auth(other.getAuth());
             formatterConfig(other.getFormatterConfig());
             isActive(other.getIsActive());
             organizationId(other.getOrganizationId());
@@ -601,6 +640,48 @@ public final class WebhookResponseDto {
         }
 
         /**
+         * <p>Authentication configured for this webhook, discriminated by <code>type</code>.
+         * Secret values (<code>token</code>, <code>value</code>, <code>password</code>) are masked — the full
+         * credentials are never returned. Null when no authentication is set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage auth(Nullable<WebhookResponseDtoAuth> auth) {
+            if (auth.isNull()) {
+                this.auth = null;
+            } else if (auth.isEmpty()) {
+                this.auth = Optional.empty();
+            } else {
+                this.auth = Optional.of(auth.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Authentication configured for this webhook, discriminated by <code>type</code>.
+         * Secret values (<code>token</code>, <code>value</code>, <code>password</code>) are masked — the full
+         * credentials are never returned. Null when no authentication is set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage auth(WebhookResponseDtoAuth auth) {
+            this.auth = Optional.ofNullable(auth);
+            return this;
+        }
+
+        /**
+         * <p>Authentication configured for this webhook, discriminated by <code>type</code>.
+         * Secret values (<code>token</code>, <code>value</code>, <code>password</code>) are masked — the full
+         * credentials are never returned. Null when no authentication is set.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "auth", nulls = Nulls.SKIP)
+        public _FinalStage auth(Optional<WebhookResponseDtoAuth> auth) {
+            this.auth = auth;
+            return this;
+        }
+
+        /**
          * <p>Query parameters appended to the webhook URL.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -651,6 +732,7 @@ public final class WebhookResponseDto {
                     method,
                     headers,
                     params,
+                    auth,
                     formatterConfig,
                     isActive,
                     organizationId,
