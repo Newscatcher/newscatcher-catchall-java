@@ -29,7 +29,7 @@ public final class DeliveryHistoryItemDto {
 
     private final String webhookId;
 
-    private final MappableResourceType resourceType;
+    private final WebhookHistoryResourceType resourceType;
 
     private final String resourceId;
 
@@ -52,7 +52,7 @@ public final class DeliveryHistoryItemDto {
     private DeliveryHistoryItemDto(
             int id,
             String webhookId,
-            MappableResourceType resourceType,
+            WebhookHistoryResourceType resourceType,
             String resourceId,
             Optional<Map<String, Object>> additionalInfo,
             int statusCode,
@@ -93,10 +93,10 @@ public final class DeliveryHistoryItemDto {
     }
 
     /**
-     * @return Type of the resource that triggered the delivery.
+     * @return Type of the resource that triggered the delivery. <code>test</code> indicates a manual test delivery not tied to a real resource.
      */
     @JsonProperty("resource_type")
-    public MappableResourceType getResourceType() {
+    public WebhookHistoryResourceType getResourceType() {
         return resourceType;
     }
 
@@ -250,9 +250,9 @@ public final class DeliveryHistoryItemDto {
 
     public interface ResourceTypeStage {
         /**
-         * <p>Type of the resource that triggered the delivery.</p>
+         * <p>Type of the resource that triggered the delivery. <code>test</code> indicates a manual test delivery not tied to a real resource.</p>
          */
-        ResourceIdStage resourceType(@NotNull MappableResourceType resourceType);
+        ResourceIdStage resourceType(@NotNull WebhookHistoryResourceType resourceType);
     }
 
     public interface ResourceIdStage {
@@ -338,7 +338,7 @@ public final class DeliveryHistoryItemDto {
 
         private String webhookId;
 
-        private MappableResourceType resourceType;
+        private WebhookHistoryResourceType resourceType;
 
         private String resourceId;
 
@@ -400,12 +400,12 @@ public final class DeliveryHistoryItemDto {
         }
 
         /**
-         * <p>Type of the resource that triggered the delivery.</p>
+         * <p>Type of the resource that triggered the delivery. <code>test</code> indicates a manual test delivery not tied to a real resource.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
         @JsonSetter("resource_type")
-        public ResourceIdStage resourceType(@NotNull MappableResourceType resourceType) {
+        public ResourceIdStage resourceType(@NotNull WebhookHistoryResourceType resourceType) {
             this.resourceType = Objects.requireNonNull(resourceType, "resourceType must not be null");
             return this;
         }

@@ -107,6 +107,10 @@ public class AsyncRawJobsClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "project_id", request.getProjectId().get(), false);
         }
+        if (request.getMode().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "mode", request.getMode().get(), false);
+        }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -685,14 +689,16 @@ public class AsyncRawJobsClient {
     }
 
     /**
-     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns and citations as a JSON column.
+     * <p>If the job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<String>> getJobResultsCsv(String jobId) {
         return getJobResultsCsv(jobId, GetJobResultsCsvRequest.builder().build());
     }
 
     /**
-     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns and citations as a JSON column.
+     * <p>If the job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<String>> getJobResultsCsv(
             String jobId, RequestOptions requestOptions) {
@@ -700,7 +706,8 @@ public class AsyncRawJobsClient {
     }
 
     /**
-     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns and citations as a JSON column.
+     * <p>If the job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<String>> getJobResultsCsv(
             String jobId, GetJobResultsCsvRequest request) {
@@ -708,7 +715,8 @@ public class AsyncRawJobsClient {
     }
 
     /**
-     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns and citations as a JSON column.
+     * <p>If the job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<String>> getJobResultsCsv(
             String jobId, GetJobResultsCsvRequest request, RequestOptions requestOptions) {

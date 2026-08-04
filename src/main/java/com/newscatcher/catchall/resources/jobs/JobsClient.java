@@ -169,28 +169,32 @@ public class JobsClient {
     }
 
     /**
-     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns and citations as a JSON column.
+     * <p>If the job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public String getJobResultsCsv(String jobId) {
         return this.rawClient.getJobResultsCsv(jobId).body();
     }
 
     /**
-     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns and citations as a JSON column.
+     * <p>If the job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public String getJobResultsCsv(String jobId, RequestOptions requestOptions) {
         return this.rawClient.getJobResultsCsv(jobId, requestOptions).body();
     }
 
     /**
-     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns and citations as a JSON column.
+     * <p>If the job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public String getJobResultsCsv(String jobId, GetJobResultsCsvRequest request) {
         return this.rawClient.getJobResultsCsv(jobId, request).body();
     }
 
     /**
-     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns, citations as a JSON column, and connected entities split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns.
+     * Returns a completed job's result records as a CSV download. One row per record, with enrichment fields as columns and citations as a JSON column.
+     * <p>If the job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public String getJobResultsCsv(String jobId, GetJobResultsCsvRequest request, RequestOptions requestOptions) {
         return this.rawClient.getJobResultsCsv(jobId, request, requestOptions).body();

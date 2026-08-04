@@ -74,6 +74,7 @@ public class WebhooksClient {
 
     /**
      * Creates a new webhook endpoint for the organization.
+     * <p>Optionally pass <code>project_id</code> to attach the webhook to a project in the same request.</p>
      */
     public CreateWebhookResponseDto createWebhook(CreateWebhookRequestDto request) {
         return this.rawClient.createWebhook(request).body();
@@ -81,6 +82,7 @@ public class WebhooksClient {
 
     /**
      * Creates a new webhook endpoint for the organization.
+     * <p>Optionally pass <code>project_id</code> to attach the webhook to a project in the same request.</p>
      */
     public CreateWebhookResponseDto createWebhook(CreateWebhookRequestDto request, RequestOptions requestOptions) {
         return this.rawClient.createWebhook(request, requestOptions).body();

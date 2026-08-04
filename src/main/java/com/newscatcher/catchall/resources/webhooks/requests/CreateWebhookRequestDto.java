@@ -47,6 +47,8 @@ public final class CreateWebhookRequestDto {
 
     private final Optional<FormatterConfigDto> formatterConfig;
 
+    private final Optional<String> projectId;
+
     private final Map<String, Object> additionalProperties;
 
     private CreateWebhookRequestDto(
@@ -59,6 +61,7 @@ public final class CreateWebhookRequestDto {
             Optional<Map<String, String>> params,
             Optional<CreateWebhookRequestDtoAuth> auth,
             Optional<FormatterConfigDto> formatterConfig,
+            Optional<String> projectId,
             Map<String, Object> additionalProperties) {
         this.name = name;
         this.url = url;
@@ -69,6 +72,7 @@ public final class CreateWebhookRequestDto {
         this.params = params;
         this.auth = auth;
         this.formatterConfig = formatterConfig;
+        this.projectId = projectId;
         this.additionalProperties = additionalProperties;
     }
 
@@ -151,10 +155,31 @@ public final class CreateWebhookRequestDto {
         return formatterConfig;
     }
 
+    /**
+     * @return Optional project to attach this webhook to at creation time. Equivalent
+     * to creating the webhook and then calling
+     * <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/projects/add-resource"><code>POST /catchAll/projects/{project_id}/resources</code></a>
+     * with <code>resource_type: webhook</code>.
+     * <p>The project must belong to your organization.</p>
+     */
+    @JsonIgnore
+    public Optional<String> getProjectId() {
+        if (projectId == null) {
+            return Optional.empty();
+        }
+        return projectId;
+    }
+
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("formatter_config")
     private Optional<FormatterConfigDto> _getFormatterConfig() {
         return formatterConfig;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("project_id")
+    private Optional<String> _getProjectId() {
+        return projectId;
     }
 
     @java.lang.Override
@@ -177,7 +202,8 @@ public final class CreateWebhookRequestDto {
                 && headers.equals(other.headers)
                 && params.equals(other.params)
                 && auth.equals(other.auth)
-                && formatterConfig.equals(other.formatterConfig);
+                && formatterConfig.equals(other.formatterConfig)
+                && projectId.equals(other.projectId);
     }
 
     @java.lang.Override
@@ -191,7 +217,8 @@ public final class CreateWebhookRequestDto {
                 this.headers,
                 this.params,
                 this.auth,
-                this.formatterConfig);
+                this.formatterConfig,
+                this.projectId);
     }
 
     @java.lang.Override
@@ -280,6 +307,19 @@ public final class CreateWebhookRequestDto {
         _FinalStage formatterConfig(FormatterConfigDto formatterConfig);
 
         _FinalStage formatterConfig(Nullable<FormatterConfigDto> formatterConfig);
+
+        /**
+         * <p>Optional project to attach this webhook to at creation time. Equivalent
+         * to creating the webhook and then calling
+         * <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/projects/add-resource"><code>POST /catchAll/projects/{project_id}/resources</code></a>
+         * with <code>resource_type: webhook</code>.</p>
+         * <p>The project must belong to your organization.</p>
+         */
+        _FinalStage projectId(Optional<String> projectId);
+
+        _FinalStage projectId(String projectId);
+
+        _FinalStage projectId(Nullable<String> projectId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -287,6 +327,8 @@ public final class CreateWebhookRequestDto {
         private String name;
 
         private String url;
+
+        private Optional<String> projectId = Optional.empty();
 
         private Optional<FormatterConfigDto> formatterConfig = Optional.empty();
 
@@ -318,6 +360,7 @@ public final class CreateWebhookRequestDto {
             params(other.getParams());
             auth(other.getAuth());
             formatterConfig(other.getFormatterConfig());
+            projectId(other.getProjectId());
             return this;
         }
 
@@ -348,6 +391,54 @@ public final class CreateWebhookRequestDto {
         @JsonSetter("url")
         public _FinalStage url(@NotNull String url) {
             this.url = Objects.requireNonNull(url, "url must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Optional project to attach this webhook to at creation time. Equivalent
+         * to creating the webhook and then calling
+         * <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/projects/add-resource"><code>POST /catchAll/projects/{project_id}/resources</code></a>
+         * with <code>resource_type: webhook</code>.</p>
+         * <p>The project must belong to your organization.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage projectId(Nullable<String> projectId) {
+            if (projectId.isNull()) {
+                this.projectId = null;
+            } else if (projectId.isEmpty()) {
+                this.projectId = Optional.empty();
+            } else {
+                this.projectId = Optional.of(projectId.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Optional project to attach this webhook to at creation time. Equivalent
+         * to creating the webhook and then calling
+         * <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/projects/add-resource"><code>POST /catchAll/projects/{project_id}/resources</code></a>
+         * with <code>resource_type: webhook</code>.</p>
+         * <p>The project must belong to your organization.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage projectId(String projectId) {
+            this.projectId = Optional.ofNullable(projectId);
+            return this;
+        }
+
+        /**
+         * <p>Optional project to attach this webhook to at creation time. Equivalent
+         * to creating the webhook and then calling
+         * <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/projects/add-resource"><code>POST /catchAll/projects/{project_id}/resources</code></a>
+         * with <code>resource_type: webhook</code>.</p>
+         * <p>The project must belong to your organization.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "project_id", nulls = Nulls.SKIP)
+        public _FinalStage projectId(Optional<String> projectId) {
+            this.projectId = projectId;
             return this;
         }
 
@@ -508,6 +599,7 @@ public final class CreateWebhookRequestDto {
                     params,
                     auth,
                     formatterConfig,
+                    projectId,
                     additionalProperties);
         }
 

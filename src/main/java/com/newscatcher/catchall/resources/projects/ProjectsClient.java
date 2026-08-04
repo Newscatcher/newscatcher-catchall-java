@@ -113,6 +113,7 @@ public class ProjectsClient {
 
     /**
      * Deletes a project. By default, assigned resources are unassigned but not deleted.
+     * <p>Webhooks are an exception: they are never deleted by this operation, even when <code>delete_resources</code> is <code>true</code>. Any attached webhook is detached from the project and continues to exist and deliver, because the same webhook may be attached to other projects.</p>
      */
     public void deleteProject(String projectId) {
         this.rawClient.deleteProject(projectId).body();
@@ -120,6 +121,7 @@ public class ProjectsClient {
 
     /**
      * Deletes a project. By default, assigned resources are unassigned but not deleted.
+     * <p>Webhooks are an exception: they are never deleted by this operation, even when <code>delete_resources</code> is <code>true</code>. Any attached webhook is detached from the project and continues to exist and deliver, because the same webhook may be attached to other projects.</p>
      */
     public void deleteProject(String projectId, RequestOptions requestOptions) {
         this.rawClient.deleteProject(projectId, requestOptions).body();
@@ -127,6 +129,7 @@ public class ProjectsClient {
 
     /**
      * Deletes a project. By default, assigned resources are unassigned but not deleted.
+     * <p>Webhooks are an exception: they are never deleted by this operation, even when <code>delete_resources</code> is <code>true</code>. Any attached webhook is detached from the project and continues to exist and deliver, because the same webhook may be attached to other projects.</p>
      */
     public void deleteProject(String projectId, DeleteProjectRequest request) {
         this.rawClient.deleteProject(projectId, request).body();
@@ -134,6 +137,7 @@ public class ProjectsClient {
 
     /**
      * Deletes a project. By default, assigned resources are unassigned but not deleted.
+     * <p>Webhooks are an exception: they are never deleted by this operation, even when <code>delete_resources</code> is <code>true</code>. Any attached webhook is detached from the project and continues to exist and deliver, because the same webhook may be attached to other projects.</p>
      */
     public void deleteProject(String projectId, DeleteProjectRequest request, RequestOptions requestOptions) {
         this.rawClient.deleteProject(projectId, request, requestOptions).body();
@@ -170,7 +174,7 @@ public class ProjectsClient {
 
     /**
      * Returns resource counts for a project, grouped by type and status.
-     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code> and <code>monitor_groups</code>, only a <code>total</code> count is returned.</p>
+     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code>, <code>monitor_groups</code>, and <code>webhooks</code>, only a <code>total</code> count is returned.</p>
      */
     public ProjectOverviewResponseDto getProjectOverview(String projectId) {
         return this.rawClient.getProjectOverview(projectId).body();
@@ -178,7 +182,7 @@ public class ProjectsClient {
 
     /**
      * Returns resource counts for a project, grouped by type and status.
-     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code> and <code>monitor_groups</code>, only a <code>total</code> count is returned.</p>
+     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code>, <code>monitor_groups</code>, and <code>webhooks</code>, only a <code>total</code> count is returned.</p>
      */
     public ProjectOverviewResponseDto getProjectOverview(String projectId, RequestOptions requestOptions) {
         return this.rawClient.getProjectOverview(projectId, requestOptions).body();
@@ -186,7 +190,7 @@ public class ProjectsClient {
 
     /**
      * Returns resource counts for a project, grouped by type and status.
-     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code> and <code>monitor_groups</code>, only a <code>total</code> count is returned.</p>
+     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code>, <code>monitor_groups</code>, and <code>webhooks</code>, only a <code>total</code> count is returned.</p>
      */
     public ProjectOverviewResponseDto getProjectOverview(String projectId, GetProjectOverviewRequest request) {
         return this.rawClient.getProjectOverview(projectId, request).body();
@@ -194,7 +198,7 @@ public class ProjectsClient {
 
     /**
      * Returns resource counts for a project, grouped by type and status.
-     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code> and <code>monitor_groups</code>, only a <code>total</code> count is returned.</p>
+     * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code>, <code>monitor_groups</code>, and <code>webhooks</code>, only a <code>total</code> count is returned.</p>
      */
     public ProjectOverviewResponseDto getProjectOverview(
             String projectId, GetProjectOverviewRequest request, RequestOptions requestOptions) {

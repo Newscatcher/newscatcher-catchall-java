@@ -1,3 +1,5 @@
+## [3.0.4] - 2026-08-04
+
 ## 2.0.0 - 2026-05-19
 ### Breaking Changes
 * **`ListEntitiesInDatasetRequest`** — renamed to **`ListDatasetEntitiesRequest`**; update all imports and usages to the new class name.

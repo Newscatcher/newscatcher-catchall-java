@@ -154,6 +154,7 @@ public class RawWebhooksClient {
 
     /**
      * Creates a new webhook endpoint for the organization.
+     * <p>Optionally pass <code>project_id</code> to attach the webhook to a project in the same request.</p>
      */
     public CatchAllApiHttpResponse<CreateWebhookResponseDto> createWebhook(CreateWebhookRequestDto request) {
         return createWebhook(request, null);
@@ -161,6 +162,7 @@ public class RawWebhooksClient {
 
     /**
      * Creates a new webhook endpoint for the organization.
+     * <p>Optionally pass <code>project_id</code> to attach the webhook to a project in the same request.</p>
      */
     public CatchAllApiHttpResponse<CreateWebhookResponseDto> createWebhook(
             CreateWebhookRequestDto request, RequestOptions requestOptions) {
@@ -211,6 +213,9 @@ public class RawWebhooksClient {
                 switch (response.code()) {
                     case 403:
                         throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 404:
+                        throw new NotFoundError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 422:
                         throw new UnprocessableEntityError(

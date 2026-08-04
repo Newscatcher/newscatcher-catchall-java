@@ -28,6 +28,8 @@ public final class ProjectOverviewResponseDtoOverview {
 
     private final Map<String, Object> monitorGroups;
 
+    private final Map<String, Object> webhooks;
+
     private final Map<String, Object> additionalProperties;
 
     private ProjectOverviewResponseDtoOverview(
@@ -35,11 +37,13 @@ public final class ProjectOverviewResponseDtoOverview {
             Map<String, Object> monitors,
             Map<String, Object> datasets,
             Map<String, Object> monitorGroups,
+            Map<String, Object> webhooks,
             Map<String, Object> additionalProperties) {
         this.jobs = jobs;
         this.monitors = monitors;
         this.datasets = datasets;
         this.monitorGroups = monitorGroups;
+        this.webhooks = webhooks;
         this.additionalProperties = additionalProperties;
     }
 
@@ -63,6 +67,11 @@ public final class ProjectOverviewResponseDtoOverview {
         return monitorGroups;
     }
 
+    @JsonProperty("webhooks")
+    public Map<String, Object> getWebhooks() {
+        return webhooks;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -79,12 +88,13 @@ public final class ProjectOverviewResponseDtoOverview {
         return jobs.equals(other.jobs)
                 && monitors.equals(other.monitors)
                 && datasets.equals(other.datasets)
-                && monitorGroups.equals(other.monitorGroups);
+                && monitorGroups.equals(other.monitorGroups)
+                && webhooks.equals(other.webhooks);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.jobs, this.monitors, this.datasets, this.monitorGroups);
+        return Objects.hash(this.jobs, this.monitors, this.datasets, this.monitorGroups, this.webhooks);
     }
 
     @java.lang.Override
@@ -106,6 +116,8 @@ public final class ProjectOverviewResponseDtoOverview {
 
         private Map<String, Object> monitorGroups = new LinkedHashMap<>();
 
+        private Map<String, Object> webhooks = new LinkedHashMap<>();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -116,6 +128,7 @@ public final class ProjectOverviewResponseDtoOverview {
             monitors(other.getMonitors());
             datasets(other.getDatasets());
             monitorGroups(other.getMonitorGroups());
+            webhooks(other.getWebhooks());
             return this;
         }
 
@@ -203,9 +216,30 @@ public final class ProjectOverviewResponseDtoOverview {
             return this;
         }
 
+        @JsonSetter(value = "webhooks", nulls = Nulls.SKIP)
+        public Builder webhooks(Map<String, Object> webhooks) {
+            this.webhooks.clear();
+            if (webhooks != null) {
+                this.webhooks.putAll(webhooks);
+            }
+            return this;
+        }
+
+        public Builder putAllWebhooks(Map<String, Object> webhooks) {
+            if (webhooks != null) {
+                this.webhooks.putAll(webhooks);
+            }
+            return this;
+        }
+
+        public Builder webhooks(String key, Object value) {
+            this.webhooks.put(key, value);
+            return this;
+        }
+
         public ProjectOverviewResponseDtoOverview build() {
             return new ProjectOverviewResponseDtoOverview(
-                    jobs, monitors, datasets, monitorGroups, additionalProperties);
+                    jobs, monitors, datasets, monitorGroups, webhooks, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {
