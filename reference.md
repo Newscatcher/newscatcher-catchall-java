@@ -382,7 +382,7 @@ Job processing mode.
 
 **connectedDatasetIds:** `Optional<List<String>>` 
 
-Dataset IDs to connect to the job. When provided, this enables Company Watchlist mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use `ed_score_min`.
+Dataset IDs to connect to the job. When provided, this enables Company Monitors mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use `ed_score_min`.
 
 The dataset must have `latest_status: ready` before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns `400`.
     
@@ -422,7 +422,7 @@ Only valid when `connected_dataset_ids` is set; otherwise ignored. Records where
 
 **fetchAllWatchlistNews:** `Optional<Boolean>` 
 
-When true, retrieves all news for connected Company Watchlist entities
+When true, retrieves all news for connected Company Monitors entities
 without topic filtering. Requires connected_dataset_ids to be set.
     
 </dd>
@@ -437,6 +437,20 @@ Filter events by entity association type. `event_associated` keeps only
 events where the entity is a direct actor. `mention` keeps only events
 where the entity is merely referenced. Only relevant when
 connected_dataset_ids is set.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sourceGroups:** `Optional<List<String>>` 
+
+Slugs of source groups to scope fetching to their curated domain allowlists.
+
+Source groups are named domain lists maintained by NewsCatcher (for example "Top 100 US Finance"). Retrieve the groups available to your organization with [List source groups](https://www.newscatcherapi.com/docs/web-search-api/api-reference/jobs/list-source-groups).
+
+Domains are resolved when the job runs, so a group's current membership always applies. Maximum 20 groups per job. An unknown or inaccessible slug is rejected at submit time.
     
 </dd>
 </dl>
@@ -774,8 +788,7 @@ client.jobs().deleteJob(
 </dl>
 </details>
 
-## Monitors
-<details><summary><code>client.monitors.listMonitors() -> ListMonitorsResponseDto</code></summary>
+<details><summary><code>client.jobs.listSourceGroups() -> ListSourceGroupsResponseDto</code></summary>
 <dl>
 <dd>
 
@@ -787,7 +800,15 @@ client.jobs().deleteJob(
 <dl>
 <dd>
 
-Returns all monitors created by the authenticated user.
+Returns a paginated list of source groups visible to your organization.
+
+A source group is a named, curated domain allowlist maintained by NewsCatcher — for
+example "Top 100 US Finance". Pass a group's `slug` in `source_groups` when creating
+a job to scope article fetching to that group's domains, instead of maintaining a
+long domain list yourself.
+
+The response covers public groups plus any restricted groups your organization has
+been granted access to. Each entry returns `slug`, `name`, and `description`.
 </dd>
 </dl>
 </dd>
@@ -802,7 +823,74 @@ Returns all monitors created by the authenticated user.
 <dd>
 
 ```java
-client.monitors().listMonitors(
+client.jobs().listSourceGroups(
+    ListSourceGroupsRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**page:** `Optional<Integer>` — Page number to retrieve.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageSize:** `Optional<Integer>` — Number of source groups per page.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Event Monitors
+<details><summary><code>client.eventMonitors.listMonitors() -> ListMonitorsResponseDto</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns all event monitors created by the authenticated user.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.eventMonitors().listMonitors(
     ListMonitorsRequest
         .builder()
         .projectId("60a85db4-78ec-4b78-876a-bc7d9cdadd04")
@@ -866,7 +954,7 @@ client.monitors().listMonitors(
 </dl>
 </details>
 
-<details><summary><code>client.monitors.createMonitor(request) -> CreateMonitorResponseDto</code></summary>
+<details><summary><code>client.eventMonitors.createMonitor(request) -> CreateMonitorResponseDto</code></summary>
 <dl>
 <dd>
 
@@ -878,7 +966,7 @@ client.monitors().listMonitors(
 <dl>
 <dd>
 
-Create a scheduled monitor based on a reference job.
+Create a scheduled event monitor based on a reference job.
 </dd>
 </dl>
 </dd>
@@ -893,7 +981,7 @@ Create a scheduled monitor based on a reference job.
 <dd>
 
 ```java
-client.monitors().createMonitor(
+client.eventMonitors().createMonitor(
     CreateMonitorRequestDto
         .builder()
         .referenceJobId("5f0c9087-85cb-4917-b3c7-e5a5eff73a0c")
@@ -926,7 +1014,7 @@ client.monitors().createMonitor(
 
 Job ID to use as template for scheduled runs. Defines the query, validators, and enrichments used for each scheduled run.
 
-If [`backfill`](https://www.newscatcherapi.com/docs/web-search-api/api-reference/monitors/create-monitor#body-backfill) is true, the job's `end_date` must be within the last 7 days.
+If [`backfill`](https://www.newscatcherapi.com/docs/web-search-api/api-reference/event-monitors/create-monitor#body-backfill) is true, the job's `end_date` must be within the last 7 days.
     
 </dd>
 </dl>
@@ -934,7 +1022,7 @@ If [`backfill`](https://www.newscatcherapi.com/docs/web-search-api/api-reference
 <dl>
 <dd>
 
-**schedule:** `String` — Monitor schedule in plain text format. Minimum frequency depends on your plan.
+**schedule:** `String` — Event monitor schedule in plain text format. Minimum frequency depends on your plan.
     
 </dd>
 </dl>
@@ -959,7 +1047,7 @@ If the schedule includes a timezone abbreviation (for example, `"every day at 9a
 IDs of centralized webhooks to notify on each run completion.
 Passing IDs here is equivalent to calling
 `POST /catchAll/webhooks/{webhook_id}/resources` for each ID after creation.
-Maximum 5 per monitor.
+Maximum 5 per event monitor.
     
 </dd>
 </dl>
@@ -967,7 +1055,7 @@ Maximum 5 per monitor.
 <dl>
 <dd>
 
-**limit:** `Optional<Integer>` — Maximum number of records per monitor run. If not provided, defaults to the plan limit.
+**limit:** `Optional<Integer>` — Maximum number of records per event monitor run. If not provided, defaults to the plan limit.
     
 </dd>
 </dl>
@@ -987,7 +1075,7 @@ If false, no gap filling occurs and the first run uses the current cron window o
 <dl>
 <dd>
 
-**projectId:** `Optional<String>` — Project to assign this monitor to. The monitor appears in the project's resource list after creation.
+**projectId:** `Optional<String>` — Project to assign this event monitor to. The event monitor appears in the project's resource list after creation.
     
 </dd>
 </dl>
@@ -999,7 +1087,7 @@ If false, no gap filling occurs and the first run uses the current cron window o
 </dl>
 </details>
 
-<details><summary><code>client.monitors.pullMonitorResults(monitorId) -> PullMonitorResponseDto</code></summary>
+<details><summary><code>client.eventMonitors.pullMonitorResults(monitorId) -> PullMonitorResponseDto</code></summary>
 <dl>
 <dd>
 
@@ -1011,7 +1099,7 @@ If false, no gap filling occurs and the first run uses the current cron window o
 <dl>
 <dd>
 
-Retrieve aggregated results from all jobs executed by a monitor.
+Retrieve aggregated results from all jobs executed by an event monitor.
 </dd>
 </dl>
 </dd>
@@ -1026,7 +1114,7 @@ Retrieve aggregated results from all jobs executed by a monitor.
 <dd>
 
 ```java
-client.monitors().pullMonitorResults(
+client.eventMonitors().pullMonitorResults(
     "monitor_id",
     PullMonitorResultsRequest
         .builder()
@@ -1046,7 +1134,7 @@ client.monitors().pullMonitorResults(
 <dl>
 <dd>
 
-**monitorId:** `String` — Monitor identifier.
+**monitorId:** `String` — Event monitor identifier.
     
 </dd>
 </dl>
@@ -1058,7 +1146,7 @@ client.monitors().pullMonitorResults(
 </dl>
 </details>
 
-<details><summary><code>client.monitors.pullMonitorResultsCsv(monitorId) -> String</code></summary>
+<details><summary><code>client.eventMonitors.pullMonitorResultsCsv(monitorId) -> String</code></summary>
 <dl>
 <dd>
 
@@ -1072,7 +1160,7 @@ client.monitors().pullMonitorResults(
 
 Returns the most recent run's records as a CSV download. One row per record, with enrichment fields as columns and citations as a JSON column.
 
-If the monitor's reference job used connected entity datasets, connected entities are split into `event_associated_entities` and `mention_entities` JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.
+If the event monitor's reference job used connected entity datasets, connected entities are split into `event_associated_entities` and `mention_entities` JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.
 </dd>
 </dl>
 </dd>
@@ -1087,7 +1175,7 @@ If the monitor's reference job used connected entity datasets, connected entitie
 <dd>
 
 ```java
-client.monitors().pullMonitorResultsCsv(
+client.eventMonitors().pullMonitorResultsCsv(
     "monitor_id",
     PullMonitorResultsCsvRequest
         .builder()
@@ -1107,7 +1195,7 @@ client.monitors().pullMonitorResultsCsv(
 <dl>
 <dd>
 
-**monitorId:** `String` — Monitor identifier.
+**monitorId:** `String` — Event monitor identifier.
     
 </dd>
 </dl>
@@ -1119,7 +1207,7 @@ client.monitors().pullMonitorResultsCsv(
 </dl>
 </details>
 
-<details><summary><code>client.monitors.listMonitorJobs(monitorId) -> ListMonitorJobsResponse</code></summary>
+<details><summary><code>client.eventMonitors.listMonitorJobs(monitorId) -> ListMonitorJobsResponse</code></summary>
 <dl>
 <dd>
 
@@ -1131,7 +1219,7 @@ client.monitors().pullMonitorResultsCsv(
 <dl>
 <dd>
 
-Return all jobs executed by a monitor.
+Return all jobs executed by an event monitor.
 </dd>
 </dl>
 </dd>
@@ -1146,7 +1234,7 @@ Return all jobs executed by a monitor.
 <dd>
 
 ```java
-client.monitors().listMonitorJobs(
+client.eventMonitors().listMonitorJobs(
     "monitor_id",
     ListMonitorJobsRequest
         .builder()
@@ -1166,7 +1254,7 @@ client.monitors().listMonitorJobs(
 <dl>
 <dd>
 
-**monitorId:** `String` — Monitor identifier.
+**monitorId:** `String` — Event monitor identifier.
     
 </dd>
 </dl>
@@ -1186,7 +1274,7 @@ client.monitors().listMonitorJobs(
 </dl>
 </details>
 
-<details><summary><code>client.monitors.getMonitorStatusHistory(monitorId) -> MonitorStatusHistoryResponseDto</code></summary>
+<details><summary><code>client.eventMonitors.getMonitorStatusHistory(monitorId) -> MonitorStatusHistoryResponseDto</code></summary>
 <dl>
 <dd>
 
@@ -1198,7 +1286,7 @@ client.monitors().listMonitorJobs(
 <dl>
 <dd>
 
-Returns the full execution history of a monitor as a list of status entries, ordered from newest to oldest.
+Returns the full execution history of an event monitor as a list of status entries, ordered from newest to oldest.
 </dd>
 </dl>
 </dd>
@@ -1213,7 +1301,7 @@ Returns the full execution history of a monitor as a list of status entries, ord
 <dd>
 
 ```java
-client.monitors().getMonitorStatusHistory(
+client.eventMonitors().getMonitorStatusHistory(
     "monitor_id",
     GetMonitorStatusHistoryRequest
         .builder()
@@ -1233,7 +1321,7 @@ client.monitors().getMonitorStatusHistory(
 <dl>
 <dd>
 
-**monitorId:** `String` — Monitor identifier.
+**monitorId:** `String` — Event monitor identifier.
     
 </dd>
 </dl>
@@ -1245,7 +1333,7 @@ client.monitors().getMonitorStatusHistory(
 </dl>
 </details>
 
-<details><summary><code>client.monitors.enableMonitor(monitorId, request) -> EnableMonitorResponse</code></summary>
+<details><summary><code>client.eventMonitors.enableMonitor(monitorId, request) -> EnableMonitorResponse</code></summary>
 <dl>
 <dd>
 
@@ -1257,7 +1345,7 @@ client.monitors().getMonitorStatusHistory(
 <dl>
 <dd>
 
-Resume scheduled job execution for a monitor.
+Resume scheduled job execution for an event monitor.
 </dd>
 </dl>
 </dd>
@@ -1272,7 +1360,7 @@ Resume scheduled job execution for a monitor.
 <dd>
 
 ```java
-client.monitors().enableMonitor(
+client.eventMonitors().enableMonitor(
     "monitor_id",
     EnableMonitorRequestDto
         .builder()
@@ -1293,7 +1381,7 @@ client.monitors().enableMonitor(
 <dl>
 <dd>
 
-**monitorId:** `String` — Monitor identifier.
+**monitorId:** `String` — Event monitor identifier.
     
 </dd>
 </dl>
@@ -1317,7 +1405,7 @@ If false, no gap filling occurs and the first run uses the current cron window o
 </dl>
 </details>
 
-<details><summary><code>client.monitors.disableMonitor(monitorId) -> DisableMonitorResponse</code></summary>
+<details><summary><code>client.eventMonitors.disableMonitor(monitorId) -> DisableMonitorResponse</code></summary>
 <dl>
 <dd>
 
@@ -1329,7 +1417,7 @@ If false, no gap filling occurs and the first run uses the current cron window o
 <dl>
 <dd>
 
-Stop scheduled job execution for a monitor.
+Stop scheduled job execution for an event monitor.
 </dd>
 </dl>
 </dd>
@@ -1344,7 +1432,7 @@ Stop scheduled job execution for a monitor.
 <dd>
 
 ```java
-client.monitors().disableMonitor(
+client.eventMonitors().disableMonitor(
     "monitor_id",
     DisableMonitorRequest
         .builder()
@@ -1364,7 +1452,7 @@ client.monitors().disableMonitor(
 <dl>
 <dd>
 
-**monitorId:** `String` — Monitor identifier.
+**monitorId:** `String` — Event monitor identifier.
     
 </dd>
 </dl>
@@ -1376,7 +1464,7 @@ client.monitors().disableMonitor(
 </dl>
 </details>
 
-<details><summary><code>client.monitors.deleteMonitor(monitorId) -> DeleteMonitorResponseDto</code></summary>
+<details><summary><code>client.eventMonitors.deleteMonitor(monitorId) -> DeleteMonitorResponseDto</code></summary>
 <dl>
 <dd>
 
@@ -1388,14 +1476,14 @@ client.monitors().disableMonitor(
 <dl>
 <dd>
 
-Soft-deletes a monitor. The monitor is flagged as deleted, stops
+Soft-deletes an event monitor. The event monitor is flagged as deleted, stops
 executing scheduled jobs immediately, and no longer appears in list
 results.
 
-Only the monitor owner can delete a monitor. Returns `404` if the
-monitor is not found or does not belong to the authenticated user.
+Only the event monitor owner can delete an event monitor. Returns `404` if the
+event monitor is not found or does not belong to the authenticated user.
 
-Deleting an already-deleted monitor returns `200`.
+Deleting an already-deleted event monitor returns `200`.
 </dd>
 </dl>
 </dd>
@@ -1410,7 +1498,7 @@ Deleting an already-deleted monitor returns `200`.
 <dd>
 
 ```java
-client.monitors().deleteMonitor(
+client.eventMonitors().deleteMonitor(
     "monitor_id",
     DeleteMonitorRequest
         .builder()
@@ -1430,7 +1518,7 @@ client.monitors().deleteMonitor(
 <dl>
 <dd>
 
-**monitorId:** `String` — Monitor identifier.
+**monitorId:** `String` — Event monitor identifier.
     
 </dd>
 </dl>
@@ -1442,7 +1530,7 @@ client.monitors().deleteMonitor(
 </dl>
 </details>
 
-<details><summary><code>client.monitors.updateMonitor(monitorId, request) -> UpdateMonitorResponseDto</code></summary>
+<details><summary><code>client.eventMonitors.updateMonitor(monitorId, request) -> UpdateMonitorResponseDto</code></summary>
 <dl>
 <dd>
 
@@ -1454,7 +1542,12 @@ client.monitors().deleteMonitor(
 <dl>
 <dd>
 
-Update the webhook configuration for an existing monitor.
+Update the webhook assignments, record limit, or schedule of an existing
+event monitor. Omitted fields are left unchanged.
+
+Passing `schedule` replaces the event monitor's current schedule. The new
+schedule takes effect from the next scheduler reload, and the old schedule
+stops firing. The reference job cannot be changed.
 </dd>
 </dl>
 </dd>
@@ -1469,7 +1562,7 @@ Update the webhook configuration for an existing monitor.
 <dd>
 
 ```java
-client.monitors().updateMonitor(
+client.eventMonitors().updateMonitor(
     "monitor_id",
     UpdateMonitorRequestDto
         .builder()
@@ -1494,7 +1587,7 @@ client.monitors().updateMonitor(
 <dl>
 <dd>
 
-**monitorId:** `String` — Monitor identifier.
+**monitorId:** `String` — Event monitor identifier.
     
 </dd>
 </dl>
@@ -1504,7 +1597,7 @@ client.monitors().updateMonitor(
 
 **webhookIds:** `Optional<List<String>>` 
 
-Updated list of centralized webhook IDs for this monitor. 
+Updated list of centralized webhook IDs for this event monitor.
 
 Replaces all existing webhook assignments. Pass an empty array `[]` to clear all assignments. Omit to leave existing assignments unchanged.
     
@@ -1514,7 +1607,34 @@ Replaces all existing webhook assignments. Pass an empty array `[]` to clear all
 <dl>
 <dd>
 
-**limit:** `Optional<Integer>` — Updated maximum number of records per monitor run.
+**limit:** `Optional<Integer>` — Updated maximum number of records per event monitor run.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**schedule:** `Optional<String>` 
+
+New natural-language schedule that replaces the event monitor's current
+schedule. Examples: `every day at 9 AM`, `every Monday at 6 PM EST`.
+
+Omit to keep the current schedule. The new schedule takes effect from the
+next scheduler reload, and the old schedule stops firing. Returns `422` if
+the text can't be parsed or runs would be spaced too closely.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**timezone:** `Optional<String>` 
+
+IANA timezone for the new schedule (for example, `America/New_York`).
+A timezone included in the `schedule` text takes precedence. Ignored if
+`schedule` is not set.
     
 </dd>
 </dl>
@@ -1557,6 +1677,7 @@ Returns a paginated list of webhooks belonging to the organization.
 client.webhooks().listWebhooks(
     ListWebhooksRequest
         .builder()
+        .projectId("60a85db4-78ec-4b78-876a-bc7d9cdadd04")
         .build()
 );
 ```
@@ -1590,6 +1711,14 @@ client.webhooks().listWebhooks(
 <dd>
 
 **search:** `Optional<String>` — Filter results by text (case-insensitive substring match).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**projectId:** `Optional<String>` — Filter results to resources belonging to this project.
     
 </dd>
 </dl>
@@ -1833,7 +1962,7 @@ client.webhooks().getWebhook(
 
 Permanently deletes a webhook and removes all resource assignments. 
 
-Assigned jobs and monitors no longer trigger delivery to this webhook. This operation cannot be undone.
+Assigned jobs and event monitors no longer trigger delivery to this webhook. This operation cannot be undone.
 </dd>
 </dl>
 </dd>
@@ -2035,7 +2164,7 @@ client.webhooks().updateWebhook(
 
 Sends a test HTTP request to the webhook URL using the webhook's configured method, headers, and auth. Returns the response from the target endpoint.
 
-Use this to verify URL reachability and authentication before attaching the webhook to a live job or monitor.
+Use this to verify URL reachability and authentication before attaching the webhook to a live job or event monitor.
 </dd>
 </dl>
 </dd>
@@ -2194,7 +2323,7 @@ client.webhooks().listWebhookResources(
 <dl>
 <dd>
 
-Attaches a job, monitor, or monitor group to the webhook. When the
+Attaches a job, event monitor, or event monitor group to the webhook. When the
 resource completes, the webhook receives a delivery.
 
 A single webhook can be assigned to multiple resources. Each resource
@@ -2447,7 +2576,7 @@ client.webhooks().listWebhooksForResource(
 <dd>
 
 Manually dispatches a webhook delivery for a resource on demand, without
-waiting for the next job or monitor cycle.
+waiting for the next job or event monitor cycle.
 
 Use this to re-deliver results after a failed delivery, replay a specific
 job's results, or validate a webhook against live data. The webhook must
@@ -2647,6 +2776,7 @@ client.entities().listEntities(
     ListEntitiesRequest
         .builder()
         .search("NewsCatcher")
+        .projectId("60a85db4-78ec-4b78-876a-bc7d9cdadd04")
         .build()
 );
 ```
@@ -2712,6 +2842,14 @@ client.entities().listEntities(
 <dd>
 
 **sortOrder:** `Optional<SortOrder>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**projectId:** `Optional<String>` — Filter results to resources belonging to this project.
     
 </dd>
 </dl>
@@ -4277,7 +4415,7 @@ client.projects().deleteProject(
 
 **deleteResources:** `Optional<Boolean>` 
 
-If true, permanently deletes all resources (jobs, monitors, datasets, monitor groups) assigned to the project. If false, the project is deleted and its resources are unassigned but not deleted.
+If true, permanently deletes all resources (jobs, event monitors, datasets, event monitor groups) assigned to the project. If false, the project is deleted and its resources are unassigned but not deleted.
 
 Webhooks are never deleted by either setting — they are only detached from the project.
     

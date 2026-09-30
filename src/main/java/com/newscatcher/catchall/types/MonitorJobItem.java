@@ -45,7 +45,7 @@ public final class MonitorJobItem {
     }
 
     /**
-     * @return Start of the data collection time window for this job execution (based on monitor schedule) in ISO 8601 format with UTC timezone.
+     * @return Start of the data collection time window for this job execution (based on event monitor schedule) in ISO 8601 format with UTC timezone.
      */
     @JsonProperty("start_date")
     public OffsetDateTime getStartDate() {
@@ -53,7 +53,7 @@ public final class MonitorJobItem {
     }
 
     /**
-     * @return End of the data collection time window for this job execution (based on monitor schedule) in ISO 8601 format with UTC timezone.
+     * @return End of the data collection time window for this job execution (based on event monitor schedule) in ISO 8601 format with UTC timezone.
      */
     @JsonProperty("end_date")
     public OffsetDateTime getEndDate() {
@@ -100,14 +100,14 @@ public final class MonitorJobItem {
 
     public interface StartDateStage {
         /**
-         * <p>Start of the data collection time window for this job execution (based on monitor schedule) in ISO 8601 format with UTC timezone.</p>
+         * <p>Start of the data collection time window for this job execution (based on event monitor schedule) in ISO 8601 format with UTC timezone.</p>
          */
         EndDateStage startDate(@NotNull OffsetDateTime startDate);
     }
 
     public interface EndDateStage {
         /**
-         * <p>End of the data collection time window for this job execution (based on monitor schedule) in ISO 8601 format with UTC timezone.</p>
+         * <p>End of the data collection time window for this job execution (based on event monitor schedule) in ISO 8601 format with UTC timezone.</p>
          */
         _FinalStage endDate(@NotNull OffsetDateTime endDate);
     }
@@ -153,7 +153,7 @@ public final class MonitorJobItem {
         }
 
         /**
-         * <p>Start of the data collection time window for this job execution (based on monitor schedule) in ISO 8601 format with UTC timezone.</p>
+         * <p>Start of the data collection time window for this job execution (based on event monitor schedule) in ISO 8601 format with UTC timezone.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -164,7 +164,7 @@ public final class MonitorJobItem {
         }
 
         /**
-         * <p>End of the data collection time window for this job execution (based on monitor schedule) in ISO 8601 format with UTC timezone.</p>
+         * <p>End of the data collection time window for this job execution (based on event monitor schedule) in ISO 8601 format with UTC timezone.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

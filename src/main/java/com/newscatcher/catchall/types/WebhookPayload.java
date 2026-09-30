@@ -66,7 +66,7 @@ public final class WebhookPayload {
     }
 
     /**
-     * @return Monitor identifier.
+     * @return Event monitor identifier.
      */
     @JsonProperty("monitor_id")
     public Optional<String> getMonitorId() {
@@ -74,7 +74,7 @@ public final class WebhookPayload {
     }
 
     /**
-     * @return Reference job used as template for this monitor.
+     * @return Reference job used as template for this event monitor.
      */
     @JsonProperty("reference_job_id")
     public Optional<String> getReferenceJobId() {
@@ -98,7 +98,7 @@ public final class WebhookPayload {
     }
 
     /**
-     * @return Total number of jobs executed by this monitor.
+     * @return Total number of jobs executed by this event monitor.
      */
     @JsonProperty("jobs_processed")
     public Optional<Integer> getJobsProcessed() {
@@ -114,7 +114,7 @@ public final class WebhookPayload {
     }
 
     /**
-     * @return Cron expression defining the monitor schedule.
+     * @return Cron expression defining the event monitor schedule.
      */
     @JsonProperty("cron_expression")
     public Optional<String> getCronExpression() {
@@ -130,7 +130,7 @@ public final class WebhookPayload {
     }
 
     /**
-     * @return Array of new records from the latest job execution (includes monitor-specific fields like added_on, updated_on).
+     * @return Array of new records from the latest job execution (includes event monitor-specific fields like added_on, updated_on).
      */
     @JsonProperty("records")
     public Optional<List<MonitorRecord>> getRecords() {
@@ -222,7 +222,7 @@ public final class WebhookPayload {
         }
 
         /**
-         * <p>Monitor identifier.</p>
+         * <p>Event monitor identifier.</p>
          */
         @JsonSetter(value = "monitor_id", nulls = Nulls.SKIP)
         public Builder monitorId(Optional<String> monitorId) {
@@ -236,7 +236,7 @@ public final class WebhookPayload {
         }
 
         /**
-         * <p>Reference job used as template for this monitor.</p>
+         * <p>Reference job used as template for this event monitor.</p>
          */
         @JsonSetter(value = "reference_job_id", nulls = Nulls.SKIP)
         public Builder referenceJobId(Optional<String> referenceJobId) {
@@ -278,7 +278,7 @@ public final class WebhookPayload {
         }
 
         /**
-         * <p>Total number of jobs executed by this monitor.</p>
+         * <p>Total number of jobs executed by this event monitor.</p>
          */
         @JsonSetter(value = "jobs_processed", nulls = Nulls.SKIP)
         public Builder jobsProcessed(Optional<Integer> jobsProcessed) {
@@ -306,7 +306,7 @@ public final class WebhookPayload {
         }
 
         /**
-         * <p>Cron expression defining the monitor schedule.</p>
+         * <p>Cron expression defining the event monitor schedule.</p>
          */
         @JsonSetter(value = "cron_expression", nulls = Nulls.SKIP)
         public Builder cronExpression(Optional<String> cronExpression) {
@@ -334,7 +334,7 @@ public final class WebhookPayload {
         }
 
         /**
-         * <p>Array of new records from the latest job execution (includes monitor-specific fields like added_on, updated_on).</p>
+         * <p>Array of new records from the latest job execution (includes event monitor-specific fields like added_on, updated_on).</p>
          */
         @JsonSetter(value = "records", nulls = Nulls.SKIP)
         public Builder records(Optional<List<MonitorRecord>> records) {

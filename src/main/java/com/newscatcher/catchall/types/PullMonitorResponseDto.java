@@ -77,7 +77,7 @@ public final class PullMonitorResponseDto {
     }
 
     /**
-     * @return Unique identifier for the monitor.
+     * @return Unique identifier for the event monitor.
      */
     @JsonProperty("monitor_id")
     public String getMonitorId() {
@@ -85,7 +85,7 @@ public final class PullMonitorResponseDto {
     }
 
     /**
-     * @return The cron expression for a monitor schedule parsed from the text schedule you provide.
+     * @return The cron expression for an event monitor schedule parsed from the text schedule you provide.
      * <p>Standard cron format (minute hour day month day-of-week).</p>
      */
     @JsonProperty("cron_expression")
@@ -107,7 +107,7 @@ public final class PullMonitorResponseDto {
     }
 
     /**
-     * @return Execution time range for this monitor.
+     * @return Execution time range for this event monitor.
      */
     @JsonProperty("run_info")
     public Optional<PullMonitorResponseDtoRunInfo> getRunInfo() {
@@ -115,7 +115,7 @@ public final class PullMonitorResponseDto {
     }
 
     /**
-     * @return Total number of records collected across all monitor jobs.
+     * @return Total number of records collected across all event monitor jobs.
      */
     @JsonProperty("records")
     public Optional<Integer> getRecords() {
@@ -123,7 +123,7 @@ public final class PullMonitorResponseDto {
     }
 
     /**
-     * @return Current monitor status or error message if monitor creation failed.
+     * @return Current event monitor status or error message if event monitor creation failed.
      */
     @JsonProperty("status")
     public String getStatus() {
@@ -131,7 +131,7 @@ public final class PullMonitorResponseDto {
     }
 
     /**
-     * @return Aggregated records from all jobs executed by this monitor. Each record includes structured data extracted from web sources with citations.
+     * @return Aggregated records from all jobs executed by this event monitor. Each record includes structured data extracted from web sources with citations.
      */
     @JsonProperty("all_records")
     public Optional<List<MonitorRecord>> getAllRecords() {
@@ -139,7 +139,7 @@ public final class PullMonitorResponseDto {
     }
 
     /**
-     * @return Record limit applied to this monitor's jobs.
+     * @return Record limit applied to this event monitor's jobs.
      */
     @JsonIgnore
     public Optional<Integer> getLimit() {
@@ -223,7 +223,7 @@ public final class PullMonitorResponseDto {
 
     public interface MonitorIdStage {
         /**
-         * <p>Unique identifier for the monitor.</p>
+         * <p>Unique identifier for the event monitor.</p>
          */
         ReferenceJobStage monitorId(@NotNull String monitorId);
 
@@ -236,7 +236,7 @@ public final class PullMonitorResponseDto {
 
     public interface StatusStage {
         /**
-         * <p>Current monitor status or error message if monitor creation failed.</p>
+         * <p>Current event monitor status or error message if event monitor creation failed.</p>
          */
         _FinalStage status(@NotNull String status);
     }
@@ -249,7 +249,7 @@ public final class PullMonitorResponseDto {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>The cron expression for a monitor schedule parsed from the text schedule you provide.</p>
+         * <p>The cron expression for an event monitor schedule parsed from the text schedule you provide.</p>
          * <p>Standard cron format (minute hour day month day-of-week).</p>
          */
         _FinalStage cronExpression(Optional<String> cronExpression);
@@ -264,28 +264,28 @@ public final class PullMonitorResponseDto {
         _FinalStage timezone(String timezone);
 
         /**
-         * <p>Execution time range for this monitor.</p>
+         * <p>Execution time range for this event monitor.</p>
          */
         _FinalStage runInfo(Optional<PullMonitorResponseDtoRunInfo> runInfo);
 
         _FinalStage runInfo(PullMonitorResponseDtoRunInfo runInfo);
 
         /**
-         * <p>Total number of records collected across all monitor jobs.</p>
+         * <p>Total number of records collected across all event monitor jobs.</p>
          */
         _FinalStage records(Optional<Integer> records);
 
         _FinalStage records(Integer records);
 
         /**
-         * <p>Aggregated records from all jobs executed by this monitor. Each record includes structured data extracted from web sources with citations.</p>
+         * <p>Aggregated records from all jobs executed by this event monitor. Each record includes structured data extracted from web sources with citations.</p>
          */
         _FinalStage allRecords(Optional<List<MonitorRecord>> allRecords);
 
         _FinalStage allRecords(List<MonitorRecord> allRecords);
 
         /**
-         * <p>Record limit applied to this monitor's jobs.</p>
+         * <p>Record limit applied to this event monitor's jobs.</p>
          */
         _FinalStage limit(Optional<Integer> limit);
 
@@ -354,7 +354,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Unique identifier for the monitor.</p>
+         * <p>Unique identifier for the event monitor.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -372,7 +372,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Current monitor status or error message if monitor creation failed.</p>
+         * <p>Current event monitor status or error message if event monitor creation failed.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -423,7 +423,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Record limit applied to this monitor's jobs.</p>
+         * <p>Record limit applied to this event monitor's jobs.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -439,7 +439,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Record limit applied to this monitor's jobs.</p>
+         * <p>Record limit applied to this event monitor's jobs.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -449,7 +449,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Record limit applied to this monitor's jobs.</p>
+         * <p>Record limit applied to this event monitor's jobs.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "limit", nulls = Nulls.SKIP)
@@ -459,7 +459,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Aggregated records from all jobs executed by this monitor. Each record includes structured data extracted from web sources with citations.</p>
+         * <p>Aggregated records from all jobs executed by this event monitor. Each record includes structured data extracted from web sources with citations.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -469,7 +469,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Aggregated records from all jobs executed by this monitor. Each record includes structured data extracted from web sources with citations.</p>
+         * <p>Aggregated records from all jobs executed by this event monitor. Each record includes structured data extracted from web sources with citations.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "all_records", nulls = Nulls.SKIP)
@@ -479,7 +479,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Total number of records collected across all monitor jobs.</p>
+         * <p>Total number of records collected across all event monitor jobs.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -489,7 +489,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Total number of records collected across all monitor jobs.</p>
+         * <p>Total number of records collected across all event monitor jobs.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "records", nulls = Nulls.SKIP)
@@ -499,7 +499,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Execution time range for this monitor.</p>
+         * <p>Execution time range for this event monitor.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -509,7 +509,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>Execution time range for this monitor.</p>
+         * <p>Execution time range for this event monitor.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "run_info", nulls = Nulls.SKIP)
@@ -539,7 +539,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>The cron expression for a monitor schedule parsed from the text schedule you provide.</p>
+         * <p>The cron expression for an event monitor schedule parsed from the text schedule you provide.</p>
          * <p>Standard cron format (minute hour day month day-of-week).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -550,7 +550,7 @@ public final class PullMonitorResponseDto {
         }
 
         /**
-         * <p>The cron expression for a monitor schedule parsed from the text schedule you provide.</p>
+         * <p>The cron expression for an event monitor schedule parsed from the text schedule you provide.</p>
          * <p>Standard cron format (minute hour day month day-of-week).</p>
          */
         @java.lang.Override

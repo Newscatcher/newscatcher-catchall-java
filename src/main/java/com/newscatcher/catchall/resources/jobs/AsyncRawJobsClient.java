@@ -25,12 +25,14 @@ import com.newscatcher.catchall.resources.jobs.requests.GetJobResultsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobStatusRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetUserJobsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.InitializeRequestDto;
+import com.newscatcher.catchall.resources.jobs.requests.ListSourceGroupsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.ValidateQueryRequestDto;
 import com.newscatcher.catchall.types.ContinueResponseDto;
 import com.newscatcher.catchall.types.DeleteJobResponseDto;
 import com.newscatcher.catchall.types.Error;
 import com.newscatcher.catchall.types.InitializeResponseDto;
+import com.newscatcher.catchall.types.ListSourceGroupsResponseDto;
 import com.newscatcher.catchall.types.ListUserJobsResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
 import com.newscatcher.catchall.types.StatusResponseDto;
@@ -148,10 +150,17 @@ public class AsyncRawJobsClient {
                         return;
                     }
                     try {
-                        if (response.code() == 403) {
-                            future.completeExceptionally(new ForbiddenError(
-                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response));
-                            return;
+                        switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
@@ -240,6 +249,11 @@ public class AsyncRawJobsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -336,6 +350,11 @@ public class AsyncRawJobsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -435,6 +454,11 @@ public class AsyncRawJobsClient {
                             case 400:
                                 future.completeExceptionally(new BadRequestError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
                                         response));
                                 return;
                             case 403:
@@ -542,6 +566,11 @@ public class AsyncRawJobsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -654,6 +683,11 @@ public class AsyncRawJobsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -761,6 +795,11 @@ public class AsyncRawJobsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -859,6 +898,11 @@ public class AsyncRawJobsClient {
                             case 400:
                                 future.completeExceptionally(new BadRequestError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
                                         response));
                                 return;
                             case 403:
@@ -982,6 +1026,143 @@ public class AsyncRawJobsClient {
                             case 404:
                                 future.completeExceptionally(new NotFoundError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new CatchAllApiApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e));
+                } catch (IOException e) {
+                    future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Returns a paginated list of source groups visible to your organization.
+     * <p>A source group is a named, curated domain allowlist maintained by NewsCatcher — for
+     * example &quot;Top 100 US Finance&quot;. Pass a group's <code>slug</code> in <code>source_groups</code> when creating
+     * a job to scope article fetching to that group's domains, instead of maintaining a
+     * long domain list yourself.</p>
+     * <p>The response covers public groups plus any restricted groups your organization has
+     * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<ListSourceGroupsResponseDto>> listSourceGroups() {
+        return listSourceGroups(ListSourceGroupsRequest.builder().build());
+    }
+
+    /**
+     * Returns a paginated list of source groups visible to your organization.
+     * <p>A source group is a named, curated domain allowlist maintained by NewsCatcher — for
+     * example &quot;Top 100 US Finance&quot;. Pass a group's <code>slug</code> in <code>source_groups</code> when creating
+     * a job to scope article fetching to that group's domains, instead of maintaining a
+     * long domain list yourself.</p>
+     * <p>The response covers public groups plus any restricted groups your organization has
+     * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<ListSourceGroupsResponseDto>> listSourceGroups(
+            RequestOptions requestOptions) {
+        return listSourceGroups(ListSourceGroupsRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Returns a paginated list of source groups visible to your organization.
+     * <p>A source group is a named, curated domain allowlist maintained by NewsCatcher — for
+     * example &quot;Top 100 US Finance&quot;. Pass a group's <code>slug</code> in <code>source_groups</code> when creating
+     * a job to scope article fetching to that group's domains, instead of maintaining a
+     * long domain list yourself.</p>
+     * <p>The response covers public groups plus any restricted groups your organization has
+     * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<ListSourceGroupsResponseDto>> listSourceGroups(
+            ListSourceGroupsRequest request) {
+        return listSourceGroups(request, null);
+    }
+
+    /**
+     * Returns a paginated list of source groups visible to your organization.
+     * <p>A source group is a named, curated domain allowlist maintained by NewsCatcher — for
+     * example &quot;Top 100 US Finance&quot;. Pass a group's <code>slug</code> in <code>source_groups</code> when creating
+     * a job to scope article fetching to that group's domains, instead of maintaining a
+     * long domain list yourself.</p>
+     * <p>The response covers public groups plus any restricted groups your organization has
+     * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
+     */
+    public CompletableFuture<CatchAllApiHttpResponse<ListSourceGroupsResponseDto>> listSourceGroups(
+            ListSourceGroupsRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/source-groups");
+        if (request.getPage().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page", request.getPage().get(), false);
+        }
+        if (request.getPageSize().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page_size", request.getPageSize().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        CompletableFuture<CatchAllApiHttpResponse<ListSourceGroupsResponseDto>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new CatchAllApiHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, ListSourceGroupsResponseDto.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(
+                                                responseBodyString, ValidationErrorResponse.class),
                                         response));
                                 return;
                         }

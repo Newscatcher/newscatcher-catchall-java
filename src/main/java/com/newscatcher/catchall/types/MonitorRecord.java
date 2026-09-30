@@ -76,7 +76,7 @@ public final class MonitorRecord implements IBaseRecord {
     /**
      * @return Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.
      * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
-     * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
+     * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/concepts/dynamic-schemas">Dynamic schemas</a></p>
      */
     @JsonProperty("enrichment")
     public BaseRecordEnrichment getEnrichment() {
@@ -84,7 +84,7 @@ public final class MonitorRecord implements IBaseRecord {
     }
 
     /**
-     * @return Source documents with monitor-specific metadata (job_id, added_on timestamps).
+     * @return Source documents with event monitor-specific metadata (job_id, added_on timestamps).
      */
     @JsonProperty("citations")
     public List<MonitorCitation> getCitations() {
@@ -92,7 +92,7 @@ public final class MonitorRecord implements IBaseRecord {
     }
 
     /**
-     * @return The date when this record was first added to monitor results in ISO 8601 format with UTC timezone.
+     * @return The date when this record was first added to event monitor results in ISO 8601 format with UTC timezone.
      */
     @JsonProperty("added_on")
     public Optional<OffsetDateTime> getAddedOn() {
@@ -100,7 +100,7 @@ public final class MonitorRecord implements IBaseRecord {
     }
 
     /**
-     * @return The date when this record was last updated in monitor results in ISO 8601 format with UTC timezone.
+     * @return The date when this record was last updated in event monitor results in ISO 8601 format with UTC timezone.
      */
     @JsonProperty("updated_on")
     public Optional<OffsetDateTime> getUpdatedOn() {
@@ -162,7 +162,7 @@ public final class MonitorRecord implements IBaseRecord {
         /**
          * <p>Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
          * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
-         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
+         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/concepts/dynamic-schemas">Dynamic schemas</a></p>
          */
         _FinalStage enrichment(@NotNull BaseRecordEnrichment enrichment);
     }
@@ -175,7 +175,7 @@ public final class MonitorRecord implements IBaseRecord {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Source documents with monitor-specific metadata (job_id, added_on timestamps).</p>
+         * <p>Source documents with event monitor-specific metadata (job_id, added_on timestamps).</p>
          */
         _FinalStage citations(List<MonitorCitation> citations);
 
@@ -184,14 +184,14 @@ public final class MonitorRecord implements IBaseRecord {
         _FinalStage addAllCitations(List<MonitorCitation> citations);
 
         /**
-         * <p>The date when this record was first added to monitor results in ISO 8601 format with UTC timezone.</p>
+         * <p>The date when this record was first added to event monitor results in ISO 8601 format with UTC timezone.</p>
          */
         _FinalStage addedOn(Optional<OffsetDateTime> addedOn);
 
         _FinalStage addedOn(OffsetDateTime addedOn);
 
         /**
-         * <p>The date when this record was last updated in monitor results in ISO 8601 format with UTC timezone.</p>
+         * <p>The date when this record was last updated in event monitor results in ISO 8601 format with UTC timezone.</p>
          */
         _FinalStage updatedOn(Optional<OffsetDateTime> updatedOn);
 
@@ -253,7 +253,7 @@ public final class MonitorRecord implements IBaseRecord {
         /**
          * <p>Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
          * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
-         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
+         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/concepts/dynamic-schemas">Dynamic schemas</a></p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -264,7 +264,7 @@ public final class MonitorRecord implements IBaseRecord {
         }
 
         /**
-         * <p>The date when this record was last updated in monitor results in ISO 8601 format with UTC timezone.</p>
+         * <p>The date when this record was last updated in event monitor results in ISO 8601 format with UTC timezone.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -274,7 +274,7 @@ public final class MonitorRecord implements IBaseRecord {
         }
 
         /**
-         * <p>The date when this record was last updated in monitor results in ISO 8601 format with UTC timezone.</p>
+         * <p>The date when this record was last updated in event monitor results in ISO 8601 format with UTC timezone.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "updated_on", nulls = Nulls.SKIP)
@@ -284,7 +284,7 @@ public final class MonitorRecord implements IBaseRecord {
         }
 
         /**
-         * <p>The date when this record was first added to monitor results in ISO 8601 format with UTC timezone.</p>
+         * <p>The date when this record was first added to event monitor results in ISO 8601 format with UTC timezone.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -294,7 +294,7 @@ public final class MonitorRecord implements IBaseRecord {
         }
 
         /**
-         * <p>The date when this record was first added to monitor results in ISO 8601 format with UTC timezone.</p>
+         * <p>The date when this record was first added to event monitor results in ISO 8601 format with UTC timezone.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "added_on", nulls = Nulls.SKIP)
@@ -304,7 +304,7 @@ public final class MonitorRecord implements IBaseRecord {
         }
 
         /**
-         * <p>Source documents with monitor-specific metadata (job_id, added_on timestamps).</p>
+         * <p>Source documents with event monitor-specific metadata (job_id, added_on timestamps).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -316,7 +316,7 @@ public final class MonitorRecord implements IBaseRecord {
         }
 
         /**
-         * <p>Source documents with monitor-specific metadata (job_id, added_on timestamps).</p>
+         * <p>Source documents with event monitor-specific metadata (job_id, added_on timestamps).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -326,7 +326,7 @@ public final class MonitorRecord implements IBaseRecord {
         }
 
         /**
-         * <p>Source documents with monitor-specific metadata (job_id, added_on timestamps).</p>
+         * <p>Source documents with event monitor-specific metadata (job_id, added_on timestamps).</p>
          */
         @java.lang.Override
         @JsonSetter(value = "citations", nulls = Nulls.SKIP)

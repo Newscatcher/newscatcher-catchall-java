@@ -7,19 +7,19 @@ import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.Suppliers;
 import com.newscatcher.catchall.resources.datasets.DatasetsClient;
 import com.newscatcher.catchall.resources.entities.EntitiesClient;
+import com.newscatcher.catchall.resources.eventmonitors.EventMonitorsClient;
 import com.newscatcher.catchall.resources.jobs.JobsClient;
 import com.newscatcher.catchall.resources.meta.MetaClient;
-import com.newscatcher.catchall.resources.monitors.MonitorsClient;
 import com.newscatcher.catchall.resources.projects.ProjectsClient;
 import com.newscatcher.catchall.resources.webhooks.WebhooksClient;
 import java.util.function.Supplier;
 
-public class CatchAllApi {
+public class CatchAllApi implements AutoCloseable {
     protected final ClientOptions clientOptions;
 
     protected final Supplier<JobsClient> jobsClient;
 
-    protected final Supplier<MonitorsClient> monitorsClient;
+    protected final Supplier<EventMonitorsClient> eventMonitorsClient;
 
     protected final Supplier<WebhooksClient> webhooksClient;
 
@@ -34,7 +34,7 @@ public class CatchAllApi {
     public CatchAllApi(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.jobsClient = Suppliers.memoize(() -> new JobsClient(clientOptions));
-        this.monitorsClient = Suppliers.memoize(() -> new MonitorsClient(clientOptions));
+        this.eventMonitorsClient = Suppliers.memoize(() -> new EventMonitorsClient(clientOptions));
         this.webhooksClient = Suppliers.memoize(() -> new WebhooksClient(clientOptions));
         this.entitiesClient = Suppliers.memoize(() -> new EntitiesClient(clientOptions));
         this.datasetsClient = Suppliers.memoize(() -> new DatasetsClient(clientOptions));
@@ -46,8 +46,8 @@ public class CatchAllApi {
         return this.jobsClient.get();
     }
 
-    public MonitorsClient monitors() {
-        return this.monitorsClient.get();
+    public EventMonitorsClient eventMonitors() {
+        return this.eventMonitorsClient.get();
     }
 
     public WebhooksClient webhooks() {
@@ -68,6 +68,16 @@ public class CatchAllApi {
 
     public MetaClient meta() {
         return this.metaClient.get();
+    }
+
+    /**
+     * Releases resources owned by this client: any WebSocket clients still connected through
+     * it are disconnected first, then the SDK-owned HTTP client is shut down. See
+     * {@code ClientOptions.close()} for what is and is not released.
+     */
+    @Override
+    public void close() {
+        this.clientOptions.close();
     }
 
     public static CatchAllApiBuilder builder() {

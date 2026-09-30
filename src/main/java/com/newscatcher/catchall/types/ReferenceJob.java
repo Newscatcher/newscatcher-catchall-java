@@ -5,14 +5,18 @@ package com.newscatcher.catchall.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.newscatcher.catchall.core.Nullable;
+import com.newscatcher.catchall.core.NullableNonemptyFilter;
 import com.newscatcher.catchall.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,11 +28,18 @@ public final class ReferenceJob {
 
     private final Optional<String> context;
 
+    private final Optional<List<SourceGroupRef>> sourceGroups;
+
     private final Map<String, Object> additionalProperties;
 
-    private ReferenceJob(Optional<String> query, Optional<String> context, Map<String, Object> additionalProperties) {
+    private ReferenceJob(
+            Optional<String> query,
+            Optional<String> context,
+            Optional<List<SourceGroupRef>> sourceGroups,
+            Map<String, Object> additionalProperties) {
         this.query = query;
         this.context = context;
+        this.sourceGroups = sourceGroups;
         this.additionalProperties = additionalProperties;
     }
 
@@ -48,6 +59,24 @@ public final class ReferenceJob {
         return context;
     }
 
+    /**
+     * @return Source groups attached to the reference job, each with <code>slug</code>, <code>name</code>, and
+     * <code>description</code>. <code>null</code> when the reference job was not scoped to any source group.
+     */
+    @JsonIgnore
+    public Optional<List<SourceGroupRef>> getSourceGroups() {
+        if (sourceGroups == null) {
+            return Optional.empty();
+        }
+        return sourceGroups;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("source_groups")
+    private Optional<List<SourceGroupRef>> _getSourceGroups() {
+        return sourceGroups;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -60,12 +89,12 @@ public final class ReferenceJob {
     }
 
     private boolean equalTo(ReferenceJob other) {
-        return query.equals(other.query) && context.equals(other.context);
+        return query.equals(other.query) && context.equals(other.context) && sourceGroups.equals(other.sourceGroups);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.query, this.context);
+        return Objects.hash(this.query, this.context, this.sourceGroups);
     }
 
     @java.lang.Override
@@ -83,6 +112,8 @@ public final class ReferenceJob {
 
         private Optional<String> context = Optional.empty();
 
+        private Optional<List<SourceGroupRef>> sourceGroups = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -91,6 +122,7 @@ public final class ReferenceJob {
         public Builder from(ReferenceJob other) {
             query(other.getQuery());
             context(other.getContext());
+            sourceGroups(other.getSourceGroups());
             return this;
         }
 
@@ -122,8 +154,34 @@ public final class ReferenceJob {
             return this;
         }
 
+        /**
+         * <p>Source groups attached to the reference job, each with <code>slug</code>, <code>name</code>, and
+         * <code>description</code>. <code>null</code> when the reference job was not scoped to any source group.</p>
+         */
+        @JsonSetter(value = "source_groups", nulls = Nulls.SKIP)
+        public Builder sourceGroups(Optional<List<SourceGroupRef>> sourceGroups) {
+            this.sourceGroups = sourceGroups;
+            return this;
+        }
+
+        public Builder sourceGroups(List<SourceGroupRef> sourceGroups) {
+            this.sourceGroups = Optional.ofNullable(sourceGroups);
+            return this;
+        }
+
+        public Builder sourceGroups(Nullable<List<SourceGroupRef>> sourceGroups) {
+            if (sourceGroups.isNull()) {
+                this.sourceGroups = null;
+            } else if (sourceGroups.isEmpty()) {
+                this.sourceGroups = Optional.empty();
+            } else {
+                this.sourceGroups = Optional.of(sourceGroups.get());
+            }
+            return this;
+        }
+
         public ReferenceJob build() {
-            return new ReferenceJob(query, context, additionalProperties);
+            return new ReferenceJob(query, context, sourceGroups, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

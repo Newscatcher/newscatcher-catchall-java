@@ -16,6 +16,7 @@ import com.newscatcher.catchall.core.RetryInterceptor;
 import com.newscatcher.catchall.errors.BadRequestError;
 import com.newscatcher.catchall.errors.ForbiddenError;
 import com.newscatcher.catchall.errors.NotFoundError;
+import com.newscatcher.catchall.errors.UnauthorizedError;
 import com.newscatcher.catchall.errors.UnprocessableEntityError;
 import com.newscatcher.catchall.resources.webhooks.requests.AssignWebhookResourceRequestDto;
 import com.newscatcher.catchall.resources.webhooks.requests.CreateWebhookRequestDto;
@@ -103,6 +104,10 @@ public class AsyncRawWebhooksClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "search", request.getSearch().get(), false);
         }
+        if (request.getProjectId().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "project_id", request.getProjectId().get(), false);
+        }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -141,8 +146,18 @@ public class AsyncRawWebhooksClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
                                         response));
                                 return;
@@ -240,6 +255,11 @@ public class AsyncRawWebhooksClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -350,6 +370,11 @@ public class AsyncRawWebhooksClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -392,7 +417,7 @@ public class AsyncRawWebhooksClient {
 
     /**
      * Permanently deletes a webhook and removes all resource assignments.
-     * <p>Assigned jobs and monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
+     * <p>Assigned jobs and event monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<Void>> deleteWebhook(String webhookId) {
         return deleteWebhook(webhookId, DeleteWebhookRequest.builder().build());
@@ -400,7 +425,7 @@ public class AsyncRawWebhooksClient {
 
     /**
      * Permanently deletes a webhook and removes all resource assignments.
-     * <p>Assigned jobs and monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
+     * <p>Assigned jobs and event monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<Void>> deleteWebhook(
             String webhookId, RequestOptions requestOptions) {
@@ -409,7 +434,7 @@ public class AsyncRawWebhooksClient {
 
     /**
      * Permanently deletes a webhook and removes all resource assignments.
-     * <p>Assigned jobs and monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
+     * <p>Assigned jobs and event monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<Void>> deleteWebhook(
             String webhookId, DeleteWebhookRequest request) {
@@ -418,7 +443,7 @@ public class AsyncRawWebhooksClient {
 
     /**
      * Permanently deletes a webhook and removes all resource assignments.
-     * <p>Assigned jobs and monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
+     * <p>Assigned jobs and event monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<Void>> deleteWebhook(
             String webhookId, DeleteWebhookRequest request, RequestOptions requestOptions) {
@@ -462,6 +487,11 @@ public class AsyncRawWebhooksClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -574,6 +604,11 @@ public class AsyncRawWebhooksClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -616,7 +651,7 @@ public class AsyncRawWebhooksClient {
 
     /**
      * Sends a test HTTP request to the webhook URL using the webhook's configured method, headers, and auth. Returns the response from the target endpoint.
-     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or monitor.</p>
+     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or event monitor.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<TestWebhookResponseDto>> testWebhook(String webhookId) {
         return testWebhook(webhookId, TestWebhookRequestDto.builder().build());
@@ -624,7 +659,7 @@ public class AsyncRawWebhooksClient {
 
     /**
      * Sends a test HTTP request to the webhook URL using the webhook's configured method, headers, and auth. Returns the response from the target endpoint.
-     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or monitor.</p>
+     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or event monitor.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<TestWebhookResponseDto>> testWebhook(
             String webhookId, RequestOptions requestOptions) {
@@ -633,7 +668,7 @@ public class AsyncRawWebhooksClient {
 
     /**
      * Sends a test HTTP request to the webhook URL using the webhook's configured method, headers, and auth. Returns the response from the target endpoint.
-     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or monitor.</p>
+     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or event monitor.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<TestWebhookResponseDto>> testWebhook(
             String webhookId, TestWebhookRequestDto request) {
@@ -642,7 +677,7 @@ public class AsyncRawWebhooksClient {
 
     /**
      * Sends a test HTTP request to the webhook URL using the webhook's configured method, headers, and auth. Returns the response from the target endpoint.
-     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or monitor.</p>
+     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or event monitor.</p>
      */
     public CompletableFuture<CatchAllApiHttpResponse<TestWebhookResponseDto>> testWebhook(
             String webhookId, TestWebhookRequestDto request, RequestOptions requestOptions) {
@@ -697,6 +732,11 @@ public class AsyncRawWebhooksClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -824,6 +864,11 @@ public class AsyncRawWebhooksClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -865,7 +910,7 @@ public class AsyncRawWebhooksClient {
     }
 
     /**
-     * Attaches a job, monitor, or monitor group to the webhook. When the
+     * Attaches a job, event monitor, or event monitor group to the webhook. When the
      * resource completes, the webhook receives a delivery.
      * <p>A single webhook can be assigned to multiple resources. Each resource
      * can have up to 5 webhooks assigned.</p>
@@ -876,7 +921,7 @@ public class AsyncRawWebhooksClient {
     }
 
     /**
-     * Attaches a job, monitor, or monitor group to the webhook. When the
+     * Attaches a job, event monitor, or event monitor group to the webhook. When the
      * resource completes, the webhook receives a delivery.
      * <p>A single webhook can be assigned to multiple resources. Each resource
      * can have up to 5 webhooks assigned.</p>
@@ -938,6 +983,11 @@ public class AsyncRawWebhooksClient {
                             case 400:
                                 future.completeExceptionally(new BadRequestError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
                                         response));
                                 return;
                             case 403:
@@ -1072,6 +1122,11 @@ public class AsyncRawWebhooksClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -1201,6 +1256,11 @@ public class AsyncRawWebhooksClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -1243,7 +1303,7 @@ public class AsyncRawWebhooksClient {
 
     /**
      * Manually dispatches a webhook delivery for a resource on demand, without
-     * waiting for the next job or monitor cycle.
+     * waiting for the next job or event monitor cycle.
      * <p>Use this to re-deliver results after a failed delivery, replay a specific
      * job's results, or validate a webhook against live data. The webhook must
      * already be assigned to the resource.</p>
@@ -1255,7 +1315,7 @@ public class AsyncRawWebhooksClient {
 
     /**
      * Manually dispatches a webhook delivery for a resource on demand, without
-     * waiting for the next job or monitor cycle.
+     * waiting for the next job or event monitor cycle.
      * <p>Use this to re-deliver results after a failed delivery, replay a specific
      * job's results, or validate a webhook against live data. The webhook must
      * already be assigned to the resource.</p>
@@ -1311,6 +1371,11 @@ public class AsyncRawWebhooksClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -1418,6 +1483,11 @@ public class AsyncRawWebhooksClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),

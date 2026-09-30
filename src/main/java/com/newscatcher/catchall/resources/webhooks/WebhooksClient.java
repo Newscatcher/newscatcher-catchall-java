@@ -119,7 +119,7 @@ public class WebhooksClient {
 
     /**
      * Permanently deletes a webhook and removes all resource assignments.
-     * <p>Assigned jobs and monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
+     * <p>Assigned jobs and event monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
      */
     public void deleteWebhook(String webhookId) {
         this.rawClient.deleteWebhook(webhookId).body();
@@ -127,7 +127,7 @@ public class WebhooksClient {
 
     /**
      * Permanently deletes a webhook and removes all resource assignments.
-     * <p>Assigned jobs and monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
+     * <p>Assigned jobs and event monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
      */
     public void deleteWebhook(String webhookId, RequestOptions requestOptions) {
         this.rawClient.deleteWebhook(webhookId, requestOptions).body();
@@ -135,7 +135,7 @@ public class WebhooksClient {
 
     /**
      * Permanently deletes a webhook and removes all resource assignments.
-     * <p>Assigned jobs and monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
+     * <p>Assigned jobs and event monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
      */
     public void deleteWebhook(String webhookId, DeleteWebhookRequest request) {
         this.rawClient.deleteWebhook(webhookId, request).body();
@@ -143,7 +143,7 @@ public class WebhooksClient {
 
     /**
      * Permanently deletes a webhook and removes all resource assignments.
-     * <p>Assigned jobs and monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
+     * <p>Assigned jobs and event monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
      */
     public void deleteWebhook(String webhookId, DeleteWebhookRequest request, RequestOptions requestOptions) {
         this.rawClient.deleteWebhook(webhookId, request, requestOptions).body();
@@ -180,7 +180,7 @@ public class WebhooksClient {
 
     /**
      * Sends a test HTTP request to the webhook URL using the webhook's configured method, headers, and auth. Returns the response from the target endpoint.
-     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or monitor.</p>
+     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or event monitor.</p>
      */
     public TestWebhookResponseDto testWebhook(String webhookId) {
         return this.rawClient.testWebhook(webhookId).body();
@@ -188,7 +188,7 @@ public class WebhooksClient {
 
     /**
      * Sends a test HTTP request to the webhook URL using the webhook's configured method, headers, and auth. Returns the response from the target endpoint.
-     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or monitor.</p>
+     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or event monitor.</p>
      */
     public TestWebhookResponseDto testWebhook(String webhookId, RequestOptions requestOptions) {
         return this.rawClient.testWebhook(webhookId, requestOptions).body();
@@ -196,7 +196,7 @@ public class WebhooksClient {
 
     /**
      * Sends a test HTTP request to the webhook URL using the webhook's configured method, headers, and auth. Returns the response from the target endpoint.
-     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or monitor.</p>
+     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or event monitor.</p>
      */
     public TestWebhookResponseDto testWebhook(String webhookId, TestWebhookRequestDto request) {
         return this.rawClient.testWebhook(webhookId, request).body();
@@ -204,7 +204,7 @@ public class WebhooksClient {
 
     /**
      * Sends a test HTTP request to the webhook URL using the webhook's configured method, headers, and auth. Returns the response from the target endpoint.
-     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or monitor.</p>
+     * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or event monitor.</p>
      */
     public TestWebhookResponseDto testWebhook(
             String webhookId, TestWebhookRequestDto request, RequestOptions requestOptions) {
@@ -243,7 +243,7 @@ public class WebhooksClient {
     }
 
     /**
-     * Attaches a job, monitor, or monitor group to the webhook. When the
+     * Attaches a job, event monitor, or event monitor group to the webhook. When the
      * resource completes, the webhook receives a delivery.
      * <p>A single webhook can be assigned to multiple resources. Each resource
      * can have up to 5 webhooks assigned.</p>
@@ -254,7 +254,7 @@ public class WebhooksClient {
     }
 
     /**
-     * Attaches a job, monitor, or monitor group to the webhook. When the
+     * Attaches a job, event monitor, or event monitor group to the webhook. When the
      * resource completes, the webhook receives a delivery.
      * <p>A single webhook can be assigned to multiple resources. Each resource
      * can have up to 5 webhooks assigned.</p>
@@ -358,7 +358,7 @@ public class WebhooksClient {
 
     /**
      * Manually dispatches a webhook delivery for a resource on demand, without
-     * waiting for the next job or monitor cycle.
+     * waiting for the next job or event monitor cycle.
      * <p>Use this to re-deliver results after a failed delivery, replay a specific
      * job's results, or validate a webhook against live data. The webhook must
      * already be assigned to the resource.</p>
@@ -369,7 +369,7 @@ public class WebhooksClient {
 
     /**
      * Manually dispatches a webhook delivery for a resource on demand, without
-     * waiting for the next job or monitor cycle.
+     * waiting for the next job or event monitor cycle.
      * <p>Use this to re-deliver results after a failed delivery, replay a specific
      * job's results, or validate a webhook against live data. The webhook must
      * already be assigned to the resource.</p>

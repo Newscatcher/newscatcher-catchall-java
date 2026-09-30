@@ -47,9 +47,9 @@ public final class MonitorStatusEntry {
     /**
      * @return Type of lifecycle event.
      * <ul>
-     * <li><code>created</code>: Monitor was created.</li>
-     * <li><code>enable</code>: Monitor was enabled.</li>
-     * <li><code>disable</code>: Monitor was disabled.</li>
+     * <li><code>created</code>: Event monitor was created.</li>
+     * <li><code>enable</code>: Event monitor was enabled.</li>
+     * <li><code>disable</code>: Event monitor was disabled.</li>
      * <li><code>scheduled</code>: A job was triggered for execution.
      * <code>additional_information</code> contains <code>job_id</code>, <code>start_date</code>,
      * and <code>end_date</code>.</li>
@@ -91,7 +91,7 @@ public final class MonitorStatusEntry {
      *   }
      * }
      * </code></pre>
-     * <p>The <code>webhook</code> key is only present if the monitor has a webhook configured.</p>
+     * <p>The <code>webhook</code> key is only present if the event monitor has a webhook configured.</p>
      */
     @JsonIgnore
     public Optional<Map<String, Object>> getAdditionalInformation() {
@@ -142,9 +142,9 @@ public final class MonitorStatusEntry {
         /**
          * <p>Type of lifecycle event.</p>
          * <ul>
-         * <li><code>created</code>: Monitor was created.</li>
-         * <li><code>enable</code>: Monitor was enabled.</li>
-         * <li><code>disable</code>: Monitor was disabled.</li>
+         * <li><code>created</code>: Event monitor was created.</li>
+         * <li><code>enable</code>: Event monitor was enabled.</li>
+         * <li><code>disable</code>: Event monitor was disabled.</li>
          * <li><code>scheduled</code>: A job was triggered for execution.
          * <code>additional_information</code> contains <code>job_id</code>, <code>start_date</code>,
          * and <code>end_date</code>.</li>
@@ -192,7 +192,7 @@ public final class MonitorStatusEntry {
          *   }
          * }
          * </code></pre>
-         * <p>The <code>webhook</code> key is only present if the monitor has a webhook configured.</p>
+         * <p>The <code>webhook</code> key is only present if the event monitor has a webhook configured.</p>
          */
         _FinalStage additionalInformation(Optional<Map<String, Object>> additionalInformation);
 
@@ -225,9 +225,9 @@ public final class MonitorStatusEntry {
         /**
          * <p>Type of lifecycle event.</p>
          * <ul>
-         * <li><code>created</code>: Monitor was created.</li>
-         * <li><code>enable</code>: Monitor was enabled.</li>
-         * <li><code>disable</code>: Monitor was disabled.</li>
+         * <li><code>created</code>: Event monitor was created.</li>
+         * <li><code>enable</code>: Event monitor was enabled.</li>
+         * <li><code>disable</code>: Event monitor was disabled.</li>
          * <li><code>scheduled</code>: A job was triggered for execution.
          * <code>additional_information</code> contains <code>job_id</code>, <code>start_date</code>,
          * and <code>end_date</code>.</li>
@@ -275,7 +275,7 @@ public final class MonitorStatusEntry {
          *   }
          * }
          * </code></pre>
-         * <p>The <code>webhook</code> key is only present if the monitor has a webhook configured.</p>
+         * <p>The <code>webhook</code> key is only present if the event monitor has a webhook configured.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -310,7 +310,7 @@ public final class MonitorStatusEntry {
          *   }
          * }
          * </code></pre>
-         * <p>The <code>webhook</code> key is only present if the monitor has a webhook configured.</p>
+         * <p>The <code>webhook</code> key is only present if the event monitor has a webhook configured.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -339,7 +339,7 @@ public final class MonitorStatusEntry {
          *   }
          * }
          * </code></pre>
-         * <p>The <code>webhook</code> key is only present if the monitor has a webhook configured.</p>
+         * <p>The <code>webhook</code> key is only present if the event monitor has a webhook configured.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "additional_information", nulls = Nulls.SKIP)

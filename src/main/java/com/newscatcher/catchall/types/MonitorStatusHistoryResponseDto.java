@@ -71,7 +71,7 @@ public final class MonitorStatusHistoryResponseDto {
     }
 
     /**
-     * @return Monitor identifier. <code>null</code> on failure.
+     * @return Event monitor identifier. <code>null</code> on failure.
      */
     @JsonIgnore
     public Optional<String> getMonitorId() {
@@ -186,7 +186,7 @@ public final class MonitorStatusHistoryResponseDto {
         _FinalStage message(Nullable<String> message);
 
         /**
-         * <p>Monitor identifier. <code>null</code> on failure.</p>
+         * <p>Event monitor identifier. <code>null</code> on failure.</p>
          */
         _FinalStage monitorId(Optional<String> monitorId);
 
@@ -324,7 +324,7 @@ public final class MonitorStatusHistoryResponseDto {
         }
 
         /**
-         * <p>Monitor identifier. <code>null</code> on failure.</p>
+         * <p>Event monitor identifier. <code>null</code> on failure.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -340,7 +340,7 @@ public final class MonitorStatusHistoryResponseDto {
         }
 
         /**
-         * <p>Monitor identifier. <code>null</code> on failure.</p>
+         * <p>Event monitor identifier. <code>null</code> on failure.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -350,7 +350,7 @@ public final class MonitorStatusHistoryResponseDto {
         }
 
         /**
-         * <p>Monitor identifier. <code>null</code> on failure.</p>
+         * <p>Event monitor identifier. <code>null</code> on failure.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "monitor_id", nulls = Nulls.SKIP)

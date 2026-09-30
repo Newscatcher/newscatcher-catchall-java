@@ -17,6 +17,7 @@ import com.newscatcher.catchall.core.RetryInterceptor;
 import com.newscatcher.catchall.errors.BadRequestError;
 import com.newscatcher.catchall.errors.ForbiddenError;
 import com.newscatcher.catchall.errors.NotFoundError;
+import com.newscatcher.catchall.errors.UnauthorizedError;
 import com.newscatcher.catchall.errors.UnprocessableEntityError;
 import com.newscatcher.catchall.resources.datasets.requests.AddEntitiesToDatasetRequest;
 import com.newscatcher.catchall.resources.datasets.requests.CreateDatasetFromCsvRequest;
@@ -161,10 +162,17 @@ public class AsyncRawDatasetsClient {
                         return;
                     }
                     try {
-                        if (response.code() == 403) {
-                            future.completeExceptionally(new ForbiddenError(
-                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response));
-                            return;
+                        switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
@@ -265,6 +273,11 @@ public class AsyncRawDatasetsClient {
                             case 400:
                                 future.completeExceptionally(new BadRequestError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
                                         response));
                                 return;
                             case 403:
@@ -384,6 +397,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -448,6 +466,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -512,6 +535,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -593,6 +621,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -674,6 +707,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -779,6 +817,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -889,6 +932,11 @@ public class AsyncRawDatasetsClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -1001,6 +1049,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -1105,6 +1158,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -1209,6 +1267,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -1333,6 +1396,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -1448,6 +1516,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -1550,6 +1623,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -1622,6 +1700,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -1694,6 +1777,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -1783,6 +1871,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
@@ -1872,6 +1965,11 @@ public class AsyncRawDatasetsClient {
                     }
                     try {
                         switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),

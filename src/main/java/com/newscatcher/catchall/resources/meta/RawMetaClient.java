@@ -12,6 +12,7 @@ import com.newscatcher.catchall.core.ObjectMappers;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.core.RetryInterceptor;
 import com.newscatcher.catchall.errors.ForbiddenError;
+import com.newscatcher.catchall.errors.UnauthorizedError;
 import com.newscatcher.catchall.resources.meta.types.GetVersionResponse;
 import com.newscatcher.catchall.resources.meta.types.HealthCheckResponse;
 import com.newscatcher.catchall.types.Error;
@@ -189,9 +190,13 @@ public class RawMetaClient {
                         response);
             }
             try {
-                if (response.code() == 403) {
-                    throw new ForbiddenError(
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                 }
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error

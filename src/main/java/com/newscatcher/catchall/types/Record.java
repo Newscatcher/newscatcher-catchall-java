@@ -5,12 +5,15 @@ package com.newscatcher.catchall.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.newscatcher.catchall.core.Nullable;
+import com.newscatcher.catchall.core.NullableNonemptyFilter;
 import com.newscatcher.catchall.core.ObjectMappers;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +36,8 @@ public final class Record implements IBaseRecord {
 
     private final Optional<List<ConnectedEntity>> connectedEntities;
 
+    private final Optional<EventTags> tags;
+
     private final Map<String, Object> additionalProperties;
 
     private Record(
@@ -41,12 +46,14 @@ public final class Record implements IBaseRecord {
             BaseRecordEnrichment enrichment,
             List<Citation> citations,
             Optional<List<ConnectedEntity>> connectedEntities,
+            Optional<EventTags> tags,
             Map<String, Object> additionalProperties) {
         this.recordId = recordId;
         this.recordTitle = recordTitle;
         this.enrichment = enrichment;
         this.citations = citations;
         this.connectedEntities = connectedEntities;
+        this.tags = tags;
         this.additionalProperties = additionalProperties;
     }
 
@@ -71,7 +78,7 @@ public final class Record implements IBaseRecord {
     /**
      * @return Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.
      * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
-     * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
+     * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/concepts/dynamic-schemas">Dynamic schemas</a></p>
      */
     @JsonProperty("enrichment")
     public BaseRecordEnrichment getEnrichment() {
@@ -95,6 +102,26 @@ public final class Record implements IBaseRecord {
         return connectedEntities;
     }
 
+    /**
+     * @return Fixed-taxonomy classification of the event, as <code>event_type</code> and <code>sector</code>.
+     * <p>Only present for all-news watchlist jobs — those submitted with
+     * <code>fetch_all_watchlist_news: true</code>, which the job pull response reports as
+     * <code>is_all_news_query: true</code>. Absent or <code>null</code> for every other job.</p>
+     */
+    @JsonIgnore
+    public Optional<EventTags> getTags() {
+        if (tags == null) {
+            return Optional.empty();
+        }
+        return tags;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("tags")
+    private Optional<EventTags> _getTags() {
+        return tags;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -111,12 +138,14 @@ public final class Record implements IBaseRecord {
                 && recordTitle.equals(other.recordTitle)
                 && enrichment.equals(other.enrichment)
                 && citations.equals(other.citations)
-                && connectedEntities.equals(other.connectedEntities);
+                && connectedEntities.equals(other.connectedEntities)
+                && tags.equals(other.tags);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.recordId, this.recordTitle, this.enrichment, this.citations, this.connectedEntities);
+        return Objects.hash(
+                this.recordId, this.recordTitle, this.enrichment, this.citations, this.connectedEntities, this.tags);
     }
 
     @java.lang.Override
@@ -148,7 +177,7 @@ public final class Record implements IBaseRecord {
         /**
          * <p>Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
          * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
-         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
+         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/concepts/dynamic-schemas">Dynamic schemas</a></p>
          */
         _FinalStage enrichment(@NotNull BaseRecordEnrichment enrichment);
     }
@@ -176,6 +205,18 @@ public final class Record implements IBaseRecord {
         _FinalStage connectedEntities(Optional<List<ConnectedEntity>> connectedEntities);
 
         _FinalStage connectedEntities(List<ConnectedEntity> connectedEntities);
+
+        /**
+         * <p>Fixed-taxonomy classification of the event, as <code>event_type</code> and <code>sector</code>.</p>
+         * <p>Only present for all-news watchlist jobs — those submitted with
+         * <code>fetch_all_watchlist_news: true</code>, which the job pull response reports as
+         * <code>is_all_news_query: true</code>. Absent or <code>null</code> for every other job.</p>
+         */
+        _FinalStage tags(Optional<EventTags> tags);
+
+        _FinalStage tags(EventTags tags);
+
+        _FinalStage tags(Nullable<EventTags> tags);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -185,6 +226,8 @@ public final class Record implements IBaseRecord {
         private String recordTitle;
 
         private BaseRecordEnrichment enrichment;
+
+        private Optional<EventTags> tags = Optional.empty();
 
         private Optional<List<ConnectedEntity>> connectedEntities = Optional.empty();
 
@@ -202,6 +245,7 @@ public final class Record implements IBaseRecord {
             enrichment(other.getEnrichment());
             citations(other.getCitations());
             connectedEntities(other.getConnectedEntities());
+            tags(other.getTags());
             return this;
         }
 
@@ -230,13 +274,58 @@ public final class Record implements IBaseRecord {
         /**
          * <p>Structured data extracted from web pages. Schema is dynamically generated per job. Field names are chosen semantically to match the content.</p>
          * <p><strong>Note:</strong> The system always includes the <code>enrichment_confidence</code> field within the <code>enrichment</code> object, regardless of whether enrichments are generated or specified by you.</p>
-         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/guides-and-concepts/dynamic-schemas">Dynamic schemas</a></p>
+         * <p>For integration guidance, see <a href="https://www.newscatcherapi.com/docs/web-search-api/concepts/dynamic-schemas">Dynamic schemas</a></p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
         @JsonSetter("enrichment")
         public _FinalStage enrichment(@NotNull BaseRecordEnrichment enrichment) {
             this.enrichment = Objects.requireNonNull(enrichment, "enrichment must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Fixed-taxonomy classification of the event, as <code>event_type</code> and <code>sector</code>.</p>
+         * <p>Only present for all-news watchlist jobs — those submitted with
+         * <code>fetch_all_watchlist_news: true</code>, which the job pull response reports as
+         * <code>is_all_news_query: true</code>. Absent or <code>null</code> for every other job.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage tags(Nullable<EventTags> tags) {
+            if (tags.isNull()) {
+                this.tags = null;
+            } else if (tags.isEmpty()) {
+                this.tags = Optional.empty();
+            } else {
+                this.tags = Optional.of(tags.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Fixed-taxonomy classification of the event, as <code>event_type</code> and <code>sector</code>.</p>
+         * <p>Only present for all-news watchlist jobs — those submitted with
+         * <code>fetch_all_watchlist_news: true</code>, which the job pull response reports as
+         * <code>is_all_news_query: true</code>. Absent or <code>null</code> for every other job.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage tags(EventTags tags) {
+            this.tags = Optional.ofNullable(tags);
+            return this;
+        }
+
+        /**
+         * <p>Fixed-taxonomy classification of the event, as <code>event_type</code> and <code>sector</code>.</p>
+         * <p>Only present for all-news watchlist jobs — those submitted with
+         * <code>fetch_all_watchlist_news: true</code>, which the job pull response reports as
+         * <code>is_all_news_query: true</code>. Absent or <code>null</code> for every other job.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "tags", nulls = Nulls.SKIP)
+        public _FinalStage tags(Optional<EventTags> tags) {
+            this.tags = tags;
             return this;
         }
 
@@ -299,7 +388,8 @@ public final class Record implements IBaseRecord {
 
         @java.lang.Override
         public Record build() {
-            return new Record(recordId, recordTitle, enrichment, citations, connectedEntities, additionalProperties);
+            return new Record(
+                    recordId, recordTitle, enrichment, citations, connectedEntities, tags, additionalProperties);
         }
 
         @java.lang.Override

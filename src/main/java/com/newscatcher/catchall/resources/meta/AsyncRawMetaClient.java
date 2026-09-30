@@ -12,6 +12,7 @@ import com.newscatcher.catchall.core.ObjectMappers;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.core.RetryInterceptor;
 import com.newscatcher.catchall.errors.ForbiddenError;
+import com.newscatcher.catchall.errors.UnauthorizedError;
 import com.newscatcher.catchall.resources.meta.types.GetVersionResponse;
 import com.newscatcher.catchall.resources.meta.types.HealthCheckResponse;
 import com.newscatcher.catchall.types.Error;
@@ -228,10 +229,17 @@ public class AsyncRawMetaClient {
                         return;
                     }
                     try {
-                        if (response.code() == 403) {
-                            future.completeExceptionally(new ForbiddenError(
-                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response));
-                            return;
+                        switch (response.code()) {
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class),
+                                        response));
+                                return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error

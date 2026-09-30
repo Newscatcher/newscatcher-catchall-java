@@ -38,7 +38,7 @@ public final class CreateMonitorResponseDto {
     }
 
     /**
-     * @return Monitor ID if successful, null if error.
+     * @return Event monitor ID if successful, null if error.
      */
     @JsonIgnore
     public Optional<String> getMonitorId() {
@@ -108,7 +108,7 @@ public final class CreateMonitorResponseDto {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Monitor ID if successful, null if error.</p>
+         * <p>Event monitor ID if successful, null if error.</p>
          */
         _FinalStage monitorId(Optional<String> monitorId);
 
@@ -147,7 +147,7 @@ public final class CreateMonitorResponseDto {
         }
 
         /**
-         * <p>Monitor ID if successful, null if error.</p>
+         * <p>Event monitor ID if successful, null if error.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -163,7 +163,7 @@ public final class CreateMonitorResponseDto {
         }
 
         /**
-         * <p>Monitor ID if successful, null if error.</p>
+         * <p>Event monitor ID if successful, null if error.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -173,7 +173,7 @@ public final class CreateMonitorResponseDto {
         }
 
         /**
-         * <p>Monitor ID if successful, null if error.</p>
+         * <p>Event monitor ID if successful, null if error.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "monitor_id", nulls = Nulls.SKIP)

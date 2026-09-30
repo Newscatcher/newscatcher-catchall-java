@@ -32,7 +32,7 @@ public final class UpdateMonitorResponseDto {
     }
 
     /**
-     * @return Monitor identifier.
+     * @return Event monitor identifier.
      */
     @JsonProperty("monitor_id")
     public String getMonitorId() {
@@ -78,7 +78,7 @@ public final class UpdateMonitorResponseDto {
 
     public interface MonitorIdStage {
         /**
-         * <p>Monitor identifier.</p>
+         * <p>Event monitor identifier.</p>
          */
         StatusStage monitorId(@NotNull String monitorId);
 
@@ -119,7 +119,7 @@ public final class UpdateMonitorResponseDto {
         }
 
         /**
-         * <p>Monitor identifier.</p>
+         * <p>Event monitor identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
