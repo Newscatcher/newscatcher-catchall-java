@@ -109,7 +109,7 @@ public final class DeliveryHistoryItemDto {
     }
 
     /**
-     * @return Extra context about the triggering event, such as job query or monitor schedule.
+     * @return Extra context about the triggering event, such as job query or event monitor schedule.
      */
     @JsonProperty("additional_info")
     public Optional<Map<String, Object>> getAdditionalInfo() {
@@ -298,7 +298,7 @@ public final class DeliveryHistoryItemDto {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Extra context about the triggering event, such as job query or monitor schedule.</p>
+         * <p>Extra context about the triggering event, such as job query or event monitor schedule.</p>
          */
         _FinalStage additionalInfo(Optional<Map<String, Object>> additionalInfo);
 
@@ -538,7 +538,7 @@ public final class DeliveryHistoryItemDto {
         }
 
         /**
-         * <p>Extra context about the triggering event, such as job query or monitor schedule.</p>
+         * <p>Extra context about the triggering event, such as job query or event monitor schedule.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -548,7 +548,7 @@ public final class DeliveryHistoryItemDto {
         }
 
         /**
-         * <p>Extra context about the triggering event, such as job query or monitor schedule.</p>
+         * <p>Extra context about the triggering event, such as job query or event monitor schedule.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "additional_info", nulls = Nulls.SKIP)

@@ -77,7 +77,7 @@ public final class MonitorListItemDto {
     }
 
     /**
-     * @return Monitor identifier.
+     * @return Event monitor identifier.
      */
     @JsonProperty("monitor_id")
     public String getMonitorId() {
@@ -85,7 +85,7 @@ public final class MonitorListItemDto {
     }
 
     /**
-     * @return Job identifier used as a reference for this monitor.
+     * @return Job identifier used as a reference for this event monitor.
      */
     @JsonProperty("reference_job_id")
     public String getReferenceJobId() {
@@ -101,7 +101,7 @@ public final class MonitorListItemDto {
     }
 
     /**
-     * @return True if the monitor is currently active; false otherwise.
+     * @return True if the event monitor is currently active; false otherwise.
      */
     @JsonProperty("enabled")
     public boolean getEnabled() {
@@ -109,7 +109,7 @@ public final class MonitorListItemDto {
     }
 
     /**
-     * @return Cron expression for monitor schedule.
+     * @return Cron expression for event monitor schedule.
      */
     @JsonProperty("schedule")
     public Optional<String> getSchedule() {
@@ -117,7 +117,7 @@ public final class MonitorListItemDto {
     }
 
     /**
-     * @return The monitor schedule in a plain text format.
+     * @return The event monitor schedule in a plain text format.
      */
     @JsonProperty("schedule_human_readable")
     public Optional<String> getScheduleHumanReadable() {
@@ -133,7 +133,7 @@ public final class MonitorListItemDto {
     }
 
     /**
-     * @return The date when the monitor was created.
+     * @return The date when the event monitor was created.
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
@@ -141,7 +141,7 @@ public final class MonitorListItemDto {
     }
 
     /**
-     * @return Webhook configuration for this monitor, or null if not set.
+     * @return Webhook configuration for this event monitor, or null if not set.
      */
     @JsonIgnore
     public Optional<WebhookDto> getWebhook() {
@@ -152,7 +152,7 @@ public final class MonitorListItemDto {
     }
 
     /**
-     * @return Masked API key associated with this monitor.
+     * @return Masked API key associated with this event monitor.
      */
     @JsonProperty("user_key")
     public Optional<String> getUserKey() {
@@ -160,7 +160,7 @@ public final class MonitorListItemDto {
     }
 
     /**
-     * @return Present when this monitor was shared with the authenticated user. Omitted when the user owns the monitor.
+     * @return Present when this event monitor was shared with the authenticated user. Omitted when the user owns the event monitor.
      */
     @JsonProperty("sharing_info")
     public Optional<SharingInfo> getSharingInfo() {
@@ -225,7 +225,7 @@ public final class MonitorListItemDto {
 
     public interface MonitorIdStage {
         /**
-         * <p>Monitor identifier.</p>
+         * <p>Event monitor identifier.</p>
          */
         ReferenceJobIdStage monitorId(@NotNull String monitorId);
 
@@ -234,7 +234,7 @@ public final class MonitorListItemDto {
 
     public interface ReferenceJobIdStage {
         /**
-         * <p>Job identifier used as a reference for this monitor.</p>
+         * <p>Job identifier used as a reference for this event monitor.</p>
          */
         ReferenceJobQueryStage referenceJobId(@NotNull String referenceJobId);
     }
@@ -248,7 +248,7 @@ public final class MonitorListItemDto {
 
     public interface EnabledStage {
         /**
-         * <p>True if the monitor is currently active; false otherwise.</p>
+         * <p>True if the event monitor is currently active; false otherwise.</p>
          */
         _FinalStage enabled(boolean enabled);
     }
@@ -261,14 +261,14 @@ public final class MonitorListItemDto {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Cron expression for monitor schedule.</p>
+         * <p>Cron expression for event monitor schedule.</p>
          */
         _FinalStage schedule(Optional<String> schedule);
 
         _FinalStage schedule(String schedule);
 
         /**
-         * <p>The monitor schedule in a plain text format.</p>
+         * <p>The event monitor schedule in a plain text format.</p>
          */
         _FinalStage scheduleHumanReadable(Optional<String> scheduleHumanReadable);
 
@@ -282,14 +282,14 @@ public final class MonitorListItemDto {
         _FinalStage timezone(String timezone);
 
         /**
-         * <p>The date when the monitor was created.</p>
+         * <p>The date when the event monitor was created.</p>
          */
         _FinalStage createdAt(Optional<OffsetDateTime> createdAt);
 
         _FinalStage createdAt(OffsetDateTime createdAt);
 
         /**
-         * <p>Webhook configuration for this monitor, or null if not set.</p>
+         * <p>Webhook configuration for this event monitor, or null if not set.</p>
          */
         _FinalStage webhook(Optional<WebhookDto> webhook);
 
@@ -298,14 +298,14 @@ public final class MonitorListItemDto {
         _FinalStage webhook(Nullable<WebhookDto> webhook);
 
         /**
-         * <p>Masked API key associated with this monitor.</p>
+         * <p>Masked API key associated with this event monitor.</p>
          */
         _FinalStage userKey(Optional<String> userKey);
 
         _FinalStage userKey(String userKey);
 
         /**
-         * <p>Present when this monitor was shared with the authenticated user. Omitted when the user owns the monitor.</p>
+         * <p>Present when this event monitor was shared with the authenticated user. Omitted when the user owns the event monitor.</p>
          */
         _FinalStage sharingInfo(Optional<SharingInfo> sharingInfo);
 
@@ -359,7 +359,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Monitor identifier.</p>
+         * <p>Event monitor identifier.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -370,7 +370,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Job identifier used as a reference for this monitor.</p>
+         * <p>Job identifier used as a reference for this event monitor.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -392,7 +392,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>True if the monitor is currently active; false otherwise.</p>
+         * <p>True if the event monitor is currently active; false otherwise.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -403,7 +403,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Present when this monitor was shared with the authenticated user. Omitted when the user owns the monitor.</p>
+         * <p>Present when this event monitor was shared with the authenticated user. Omitted when the user owns the event monitor.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -413,7 +413,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Present when this monitor was shared with the authenticated user. Omitted when the user owns the monitor.</p>
+         * <p>Present when this event monitor was shared with the authenticated user. Omitted when the user owns the event monitor.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "sharing_info", nulls = Nulls.SKIP)
@@ -423,7 +423,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Masked API key associated with this monitor.</p>
+         * <p>Masked API key associated with this event monitor.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -433,7 +433,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Masked API key associated with this monitor.</p>
+         * <p>Masked API key associated with this event monitor.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "user_key", nulls = Nulls.SKIP)
@@ -443,7 +443,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Webhook configuration for this monitor, or null if not set.</p>
+         * <p>Webhook configuration for this event monitor, or null if not set.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -459,7 +459,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Webhook configuration for this monitor, or null if not set.</p>
+         * <p>Webhook configuration for this event monitor, or null if not set.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -469,7 +469,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Webhook configuration for this monitor, or null if not set.</p>
+         * <p>Webhook configuration for this event monitor, or null if not set.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "webhook", nulls = Nulls.SKIP)
@@ -479,7 +479,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>The date when the monitor was created.</p>
+         * <p>The date when the event monitor was created.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -489,7 +489,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>The date when the monitor was created.</p>
+         * <p>The date when the event monitor was created.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
@@ -519,7 +519,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>The monitor schedule in a plain text format.</p>
+         * <p>The event monitor schedule in a plain text format.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -529,7 +529,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>The monitor schedule in a plain text format.</p>
+         * <p>The event monitor schedule in a plain text format.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "schedule_human_readable", nulls = Nulls.SKIP)
@@ -539,7 +539,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Cron expression for monitor schedule.</p>
+         * <p>Cron expression for event monitor schedule.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -549,7 +549,7 @@ public final class MonitorListItemDto {
         }
 
         /**
-         * <p>Cron expression for monitor schedule.</p>
+         * <p>Cron expression for event monitor schedule.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "schedule", nulls = Nulls.SKIP)

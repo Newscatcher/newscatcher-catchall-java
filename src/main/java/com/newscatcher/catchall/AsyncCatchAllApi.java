@@ -7,19 +7,19 @@ import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.Suppliers;
 import com.newscatcher.catchall.resources.datasets.AsyncDatasetsClient;
 import com.newscatcher.catchall.resources.entities.AsyncEntitiesClient;
+import com.newscatcher.catchall.resources.eventmonitors.AsyncEventMonitorsClient;
 import com.newscatcher.catchall.resources.jobs.AsyncJobsClient;
 import com.newscatcher.catchall.resources.meta.AsyncMetaClient;
-import com.newscatcher.catchall.resources.monitors.AsyncMonitorsClient;
 import com.newscatcher.catchall.resources.projects.AsyncProjectsClient;
 import com.newscatcher.catchall.resources.webhooks.AsyncWebhooksClient;
 import java.util.function.Supplier;
 
-public class AsyncCatchAllApi {
+public class AsyncCatchAllApi implements AutoCloseable {
     protected final ClientOptions clientOptions;
 
     protected final Supplier<AsyncJobsClient> jobsClient;
 
-    protected final Supplier<AsyncMonitorsClient> monitorsClient;
+    protected final Supplier<AsyncEventMonitorsClient> eventMonitorsClient;
 
     protected final Supplier<AsyncWebhooksClient> webhooksClient;
 
@@ -34,7 +34,7 @@ public class AsyncCatchAllApi {
     public AsyncCatchAllApi(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.jobsClient = Suppliers.memoize(() -> new AsyncJobsClient(clientOptions));
-        this.monitorsClient = Suppliers.memoize(() -> new AsyncMonitorsClient(clientOptions));
+        this.eventMonitorsClient = Suppliers.memoize(() -> new AsyncEventMonitorsClient(clientOptions));
         this.webhooksClient = Suppliers.memoize(() -> new AsyncWebhooksClient(clientOptions));
         this.entitiesClient = Suppliers.memoize(() -> new AsyncEntitiesClient(clientOptions));
         this.datasetsClient = Suppliers.memoize(() -> new AsyncDatasetsClient(clientOptions));
@@ -46,8 +46,8 @@ public class AsyncCatchAllApi {
         return this.jobsClient.get();
     }
 
-    public AsyncMonitorsClient monitors() {
-        return this.monitorsClient.get();
+    public AsyncEventMonitorsClient eventMonitors() {
+        return this.eventMonitorsClient.get();
     }
 
     public AsyncWebhooksClient webhooks() {
@@ -68,6 +68,16 @@ public class AsyncCatchAllApi {
 
     public AsyncMetaClient meta() {
         return this.metaClient.get();
+    }
+
+    /**
+     * Releases resources owned by this client: any WebSocket clients still connected through
+     * it are disconnected first, then the SDK-owned HTTP client is shut down. See
+     * {@code ClientOptions.close()} for what is and is not released.
+     */
+    @Override
+    public void close() {
+        this.clientOptions.close();
     }
 
     public static AsyncCatchAllApiBuilder builder() {

@@ -25,12 +25,14 @@ import com.newscatcher.catchall.resources.jobs.requests.GetJobResultsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobStatusRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetUserJobsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.InitializeRequestDto;
+import com.newscatcher.catchall.resources.jobs.requests.ListSourceGroupsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.ValidateQueryRequestDto;
 import com.newscatcher.catchall.types.ContinueResponseDto;
 import com.newscatcher.catchall.types.DeleteJobResponseDto;
 import com.newscatcher.catchall.types.Error;
 import com.newscatcher.catchall.types.InitializeResponseDto;
+import com.newscatcher.catchall.types.ListSourceGroupsResponseDto;
 import com.newscatcher.catchall.types.ListUserJobsResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
 import com.newscatcher.catchall.types.StatusResponseDto;
@@ -139,9 +141,13 @@ public class RawJobsClient {
                         response);
             }
             try {
-                if (response.code() == 403) {
-                    throw new ForbiddenError(
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                 }
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
@@ -215,6 +221,9 @@ public class RawJobsClient {
             }
             try {
                 switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 403:
                         throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
@@ -292,6 +301,9 @@ public class RawJobsClient {
             }
             try {
                 switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 403:
                         throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
@@ -372,6 +384,9 @@ public class RawJobsClient {
                     case 400:
                         throw new BadRequestError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 403:
                         throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
@@ -456,6 +471,9 @@ public class RawJobsClient {
             }
             try {
                 switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 403:
                         throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
@@ -547,6 +565,9 @@ public class RawJobsClient {
             }
             try {
                 switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 403:
                         throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
@@ -634,6 +655,9 @@ public class RawJobsClient {
             }
             try {
                 switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 403:
                         throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
@@ -713,6 +737,9 @@ public class RawJobsClient {
                     case 400:
                         throw new BadRequestError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 403:
                         throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
@@ -811,6 +838,122 @@ public class RawJobsClient {
                     case 404:
                         throw new NotFoundError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new CatchAllApiApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new CatchAllApiException("Failed to deserialize response: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new CatchAllApiException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Returns a paginated list of source groups visible to your organization.
+     * <p>A source group is a named, curated domain allowlist maintained by NewsCatcher — for
+     * example &quot;Top 100 US Finance&quot;. Pass a group's <code>slug</code> in <code>source_groups</code> when creating
+     * a job to scope article fetching to that group's domains, instead of maintaining a
+     * long domain list yourself.</p>
+     * <p>The response covers public groups plus any restricted groups your organization has
+     * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
+     */
+    public CatchAllApiHttpResponse<ListSourceGroupsResponseDto> listSourceGroups() {
+        return listSourceGroups(ListSourceGroupsRequest.builder().build());
+    }
+
+    /**
+     * Returns a paginated list of source groups visible to your organization.
+     * <p>A source group is a named, curated domain allowlist maintained by NewsCatcher — for
+     * example &quot;Top 100 US Finance&quot;. Pass a group's <code>slug</code> in <code>source_groups</code> when creating
+     * a job to scope article fetching to that group's domains, instead of maintaining a
+     * long domain list yourself.</p>
+     * <p>The response covers public groups plus any restricted groups your organization has
+     * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
+     */
+    public CatchAllApiHttpResponse<ListSourceGroupsResponseDto> listSourceGroups(RequestOptions requestOptions) {
+        return listSourceGroups(ListSourceGroupsRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Returns a paginated list of source groups visible to your organization.
+     * <p>A source group is a named, curated domain allowlist maintained by NewsCatcher — for
+     * example &quot;Top 100 US Finance&quot;. Pass a group's <code>slug</code> in <code>source_groups</code> when creating
+     * a job to scope article fetching to that group's domains, instead of maintaining a
+     * long domain list yourself.</p>
+     * <p>The response covers public groups plus any restricted groups your organization has
+     * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
+     */
+    public CatchAllApiHttpResponse<ListSourceGroupsResponseDto> listSourceGroups(ListSourceGroupsRequest request) {
+        return listSourceGroups(request, null);
+    }
+
+    /**
+     * Returns a paginated list of source groups visible to your organization.
+     * <p>A source group is a named, curated domain allowlist maintained by NewsCatcher — for
+     * example &quot;Top 100 US Finance&quot;. Pass a group's <code>slug</code> in <code>source_groups</code> when creating
+     * a job to scope article fetching to that group's domains, instead of maintaining a
+     * long domain list yourself.</p>
+     * <p>The response covers public groups plus any restricted groups your organization has
+     * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
+     */
+    public CatchAllApiHttpResponse<ListSourceGroupsResponseDto> listSourceGroups(
+            ListSourceGroupsRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("catchAll/source-groups");
+        if (request.getPage().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page", request.getPage().get(), false);
+        }
+        if (request.getPageSize().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page_size", request.getPageSize().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new CatchAllApiHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListSourceGroupsResponseDto.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidationErrorResponse.class),
+                                response);
                 }
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error

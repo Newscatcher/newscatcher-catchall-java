@@ -30,7 +30,7 @@ public final class DeleteProjectRequest {
     }
 
     /**
-     * @return If true, permanently deletes all resources (jobs, monitors, datasets, monitor groups) assigned to the project. If false, the project is deleted and its resources are unassigned but not deleted.
+     * @return If true, permanently deletes all resources (jobs, event monitors, datasets, event monitor groups) assigned to the project. If false, the project is deleted and its resources are unassigned but not deleted.
      * <p>Webhooks are never deleted by either setting — they are only detached from the project.</p>
      */
     @JsonProperty("delete_resources")
@@ -82,7 +82,7 @@ public final class DeleteProjectRequest {
         }
 
         /**
-         * <p>If true, permanently deletes all resources (jobs, monitors, datasets, monitor groups) assigned to the project. If false, the project is deleted and its resources are unassigned but not deleted.</p>
+         * <p>If true, permanently deletes all resources (jobs, event monitors, datasets, event monitor groups) assigned to the project. If false, the project is deleted and its resources are unassigned but not deleted.</p>
          * <p>Webhooks are never deleted by either setting — they are only detached from the project.</p>
          */
         @JsonSetter(value = "delete_resources", nulls = Nulls.SKIP)

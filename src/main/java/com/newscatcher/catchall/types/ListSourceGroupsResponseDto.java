@@ -19,37 +19,41 @@ import java.util.Map;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = ListMonitorsResponseDto.Builder.class)
-public final class ListMonitorsResponseDto {
+@JsonDeserialize(builder = ListSourceGroupsResponseDto.Builder.class)
+public final class ListSourceGroupsResponseDto {
+    private final List<SourceGroupRef> sourceGroups;
+
     private final int total;
 
     private final int page;
 
     private final int pageSize;
 
-    private final int totalPages;
-
-    private final List<MonitorListItemDto> monitors;
-
     private final Map<String, Object> additionalProperties;
 
-    private ListMonitorsResponseDto(
+    private ListSourceGroupsResponseDto(
+            List<SourceGroupRef> sourceGroups,
             int total,
             int page,
             int pageSize,
-            int totalPages,
-            List<MonitorListItemDto> monitors,
             Map<String, Object> additionalProperties) {
+        this.sourceGroups = sourceGroups;
         this.total = total;
         this.page = page;
         this.pageSize = pageSize;
-        this.totalPages = totalPages;
-        this.monitors = monitors;
         this.additionalProperties = additionalProperties;
     }
 
     /**
-     * @return Total number of event monitors for this user.
+     * @return Source groups visible to your organization.
+     */
+    @JsonProperty("source_groups")
+    public List<SourceGroupRef> getSourceGroups() {
+        return sourceGroups;
+    }
+
+    /**
+     * @return Total number of source groups available to your organization.
      */
     @JsonProperty("total")
     public int getTotal() {
@@ -57,7 +61,7 @@ public final class ListMonitorsResponseDto {
     }
 
     /**
-     * @return Current page number.
+     * @return The current page number.
      */
     @JsonProperty("page")
     public int getPage() {
@@ -65,33 +69,17 @@ public final class ListMonitorsResponseDto {
     }
 
     /**
-     * @return Number of event monitors per page.
+     * @return The number of source groups per page.
      */
     @JsonProperty("page_size")
     public int getPageSize() {
         return pageSize;
     }
 
-    /**
-     * @return Total number of pages available.
-     */
-    @JsonProperty("total_pages")
-    public int getTotalPages() {
-        return totalPages;
-    }
-
-    /**
-     * @return Array of event monitor summaries.
-     */
-    @JsonProperty("monitors")
-    public List<MonitorListItemDto> getMonitors() {
-        return monitors;
-    }
-
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof ListMonitorsResponseDto && equalTo((ListMonitorsResponseDto) other);
+        return other instanceof ListSourceGroupsResponseDto && equalTo((ListSourceGroupsResponseDto) other);
     }
 
     @JsonAnyGetter
@@ -99,17 +87,16 @@ public final class ListMonitorsResponseDto {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(ListMonitorsResponseDto other) {
-        return total == other.total
+    private boolean equalTo(ListSourceGroupsResponseDto other) {
+        return sourceGroups.equals(other.sourceGroups)
+                && total == other.total
                 && page == other.page
-                && pageSize == other.pageSize
-                && totalPages == other.totalPages
-                && monitors.equals(other.monitors);
+                && pageSize == other.pageSize;
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.total, this.page, this.pageSize, this.totalPages, this.monitors);
+        return Objects.hash(this.sourceGroups, this.total, this.page, this.pageSize);
     }
 
     @java.lang.Override
@@ -123,62 +110,53 @@ public final class ListMonitorsResponseDto {
 
     public interface TotalStage {
         /**
-         * <p>Total number of event monitors for this user.</p>
+         * <p>Total number of source groups available to your organization.</p>
          */
         PageStage total(int total);
 
-        Builder from(ListMonitorsResponseDto other);
+        Builder from(ListSourceGroupsResponseDto other);
     }
 
     public interface PageStage {
         /**
-         * <p>Current page number.</p>
+         * <p>The current page number.</p>
          */
         PageSizeStage page(int page);
     }
 
     public interface PageSizeStage {
         /**
-         * <p>Number of event monitors per page.</p>
+         * <p>The number of source groups per page.</p>
          */
-        TotalPagesStage pageSize(int pageSize);
-    }
-
-    public interface TotalPagesStage {
-        /**
-         * <p>Total number of pages available.</p>
-         */
-        _FinalStage totalPages(int totalPages);
+        _FinalStage pageSize(int pageSize);
     }
 
     public interface _FinalStage {
-        ListMonitorsResponseDto build();
+        ListSourceGroupsResponseDto build();
 
         _FinalStage additionalProperty(String key, Object value);
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Array of event monitor summaries.</p>
+         * <p>Source groups visible to your organization.</p>
          */
-        _FinalStage monitors(List<MonitorListItemDto> monitors);
+        _FinalStage sourceGroups(List<SourceGroupRef> sourceGroups);
 
-        _FinalStage addMonitors(MonitorListItemDto monitors);
+        _FinalStage addSourceGroups(SourceGroupRef sourceGroups);
 
-        _FinalStage addAllMonitors(List<MonitorListItemDto> monitors);
+        _FinalStage addAllSourceGroups(List<SourceGroupRef> sourceGroups);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements TotalStage, PageStage, PageSizeStage, TotalPagesStage, _FinalStage {
+    public static final class Builder implements TotalStage, PageStage, PageSizeStage, _FinalStage {
         private int total;
 
         private int page;
 
         private int pageSize;
 
-        private int totalPages;
-
-        private List<MonitorListItemDto> monitors = new ArrayList<>();
+        private List<SourceGroupRef> sourceGroups = new ArrayList<>();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -186,17 +164,16 @@ public final class ListMonitorsResponseDto {
         private Builder() {}
 
         @java.lang.Override
-        public Builder from(ListMonitorsResponseDto other) {
+        public Builder from(ListSourceGroupsResponseDto other) {
+            sourceGroups(other.getSourceGroups());
             total(other.getTotal());
             page(other.getPage());
             pageSize(other.getPageSize());
-            totalPages(other.getTotalPages());
-            monitors(other.getMonitors());
             return this;
         }
 
         /**
-         * <p>Total number of event monitors for this user.</p>
+         * <p>Total number of source groups available to your organization.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -207,7 +184,7 @@ public final class ListMonitorsResponseDto {
         }
 
         /**
-         * <p>Current page number.</p>
+         * <p>The current page number.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -218,65 +195,54 @@ public final class ListMonitorsResponseDto {
         }
 
         /**
-         * <p>Number of event monitors per page.</p>
+         * <p>The number of source groups per page.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
         @JsonSetter("page_size")
-        public TotalPagesStage pageSize(int pageSize) {
+        public _FinalStage pageSize(int pageSize) {
             this.pageSize = pageSize;
             return this;
         }
 
         /**
-         * <p>Total number of pages available.</p>
+         * <p>Source groups visible to your organization.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        @JsonSetter("total_pages")
-        public _FinalStage totalPages(int totalPages) {
-            this.totalPages = totalPages;
-            return this;
-        }
-
-        /**
-         * <p>Array of event monitor summaries.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage addAllMonitors(List<MonitorListItemDto> monitors) {
-            if (monitors != null) {
-                this.monitors.addAll(monitors);
+        public _FinalStage addAllSourceGroups(List<SourceGroupRef> sourceGroups) {
+            if (sourceGroups != null) {
+                this.sourceGroups.addAll(sourceGroups);
             }
             return this;
         }
 
         /**
-         * <p>Array of event monitor summaries.</p>
+         * <p>Source groups visible to your organization.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage addMonitors(MonitorListItemDto monitors) {
-            this.monitors.add(monitors);
+        public _FinalStage addSourceGroups(SourceGroupRef sourceGroups) {
+            this.sourceGroups.add(sourceGroups);
             return this;
         }
 
         /**
-         * <p>Array of event monitor summaries.</p>
+         * <p>Source groups visible to your organization.</p>
          */
         @java.lang.Override
-        @JsonSetter(value = "monitors", nulls = Nulls.SKIP)
-        public _FinalStage monitors(List<MonitorListItemDto> monitors) {
-            this.monitors.clear();
-            if (monitors != null) {
-                this.monitors.addAll(monitors);
+        @JsonSetter(value = "source_groups", nulls = Nulls.SKIP)
+        public _FinalStage sourceGroups(List<SourceGroupRef> sourceGroups) {
+            this.sourceGroups.clear();
+            if (sourceGroups != null) {
+                this.sourceGroups.addAll(sourceGroups);
             }
             return this;
         }
 
         @java.lang.Override
-        public ListMonitorsResponseDto build() {
-            return new ListMonitorsResponseDto(total, page, pageSize, totalPages, monitors, additionalProperties);
+        public ListSourceGroupsResponseDto build() {
+            return new ListSourceGroupsResponseDto(sourceGroups, total, page, pageSize, additionalProperties);
         }
 
         @java.lang.Override

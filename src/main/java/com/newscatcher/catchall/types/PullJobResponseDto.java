@@ -61,6 +61,8 @@ public final class PullJobResponseDto {
 
     private final Optional<List<ConnectedDataset>> connectedDatasets;
 
+    private final Optional<List<SourceGroupRef>> sourceGroups;
+
     private final Optional<Boolean> isAllNewsQuery;
 
     private final Optional<SharingInfo> sharingInfo;
@@ -88,6 +90,7 @@ public final class PullJobResponseDto {
             Optional<Integer> totalPages,
             Optional<PullJobResponseDtoMode> mode,
             Optional<List<ConnectedDataset>> connectedDatasets,
+            Optional<List<SourceGroupRef>> sourceGroups,
             Optional<Boolean> isAllNewsQuery,
             Optional<SharingInfo> sharingInfo,
             Optional<List<Record>> allRecords,
@@ -110,6 +113,7 @@ public final class PullJobResponseDto {
         this.totalPages = totalPages;
         this.mode = mode;
         this.connectedDatasets = connectedDatasets;
+        this.sourceGroups = sourceGroups;
         this.isAllNewsQuery = isAllNewsQuery;
         this.sharingInfo = sharingInfo;
         this.allRecords = allRecords;
@@ -265,6 +269,18 @@ public final class PullJobResponseDto {
     }
 
     /**
+     * @return Source groups attached to this job, each with <code>slug</code>, <code>name</code>, and <code>description</code>.
+     * <code>null</code> when the job was not scoped to any source group.
+     */
+    @JsonIgnore
+    public Optional<List<SourceGroupRef>> getSourceGroups() {
+        if (sourceGroups == null) {
+            return Optional.empty();
+        }
+        return sourceGroups;
+    }
+
+    /**
      * @return True when the query was submitted as an all-news (watchlist-generic) query.
      */
     @JsonProperty("is_all_news_query")
@@ -304,6 +320,12 @@ public final class PullJobResponseDto {
     }
 
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("source_groups")
+    private Optional<List<SourceGroupRef>> _getSourceGroups() {
+        return sourceGroups;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("sharing_info")
     private Optional<SharingInfo> _getSharingInfo() {
         return sharingInfo;
@@ -339,6 +361,7 @@ public final class PullJobResponseDto {
                 && totalPages.equals(other.totalPages)
                 && mode.equals(other.mode)
                 && connectedDatasets.equals(other.connectedDatasets)
+                && sourceGroups.equals(other.sourceGroups)
                 && isAllNewsQuery.equals(other.isAllNewsQuery)
                 && sharingInfo.equals(other.sharingInfo)
                 && allRecords.equals(other.allRecords);
@@ -365,6 +388,7 @@ public final class PullJobResponseDto {
                 this.totalPages,
                 this.mode,
                 this.connectedDatasets,
+                this.sourceGroups,
                 this.isAllNewsQuery,
                 this.sharingInfo,
                 this.allRecords);
@@ -517,6 +541,16 @@ public final class PullJobResponseDto {
         _FinalStage connectedDatasets(List<ConnectedDataset> connectedDatasets);
 
         /**
+         * <p>Source groups attached to this job, each with <code>slug</code>, <code>name</code>, and <code>description</code>.
+         * <code>null</code> when the job was not scoped to any source group.</p>
+         */
+        _FinalStage sourceGroups(Optional<List<SourceGroupRef>> sourceGroups);
+
+        _FinalStage sourceGroups(List<SourceGroupRef> sourceGroups);
+
+        _FinalStage sourceGroups(Nullable<List<SourceGroupRef>> sourceGroups);
+
+        /**
          * <p>True when the query was submitted as an all-news (watchlist-generic) query.</p>
          */
         _FinalStage isAllNewsQuery(Optional<Boolean> isAllNewsQuery);
@@ -549,6 +583,8 @@ public final class PullJobResponseDto {
         private Optional<SharingInfo> sharingInfo = Optional.empty();
 
         private Optional<Boolean> isAllNewsQuery = Optional.empty();
+
+        private Optional<List<SourceGroupRef>> sourceGroups = Optional.empty();
 
         private Optional<List<ConnectedDataset>> connectedDatasets = Optional.empty();
 
@@ -609,6 +645,7 @@ public final class PullJobResponseDto {
             totalPages(other.getTotalPages());
             mode(other.getMode());
             connectedDatasets(other.getConnectedDatasets());
+            sourceGroups(other.getSourceGroups());
             isAllNewsQuery(other.getIsAllNewsQuery());
             sharingInfo(other.getSharingInfo());
             allRecords(other.getAllRecords());
@@ -699,6 +736,45 @@ public final class PullJobResponseDto {
         @JsonSetter(value = "is_all_news_query", nulls = Nulls.SKIP)
         public _FinalStage isAllNewsQuery(Optional<Boolean> isAllNewsQuery) {
             this.isAllNewsQuery = isAllNewsQuery;
+            return this;
+        }
+
+        /**
+         * <p>Source groups attached to this job, each with <code>slug</code>, <code>name</code>, and <code>description</code>.
+         * <code>null</code> when the job was not scoped to any source group.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage sourceGroups(Nullable<List<SourceGroupRef>> sourceGroups) {
+            if (sourceGroups.isNull()) {
+                this.sourceGroups = null;
+            } else if (sourceGroups.isEmpty()) {
+                this.sourceGroups = Optional.empty();
+            } else {
+                this.sourceGroups = Optional.of(sourceGroups.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Source groups attached to this job, each with <code>slug</code>, <code>name</code>, and <code>description</code>.
+         * <code>null</code> when the job was not scoped to any source group.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage sourceGroups(List<SourceGroupRef> sourceGroups) {
+            this.sourceGroups = Optional.ofNullable(sourceGroups);
+            return this;
+        }
+
+        /**
+         * <p>Source groups attached to this job, each with <code>slug</code>, <code>name</code>, and <code>description</code>.
+         * <code>null</code> when the job was not scoped to any source group.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "source_groups", nulls = Nulls.SKIP)
+        public _FinalStage sourceGroups(Optional<List<SourceGroupRef>> sourceGroups) {
+            this.sourceGroups = sourceGroups;
             return this;
         }
 
@@ -1091,6 +1167,7 @@ public final class PullJobResponseDto {
                     totalPages,
                     mode,
                     connectedDatasets,
+                    sourceGroups,
                     isAllNewsQuery,
                     sharingInfo,
                     allRecords,

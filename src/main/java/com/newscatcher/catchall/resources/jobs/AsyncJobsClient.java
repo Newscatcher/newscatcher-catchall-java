@@ -12,11 +12,13 @@ import com.newscatcher.catchall.resources.jobs.requests.GetJobResultsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetJobStatusRequest;
 import com.newscatcher.catchall.resources.jobs.requests.GetUserJobsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.InitializeRequestDto;
+import com.newscatcher.catchall.resources.jobs.requests.ListSourceGroupsRequest;
 import com.newscatcher.catchall.resources.jobs.requests.SubmitRequestDto;
 import com.newscatcher.catchall.resources.jobs.requests.ValidateQueryRequestDto;
 import com.newscatcher.catchall.types.ContinueResponseDto;
 import com.newscatcher.catchall.types.DeleteJobResponseDto;
 import com.newscatcher.catchall.types.InitializeResponseDto;
+import com.newscatcher.catchall.types.ListSourceGroupsResponseDto;
 import com.newscatcher.catchall.types.ListUserJobsResponseDto;
 import com.newscatcher.catchall.types.PullJobResponseDto;
 import com.newscatcher.catchall.types.StatusResponseDto;
@@ -257,5 +259,58 @@ public class AsyncJobsClient {
     public CompletableFuture<DeleteJobResponseDto> deleteJob(
             String jobId, DeleteJobRequest request, RequestOptions requestOptions) {
         return this.rawClient.deleteJob(jobId, request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns a paginated list of source groups visible to your organization.
+     * <p>A source group is a named, curated domain allowlist maintained by NewsCatcher — for
+     * example &quot;Top 100 US Finance&quot;. Pass a group's <code>slug</code> in <code>source_groups</code> when creating
+     * a job to scope article fetching to that group's domains, instead of maintaining a
+     * long domain list yourself.</p>
+     * <p>The response covers public groups plus any restricted groups your organization has
+     * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
+     */
+    public CompletableFuture<ListSourceGroupsResponseDto> listSourceGroups() {
+        return this.rawClient.listSourceGroups().thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns a paginated list of source groups visible to your organization.
+     * <p>A source group is a named, curated domain allowlist maintained by NewsCatcher — for
+     * example &quot;Top 100 US Finance&quot;. Pass a group's <code>slug</code> in <code>source_groups</code> when creating
+     * a job to scope article fetching to that group's domains, instead of maintaining a
+     * long domain list yourself.</p>
+     * <p>The response covers public groups plus any restricted groups your organization has
+     * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
+     */
+    public CompletableFuture<ListSourceGroupsResponseDto> listSourceGroups(RequestOptions requestOptions) {
+        return this.rawClient.listSourceGroups(requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns a paginated list of source groups visible to your organization.
+     * <p>A source group is a named, curated domain allowlist maintained by NewsCatcher — for
+     * example &quot;Top 100 US Finance&quot;. Pass a group's <code>slug</code> in <code>source_groups</code> when creating
+     * a job to scope article fetching to that group's domains, instead of maintaining a
+     * long domain list yourself.</p>
+     * <p>The response covers public groups plus any restricted groups your organization has
+     * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
+     */
+    public CompletableFuture<ListSourceGroupsResponseDto> listSourceGroups(ListSourceGroupsRequest request) {
+        return this.rawClient.listSourceGroups(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns a paginated list of source groups visible to your organization.
+     * <p>A source group is a named, curated domain allowlist maintained by NewsCatcher — for
+     * example &quot;Top 100 US Finance&quot;. Pass a group's <code>slug</code> in <code>source_groups</code> when creating
+     * a job to scope article fetching to that group's domains, instead of maintaining a
+     * long domain list yourself.</p>
+     * <p>The response covers public groups plus any restricted groups your organization has
+     * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
+     */
+    public CompletableFuture<ListSourceGroupsResponseDto> listSourceGroups(
+            ListSourceGroupsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.listSourceGroups(request, requestOptions).thenApply(response -> response.body());
     }
 }

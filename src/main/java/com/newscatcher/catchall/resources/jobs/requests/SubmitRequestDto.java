@@ -55,6 +55,8 @@ public final class SubmitRequestDto {
 
     private final Optional<EntityAssociationType> edAssociationType;
 
+    private final Optional<List<String>> sourceGroups;
+
     private final Map<String, Object> additionalProperties;
 
     private SubmitRequestDto(
@@ -72,6 +74,7 @@ public final class SubmitRequestDto {
             Optional<List<String>> webhookIds,
             Optional<Boolean> fetchAllWatchlistNews,
             Optional<EntityAssociationType> edAssociationType,
+            Optional<List<String>> sourceGroups,
             Map<String, Object> additionalProperties) {
         this.query = query;
         this.context = context;
@@ -87,6 +90,7 @@ public final class SubmitRequestDto {
         this.webhookIds = webhookIds;
         this.fetchAllWatchlistNews = fetchAllWatchlistNews;
         this.edAssociationType = edAssociationType;
+        this.sourceGroups = sourceGroups;
         this.additionalProperties = additionalProperties;
     }
 
@@ -150,7 +154,7 @@ public final class SubmitRequestDto {
     }
 
     /**
-     * @return Dataset IDs to connect to the job. When provided, this enables Company Watchlist mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use <code>ed_score_min</code>.
+     * @return Dataset IDs to connect to the job. When provided, this enables Company Monitors mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use <code>ed_score_min</code>.
      * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
      */
     @JsonProperty("connected_dataset_ids")
@@ -184,7 +188,7 @@ public final class SubmitRequestDto {
     }
 
     /**
-     * @return When true, retrieves all news for connected Company Watchlist entities
+     * @return When true, retrieves all news for connected Company Monitors entities
      * without topic filtering. Requires connected_dataset_ids to be set.
      */
     @JsonProperty("fetch_all_watchlist_news")
@@ -201,6 +205,16 @@ public final class SubmitRequestDto {
     @JsonProperty("ed_association_type")
     public Optional<EntityAssociationType> getEdAssociationType() {
         return edAssociationType;
+    }
+
+    /**
+     * @return Slugs of source groups to scope fetching to their curated domain allowlists.
+     * <p>Source groups are named domain lists maintained by NewsCatcher (for example &quot;Top 100 US Finance&quot;). Retrieve the groups available to your organization with <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/jobs/list-source-groups">List source groups</a>.</p>
+     * <p>Domains are resolved when the job runs, so a group's current membership always applies. Maximum 20 groups per job. An unknown or inaccessible slug is rejected at submit time.</p>
+     */
+    @JsonProperty("source_groups")
+    public Optional<List<String>> getSourceGroups() {
+        return sourceGroups;
     }
 
     @java.lang.Override
@@ -228,7 +242,8 @@ public final class SubmitRequestDto {
                 && projectId.equals(other.projectId)
                 && webhookIds.equals(other.webhookIds)
                 && fetchAllWatchlistNews.equals(other.fetchAllWatchlistNews)
-                && edAssociationType.equals(other.edAssociationType);
+                && edAssociationType.equals(other.edAssociationType)
+                && sourceGroups.equals(other.sourceGroups);
     }
 
     @java.lang.Override
@@ -247,7 +262,8 @@ public final class SubmitRequestDto {
                 this.projectId,
                 this.webhookIds,
                 this.fetchAllWatchlistNews,
-                this.edAssociationType);
+                this.edAssociationType,
+                this.sourceGroups);
     }
 
     @java.lang.Override
@@ -320,7 +336,7 @@ public final class SubmitRequestDto {
         _FinalStage mode(SubmitRequestDtoMode mode);
 
         /**
-         * <p>Dataset IDs to connect to the job. When provided, this enables Company Watchlist mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use <code>ed_score_min</code>.</p>
+         * <p>Dataset IDs to connect to the job. When provided, this enables Company Monitors mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use <code>ed_score_min</code>.</p>
          * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
          */
         _FinalStage connectedDatasetIds(Optional<List<String>> connectedDatasetIds);
@@ -350,7 +366,7 @@ public final class SubmitRequestDto {
         _FinalStage webhookIds(List<String> webhookIds);
 
         /**
-         * <p>When true, retrieves all news for connected Company Watchlist entities
+         * <p>When true, retrieves all news for connected Company Monitors entities
          * without topic filtering. Requires connected_dataset_ids to be set.</p>
          */
         _FinalStage fetchAllWatchlistNews(Optional<Boolean> fetchAllWatchlistNews);
@@ -366,11 +382,22 @@ public final class SubmitRequestDto {
         _FinalStage edAssociationType(Optional<EntityAssociationType> edAssociationType);
 
         _FinalStage edAssociationType(EntityAssociationType edAssociationType);
+
+        /**
+         * <p>Slugs of source groups to scope fetching to their curated domain allowlists.</p>
+         * <p>Source groups are named domain lists maintained by NewsCatcher (for example &quot;Top 100 US Finance&quot;). Retrieve the groups available to your organization with <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/jobs/list-source-groups">List source groups</a>.</p>
+         * <p>Domains are resolved when the job runs, so a group's current membership always applies. Maximum 20 groups per job. An unknown or inaccessible slug is rejected at submit time.</p>
+         */
+        _FinalStage sourceGroups(Optional<List<String>> sourceGroups);
+
+        _FinalStage sourceGroups(List<String> sourceGroups);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements QueryStage, _FinalStage {
         private String query;
+
+        private Optional<List<String>> sourceGroups = Optional.empty();
 
         private Optional<EntityAssociationType> edAssociationType = Optional.empty();
 
@@ -419,6 +446,7 @@ public final class SubmitRequestDto {
             webhookIds(other.getWebhookIds());
             fetchAllWatchlistNews(other.getFetchAllWatchlistNews());
             edAssociationType(other.getEdAssociationType());
+            sourceGroups(other.getSourceGroups());
             return this;
         }
 
@@ -426,6 +454,30 @@ public final class SubmitRequestDto {
         @JsonSetter("query")
         public _FinalStage query(@NotNull String query) {
             this.query = Objects.requireNonNull(query, "query must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Slugs of source groups to scope fetching to their curated domain allowlists.</p>
+         * <p>Source groups are named domain lists maintained by NewsCatcher (for example &quot;Top 100 US Finance&quot;). Retrieve the groups available to your organization with <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/jobs/list-source-groups">List source groups</a>.</p>
+         * <p>Domains are resolved when the job runs, so a group's current membership always applies. Maximum 20 groups per job. An unknown or inaccessible slug is rejected at submit time.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage sourceGroups(List<String> sourceGroups) {
+            this.sourceGroups = Optional.ofNullable(sourceGroups);
+            return this;
+        }
+
+        /**
+         * <p>Slugs of source groups to scope fetching to their curated domain allowlists.</p>
+         * <p>Source groups are named domain lists maintained by NewsCatcher (for example &quot;Top 100 US Finance&quot;). Retrieve the groups available to your organization with <a href="https://www.newscatcherapi.com/docs/web-search-api/api-reference/jobs/list-source-groups">List source groups</a>.</p>
+         * <p>Domains are resolved when the job runs, so a group's current membership always applies. Maximum 20 groups per job. An unknown or inaccessible slug is rejected at submit time.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "source_groups", nulls = Nulls.SKIP)
+        public _FinalStage sourceGroups(Optional<List<String>> sourceGroups) {
+            this.sourceGroups = sourceGroups;
             return this;
         }
 
@@ -456,7 +508,7 @@ public final class SubmitRequestDto {
         }
 
         /**
-         * <p>When true, retrieves all news for connected Company Watchlist entities
+         * <p>When true, retrieves all news for connected Company Monitors entities
          * without topic filtering. Requires connected_dataset_ids to be set.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -467,7 +519,7 @@ public final class SubmitRequestDto {
         }
 
         /**
-         * <p>When true, retrieves all news for connected Company Watchlist entities
+         * <p>When true, retrieves all news for connected Company Monitors entities
          * without topic filtering. Requires connected_dataset_ids to be set.</p>
          */
         @java.lang.Override
@@ -540,7 +592,7 @@ public final class SubmitRequestDto {
         }
 
         /**
-         * <p>Dataset IDs to connect to the job. When provided, this enables Company Watchlist mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use <code>ed_score_min</code>.</p>
+         * <p>Dataset IDs to connect to the job. When provided, this enables Company Monitors mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use <code>ed_score_min</code>.</p>
          * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -551,7 +603,7 @@ public final class SubmitRequestDto {
         }
 
         /**
-         * <p>Dataset IDs to connect to the job. When provided, this enables Company Watchlist mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use <code>ed_score_min</code>.</p>
+         * <p>Dataset IDs to connect to the job. When provided, this enables Company Monitors mode — the job returns only events relevant to companies in the connected datasets. To set the minimum relevance threshold, use <code>ed_score_min</code>.</p>
          * <p>The dataset must have <code>latest_status: ready</code> before the job is submitted. Submitting with a non-existent or inaccessible dataset ID returns <code>400</code>.</p>
          */
         @java.lang.Override
@@ -710,6 +762,7 @@ public final class SubmitRequestDto {
                     webhookIds,
                     fetchAllWatchlistNews,
                     edAssociationType,
+                    sourceGroups,
                     additionalProperties);
         }
 

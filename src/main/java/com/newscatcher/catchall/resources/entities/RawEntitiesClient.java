@@ -16,6 +16,8 @@ import com.newscatcher.catchall.core.RetryInterceptor;
 import com.newscatcher.catchall.errors.BadRequestError;
 import com.newscatcher.catchall.errors.ForbiddenError;
 import com.newscatcher.catchall.errors.NotFoundError;
+import com.newscatcher.catchall.errors.UnauthorizedError;
+import com.newscatcher.catchall.errors.UnprocessableEntityError;
 import com.newscatcher.catchall.resources.entities.requests.CreateEntitiesBatchRequest;
 import com.newscatcher.catchall.resources.entities.requests.DeleteEntityRequest;
 import com.newscatcher.catchall.resources.entities.requests.GetEntityRequest;
@@ -27,6 +29,7 @@ import com.newscatcher.catchall.types.CreateEntityResponse;
 import com.newscatcher.catchall.types.EntityListResponse;
 import com.newscatcher.catchall.types.EntityResponse;
 import com.newscatcher.catchall.types.Error;
+import com.newscatcher.catchall.types.ValidationErrorResponse;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -100,6 +103,10 @@ public class RawEntitiesClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "sort_order", request.getSortOrder().get(), false);
         }
+        if (request.getProjectId().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "project_id", request.getProjectId().get(), false);
+        }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -132,9 +139,20 @@ public class RawEntitiesClient {
                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, EntityListResponse.class), response);
             }
             try {
-                if (response.code() == 403) {
-                    throw new ForbiddenError(
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidationErrorResponse.class),
+                                response);
                 }
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
@@ -214,6 +232,9 @@ public class RawEntitiesClient {
                     case 400:
                         throw new BadRequestError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 403:
                         throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
@@ -296,6 +317,9 @@ public class RawEntitiesClient {
                     case 400:
                         throw new BadRequestError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 403:
                         throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
@@ -376,6 +400,9 @@ public class RawEntitiesClient {
             }
             try {
                 switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 403:
                         throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
@@ -462,6 +489,9 @@ public class RawEntitiesClient {
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 403:
                         throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
@@ -556,6 +586,9 @@ public class RawEntitiesClient {
                     case 400:
                         throw new BadRequestError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);
                     case 403:
                         throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Error.class), response);

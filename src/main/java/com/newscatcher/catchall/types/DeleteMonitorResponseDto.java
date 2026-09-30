@@ -62,7 +62,7 @@ public final class DeleteMonitorResponseDto {
     }
 
     /**
-     * @return ID of the deleted monitor. <code>null</code> on failure.
+     * @return ID of the deleted event monitor. <code>null</code> on failure.
      */
     @JsonIgnore
     public Optional<String> getMonitorId() {
@@ -139,7 +139,7 @@ public final class DeleteMonitorResponseDto {
         _FinalStage message(Nullable<String> message);
 
         /**
-         * <p>ID of the deleted monitor. <code>null</code> on failure.</p>
+         * <p>ID of the deleted event monitor. <code>null</code> on failure.</p>
          */
         _FinalStage monitorId(Optional<String> monitorId);
 
@@ -181,7 +181,7 @@ public final class DeleteMonitorResponseDto {
         }
 
         /**
-         * <p>ID of the deleted monitor. <code>null</code> on failure.</p>
+         * <p>ID of the deleted event monitor. <code>null</code> on failure.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -197,7 +197,7 @@ public final class DeleteMonitorResponseDto {
         }
 
         /**
-         * <p>ID of the deleted monitor. <code>null</code> on failure.</p>
+         * <p>ID of the deleted event monitor. <code>null</code> on failure.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -207,7 +207,7 @@ public final class DeleteMonitorResponseDto {
         }
 
         /**
-         * <p>ID of the deleted monitor. <code>null</code> on failure.</p>
+         * <p>ID of the deleted event monitor. <code>null</code> on failure.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "monitor_id", nulls = Nulls.SKIP)

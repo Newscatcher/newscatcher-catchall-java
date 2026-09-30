@@ -38,6 +38,8 @@ public final class ListEntitiesRequest {
 
     private final Optional<SortOrder> sortOrder;
 
+    private final Optional<String> projectId;
+
     private final Map<String, Object> additionalProperties;
 
     private ListEntitiesRequest(
@@ -48,6 +50,7 @@ public final class ListEntitiesRequest {
             Optional<EntityType> entityType,
             Optional<EntitySortBy> sortBy,
             Optional<SortOrder> sortOrder,
+            Optional<String> projectId,
             Map<String, Object> additionalProperties) {
         this.page = page;
         this.pageSize = pageSize;
@@ -56,6 +59,7 @@ public final class ListEntitiesRequest {
         this.entityType = entityType;
         this.sortBy = sortBy;
         this.sortOrder = sortOrder;
+        this.projectId = projectId;
         this.additionalProperties = additionalProperties;
     }
 
@@ -103,6 +107,14 @@ public final class ListEntitiesRequest {
         return sortOrder;
     }
 
+    /**
+     * @return Filter results to resources belonging to this project.
+     */
+    @JsonProperty("project_id")
+    public Optional<String> getProjectId() {
+        return projectId;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -121,13 +133,21 @@ public final class ListEntitiesRequest {
                 && status.equals(other.status)
                 && entityType.equals(other.entityType)
                 && sortBy.equals(other.sortBy)
-                && sortOrder.equals(other.sortOrder);
+                && sortOrder.equals(other.sortOrder)
+                && projectId.equals(other.projectId);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.page, this.pageSize, this.search, this.status, this.entityType, this.sortBy, this.sortOrder);
+                this.page,
+                this.pageSize,
+                this.search,
+                this.status,
+                this.entityType,
+                this.sortBy,
+                this.sortOrder,
+                this.projectId);
     }
 
     @java.lang.Override
@@ -155,6 +175,8 @@ public final class ListEntitiesRequest {
 
         private Optional<SortOrder> sortOrder = Optional.empty();
 
+        private Optional<String> projectId = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -168,6 +190,7 @@ public final class ListEntitiesRequest {
             entityType(other.getEntityType());
             sortBy(other.getSortBy());
             sortOrder(other.getSortOrder());
+            projectId(other.getProjectId());
             return this;
         }
 
@@ -257,9 +280,23 @@ public final class ListEntitiesRequest {
             return this;
         }
 
+        /**
+         * <p>Filter results to resources belonging to this project.</p>
+         */
+        @JsonSetter(value = "project_id", nulls = Nulls.SKIP)
+        public Builder projectId(Optional<String> projectId) {
+            this.projectId = projectId;
+            return this;
+        }
+
+        public Builder projectId(String projectId) {
+            this.projectId = Optional.ofNullable(projectId);
+            return this;
+        }
+
         public ListEntitiesRequest build() {
             return new ListEntitiesRequest(
-                    page, pageSize, search, status, entityType, sortBy, sortOrder, additionalProperties);
+                    page, pageSize, search, status, entityType, sortBy, sortOrder, projectId, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {
