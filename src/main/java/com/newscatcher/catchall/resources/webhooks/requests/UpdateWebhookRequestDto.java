@@ -225,7 +225,6 @@ public final class UpdateWebhookRequestDto {
 
         private Optional<Boolean> isActive = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -399,6 +398,23 @@ public final class UpdateWebhookRequestDto {
                     formatterConfig,
                     isActive,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("url")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("delivery_mode")
+                    || key.equalsIgnoreCase("method")
+                    || key.equalsIgnoreCase("headers")
+                    || key.equalsIgnoreCase("params")
+                    || key.equalsIgnoreCase("auth")
+                    || key.equalsIgnoreCase("formatter_config")
+                    || key.equalsIgnoreCase("is_active")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

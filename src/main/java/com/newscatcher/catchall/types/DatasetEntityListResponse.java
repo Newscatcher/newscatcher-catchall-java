@@ -154,7 +154,6 @@ public final class DatasetEntityListResponse {
 
         private List<EntitySummary> entities = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -239,6 +238,17 @@ public final class DatasetEntityListResponse {
         @java.lang.Override
         public DatasetEntityListResponse build() {
             return new DatasetEntityListResponse(entities, total, page, pageSize, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("entities")
+                    || key.equalsIgnoreCase("total")
+                    || key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

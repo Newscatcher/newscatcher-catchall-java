@@ -71,7 +71,6 @@ public final class TestWebhookRequestDto {
     public static final class Builder {
         private Optional<Map<String, Object>> payload = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -98,6 +97,14 @@ public final class TestWebhookRequestDto {
 
         public TestWebhookRequestDto build() {
             return new TestWebhookRequestDto(payload, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("payload")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -224,7 +224,6 @@ public final class UserJob {
 
         private Optional<UserJobMode> mode = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -348,6 +347,20 @@ public final class UserJob {
         @java.lang.Override
         public UserJob build() {
             return new UserJob(jobId, query, createdAt, status, mode, sharingInfo, userKey, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("job_id")
+                    || key.equalsIgnoreCase("query")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("mode")
+                    || key.equalsIgnoreCase("sharing_info")
+                    || key.equalsIgnoreCase("user_key")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

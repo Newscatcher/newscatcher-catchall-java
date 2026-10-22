@@ -3,6 +3,7 @@
  */
 package com.newscatcher.catchall.resources.jobs;
 
+import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.jobs.requests.ContinueRequestDto;
@@ -47,21 +48,44 @@ public class AsyncJobsClient {
      * Returns all jobs created by the authenticated user.
      */
     public CompletableFuture<ListUserJobsResponseDto> getUserJobs() {
-        return this.rawClient.getUserJobs().thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListUserJobsResponseDto>> rawFuture = this.rawClient.getUserJobs();
+        CompletableFuture<ListUserJobsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns all jobs created by the authenticated user.
      */
     public CompletableFuture<ListUserJobsResponseDto> getUserJobs(RequestOptions requestOptions) {
-        return this.rawClient.getUserJobs(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListUserJobsResponseDto>> rawFuture =
+                this.rawClient.getUserJobs(requestOptions);
+        CompletableFuture<ListUserJobsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns all jobs created by the authenticated user.
      */
     public CompletableFuture<ListUserJobsResponseDto> getUserJobs(GetUserJobsRequest request) {
-        return this.rawClient.getUserJobs(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListUserJobsResponseDto>> rawFuture =
+                this.rawClient.getUserJobs(request);
+        CompletableFuture<ListUserJobsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -69,7 +93,15 @@ public class AsyncJobsClient {
      */
     public CompletableFuture<ListUserJobsResponseDto> getUserJobs(
             GetUserJobsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getUserJobs(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListUserJobsResponseDto>> rawFuture =
+                this.rawClient.getUserJobs(request, requestOptions);
+        CompletableFuture<ListUserJobsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -77,7 +109,15 @@ public class AsyncJobsClient {
      * <p>Returns a quality assessment with a status level, identified issues, and actionable suggestions.</p>
      */
     public CompletableFuture<ValidateQueryResponseDto> validateQuery(ValidateQueryRequestDto request) {
-        return this.rawClient.validateQuery(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ValidateQueryResponseDto>> rawFuture =
+                this.rawClient.validateQuery(request);
+        CompletableFuture<ValidateQueryResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -86,14 +126,30 @@ public class AsyncJobsClient {
      */
     public CompletableFuture<ValidateQueryResponseDto> validateQuery(
             ValidateQueryRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.validateQuery(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ValidateQueryResponseDto>> rawFuture =
+                this.rawClient.validateQuery(request, requestOptions);
+        CompletableFuture<ValidateQueryResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Get suggested validators, enrichments, and date ranges for a query.
      */
     public CompletableFuture<InitializeResponseDto> initialize(InitializeRequestDto request) {
-        return this.rawClient.initialize(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<InitializeResponseDto>> rawFuture =
+                this.rawClient.initialize(request);
+        CompletableFuture<InitializeResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -101,42 +157,88 @@ public class AsyncJobsClient {
      */
     public CompletableFuture<InitializeResponseDto> initialize(
             InitializeRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.initialize(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<InitializeResponseDto>> rawFuture =
+                this.rawClient.initialize(request, requestOptions);
+        CompletableFuture<InitializeResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Submit a query to create a new processing job.
      */
     public CompletableFuture<SubmitResponseDto> createJob(SubmitRequestDto request) {
-        return this.rawClient.createJob(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<SubmitResponseDto>> rawFuture = this.rawClient.createJob(request);
+        CompletableFuture<SubmitResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Submit a query to create a new processing job.
      */
     public CompletableFuture<SubmitResponseDto> createJob(SubmitRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.createJob(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<SubmitResponseDto>> rawFuture =
+                this.rawClient.createJob(request, requestOptions);
+        CompletableFuture<SubmitResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Retrieve the current processing status of a job.
      */
     public CompletableFuture<StatusResponseDto> getJobStatus(String jobId) {
-        return this.rawClient.getJobStatus(jobId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<StatusResponseDto>> rawFuture = this.rawClient.getJobStatus(jobId);
+        CompletableFuture<StatusResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Retrieve the current processing status of a job.
      */
     public CompletableFuture<StatusResponseDto> getJobStatus(String jobId, RequestOptions requestOptions) {
-        return this.rawClient.getJobStatus(jobId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<StatusResponseDto>> rawFuture =
+                this.rawClient.getJobStatus(jobId, requestOptions);
+        CompletableFuture<StatusResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Retrieve the current processing status of a job.
      */
     public CompletableFuture<StatusResponseDto> getJobStatus(String jobId, GetJobStatusRequest request) {
-        return this.rawClient.getJobStatus(jobId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<StatusResponseDto>> rawFuture =
+                this.rawClient.getJobStatus(jobId, request);
+        CompletableFuture<StatusResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -144,28 +246,59 @@ public class AsyncJobsClient {
      */
     public CompletableFuture<StatusResponseDto> getJobStatus(
             String jobId, GetJobStatusRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getJobStatus(jobId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<StatusResponseDto>> rawFuture =
+                this.rawClient.getJobStatus(jobId, request, requestOptions);
+        CompletableFuture<StatusResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Retrieve the final results for a completed job.
      */
     public CompletableFuture<PullJobResponseDto> getJobResults(String jobId) {
-        return this.rawClient.getJobResults(jobId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<PullJobResponseDto>> rawFuture = this.rawClient.getJobResults(jobId);
+        CompletableFuture<PullJobResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Retrieve the final results for a completed job.
      */
     public CompletableFuture<PullJobResponseDto> getJobResults(String jobId, RequestOptions requestOptions) {
-        return this.rawClient.getJobResults(jobId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<PullJobResponseDto>> rawFuture =
+                this.rawClient.getJobResults(jobId, requestOptions);
+        CompletableFuture<PullJobResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Retrieve the final results for a completed job.
      */
     public CompletableFuture<PullJobResponseDto> getJobResults(String jobId, GetJobResultsRequest request) {
-        return this.rawClient.getJobResults(jobId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<PullJobResponseDto>> rawFuture =
+                this.rawClient.getJobResults(jobId, request);
+        CompletableFuture<PullJobResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -173,7 +306,15 @@ public class AsyncJobsClient {
      */
     public CompletableFuture<PullJobResponseDto> getJobResults(
             String jobId, GetJobResultsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getJobResults(jobId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<PullJobResponseDto>> rawFuture =
+                this.rawClient.getJobResults(jobId, request, requestOptions);
+        CompletableFuture<PullJobResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -181,7 +322,14 @@ public class AsyncJobsClient {
      * <p>If the job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CompletableFuture<String> getJobResultsCsv(String jobId) {
-        return this.rawClient.getJobResultsCsv(jobId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<String>> rawFuture = this.rawClient.getJobResultsCsv(jobId);
+        CompletableFuture<String> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -189,7 +337,15 @@ public class AsyncJobsClient {
      * <p>If the job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CompletableFuture<String> getJobResultsCsv(String jobId, RequestOptions requestOptions) {
-        return this.rawClient.getJobResultsCsv(jobId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<String>> rawFuture =
+                this.rawClient.getJobResultsCsv(jobId, requestOptions);
+        CompletableFuture<String> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -197,7 +353,14 @@ public class AsyncJobsClient {
      * <p>If the job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CompletableFuture<String> getJobResultsCsv(String jobId, GetJobResultsCsvRequest request) {
-        return this.rawClient.getJobResultsCsv(jobId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<String>> rawFuture = this.rawClient.getJobResultsCsv(jobId, request);
+        CompletableFuture<String> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -206,14 +369,29 @@ public class AsyncJobsClient {
      */
     public CompletableFuture<String> getJobResultsCsv(
             String jobId, GetJobResultsCsvRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getJobResultsCsv(jobId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<String>> rawFuture =
+                this.rawClient.getJobResultsCsv(jobId, request, requestOptions);
+        CompletableFuture<String> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Continue an existing job to process more records beyond the initial limit.
      */
     public CompletableFuture<ContinueResponseDto> continueJob(ContinueRequestDto request) {
-        return this.rawClient.continueJob(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ContinueResponseDto>> rawFuture = this.rawClient.continueJob(request);
+        CompletableFuture<ContinueResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -221,7 +399,15 @@ public class AsyncJobsClient {
      */
     public CompletableFuture<ContinueResponseDto> continueJob(
             ContinueRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.continueJob(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ContinueResponseDto>> rawFuture =
+                this.rawClient.continueJob(request, requestOptions);
+        CompletableFuture<ContinueResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -230,7 +416,14 @@ public class AsyncJobsClient {
      * <p>Deleting an already-deleted job returns <code>200</code>.</p>
      */
     public CompletableFuture<DeleteJobResponseDto> deleteJob(String jobId) {
-        return this.rawClient.deleteJob(jobId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DeleteJobResponseDto>> rawFuture = this.rawClient.deleteJob(jobId);
+        CompletableFuture<DeleteJobResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -239,7 +432,15 @@ public class AsyncJobsClient {
      * <p>Deleting an already-deleted job returns <code>200</code>.</p>
      */
     public CompletableFuture<DeleteJobResponseDto> deleteJob(String jobId, RequestOptions requestOptions) {
-        return this.rawClient.deleteJob(jobId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DeleteJobResponseDto>> rawFuture =
+                this.rawClient.deleteJob(jobId, requestOptions);
+        CompletableFuture<DeleteJobResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -248,7 +449,15 @@ public class AsyncJobsClient {
      * <p>Deleting an already-deleted job returns <code>200</code>.</p>
      */
     public CompletableFuture<DeleteJobResponseDto> deleteJob(String jobId, DeleteJobRequest request) {
-        return this.rawClient.deleteJob(jobId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DeleteJobResponseDto>> rawFuture =
+                this.rawClient.deleteJob(jobId, request);
+        CompletableFuture<DeleteJobResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -258,7 +467,15 @@ public class AsyncJobsClient {
      */
     public CompletableFuture<DeleteJobResponseDto> deleteJob(
             String jobId, DeleteJobRequest request, RequestOptions requestOptions) {
-        return this.rawClient.deleteJob(jobId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DeleteJobResponseDto>> rawFuture =
+                this.rawClient.deleteJob(jobId, request, requestOptions);
+        CompletableFuture<DeleteJobResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -271,7 +488,15 @@ public class AsyncJobsClient {
      * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
      */
     public CompletableFuture<ListSourceGroupsResponseDto> listSourceGroups() {
-        return this.rawClient.listSourceGroups().thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListSourceGroupsResponseDto>> rawFuture =
+                this.rawClient.listSourceGroups();
+        CompletableFuture<ListSourceGroupsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -284,7 +509,15 @@ public class AsyncJobsClient {
      * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
      */
     public CompletableFuture<ListSourceGroupsResponseDto> listSourceGroups(RequestOptions requestOptions) {
-        return this.rawClient.listSourceGroups(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListSourceGroupsResponseDto>> rawFuture =
+                this.rawClient.listSourceGroups(requestOptions);
+        CompletableFuture<ListSourceGroupsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -297,7 +530,15 @@ public class AsyncJobsClient {
      * been granted access to. Each entry returns <code>slug</code>, <code>name</code>, and <code>description</code>.</p>
      */
     public CompletableFuture<ListSourceGroupsResponseDto> listSourceGroups(ListSourceGroupsRequest request) {
-        return this.rawClient.listSourceGroups(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListSourceGroupsResponseDto>> rawFuture =
+                this.rawClient.listSourceGroups(request);
+        CompletableFuture<ListSourceGroupsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -311,6 +552,14 @@ public class AsyncJobsClient {
      */
     public CompletableFuture<ListSourceGroupsResponseDto> listSourceGroups(
             ListSourceGroupsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.listSourceGroups(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListSourceGroupsResponseDto>> rawFuture =
+                this.rawClient.listSourceGroups(request, requestOptions);
+        CompletableFuture<ListSourceGroupsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

@@ -127,7 +127,6 @@ public final class DisableMonitorResponse {
 
         private String monitorId;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -176,6 +175,16 @@ public final class DisableMonitorResponse {
         @java.lang.Override
         public DisableMonitorResponse build() {
             return new DisableMonitorResponse(success, message, monitorId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("success")
+                    || key.equalsIgnoreCase("message")
+                    || key.equalsIgnoreCase("monitor_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

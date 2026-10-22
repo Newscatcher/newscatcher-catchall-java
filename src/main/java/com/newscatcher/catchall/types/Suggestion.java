@@ -129,7 +129,6 @@ public final class Suggestion {
 
         private Optional<String> example = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -187,6 +186,14 @@ public final class Suggestion {
         @java.lang.Override
         public Suggestion build() {
             return new Suggestion(issue, message, example, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("issue") || key.equalsIgnoreCase("message") || key.equalsIgnoreCase("example")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

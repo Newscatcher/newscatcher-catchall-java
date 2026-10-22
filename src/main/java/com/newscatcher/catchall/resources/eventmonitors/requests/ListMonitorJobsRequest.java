@@ -72,7 +72,6 @@ public final class ListMonitorJobsRequest {
     public static final class Builder {
         private Optional<ListMonitorJobsRequestSort> sort = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -98,6 +97,14 @@ public final class ListMonitorJobsRequest {
 
         public ListMonitorJobsRequest build() {
             return new ListMonitorJobsRequest(sort, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("sort")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

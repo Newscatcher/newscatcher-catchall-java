@@ -246,7 +246,6 @@ public final class InitializeResponseDto {
 
         private Optional<String> context = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -448,6 +447,20 @@ public final class InitializeResponseDto {
                     endDate,
                     dateModificationMessage,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("query")
+                    || key.equalsIgnoreCase("context")
+                    || key.equalsIgnoreCase("validators")
+                    || key.equalsIgnoreCase("enrichments")
+                    || key.equalsIgnoreCase("start_date")
+                    || key.equalsIgnoreCase("end_date")
+                    || key.equalsIgnoreCase("date_modification_message")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

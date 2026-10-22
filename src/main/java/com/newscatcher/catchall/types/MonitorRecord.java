@@ -212,7 +212,6 @@ public final class MonitorRecord implements IBaseRecord {
 
         private List<MonitorCitation> citations = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -342,6 +341,19 @@ public final class MonitorRecord implements IBaseRecord {
         public MonitorRecord build() {
             return new MonitorRecord(
                     recordId, recordTitle, enrichment, citations, addedOn, updatedOn, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("record_id")
+                    || key.equalsIgnoreCase("record_title")
+                    || key.equalsIgnoreCase("enrichment")
+                    || key.equalsIgnoreCase("citations")
+                    || key.equalsIgnoreCase("added_on")
+                    || key.equalsIgnoreCase("updated_on")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

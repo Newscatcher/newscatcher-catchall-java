@@ -4,12 +4,14 @@
 package com.newscatcher.catchall.resources.entities;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.newscatcher.catchall.core.BodyProperties;
 import com.newscatcher.catchall.core.CatchAllApiApiException;
 import com.newscatcher.catchall.core.CatchAllApiException;
 import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.MediaTypes;
 import com.newscatcher.catchall.core.ObjectMappers;
+import com.newscatcher.catchall.core.PathSegments;
 import com.newscatcher.catchall.core.QueryStringMapper;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.core.RetryInterceptor;
@@ -196,7 +198,9 @@ public class RawEntitiesClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -280,7 +284,9 @@ public class RawEntitiesClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -366,7 +372,7 @@ public class RawEntitiesClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/entities")
-                .addPathSegment(entityId);
+                .addPathSegment(PathSegments.validate(entityId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -456,7 +462,7 @@ public class RawEntitiesClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/entities")
-                .addPathSegment(entityId);
+                .addPathSegment(PathSegments.validate(entityId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -464,7 +470,10 @@ public class RawEntitiesClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -541,7 +550,7 @@ public class RawEntitiesClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/entities")
-                .addPathSegment(entityId);
+                .addPathSegment(PathSegments.validate(entityId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -550,7 +559,9 @@ public class RawEntitiesClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }

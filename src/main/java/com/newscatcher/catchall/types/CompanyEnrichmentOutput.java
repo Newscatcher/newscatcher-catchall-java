@@ -124,7 +124,6 @@ public final class CompanyEnrichmentOutput {
 
         private CompanyEnrichmentOutputMetadata metadata;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -169,6 +168,16 @@ public final class CompanyEnrichmentOutput {
         @java.lang.Override
         public CompanyEnrichmentOutput build() {
             return new CompanyEnrichmentOutput(sourceText, confidence, metadata, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("source_text")
+                    || key.equalsIgnoreCase("confidence")
+                    || key.equalsIgnoreCase("metadata")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

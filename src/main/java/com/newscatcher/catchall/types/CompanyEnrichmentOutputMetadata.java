@@ -161,7 +161,6 @@ public final class CompanyEnrichmentOutputMetadata {
 
         private Optional<String> domainUrl = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -262,6 +261,16 @@ public final class CompanyEnrichmentOutputMetadata {
         @java.lang.Override
         public CompanyEnrichmentOutputMetadata build() {
             return new CompanyEnrichmentOutputMetadata(name, domainUrl, domainUrlConfidence, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("domain_url")
+                    || key.equalsIgnoreCase("domain_url_confidence")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

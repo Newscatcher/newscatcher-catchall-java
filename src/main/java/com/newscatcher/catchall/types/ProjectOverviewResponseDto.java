@@ -107,7 +107,6 @@ public final class ProjectOverviewResponseDto {
 
         private ProjectOverviewResponseDtoOverview overview;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -144,6 +143,14 @@ public final class ProjectOverviewResponseDto {
         @java.lang.Override
         public ProjectOverviewResponseDto build() {
             return new ProjectOverviewResponseDto(projectId, overview, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("project_id") || key.equalsIgnoreCase("overview")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

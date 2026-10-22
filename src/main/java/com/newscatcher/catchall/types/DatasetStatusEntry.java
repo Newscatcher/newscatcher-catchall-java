@@ -143,7 +143,6 @@ public final class DatasetStatusEntry {
 
         private Optional<Map<String, Object>> additionalInformation = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -222,6 +221,16 @@ public final class DatasetStatusEntry {
         @java.lang.Override
         public DatasetStatusEntry build() {
             return new DatasetStatusEntry(status, additionalInformation, createdAt, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("additional_information")
+                    || key.equalsIgnoreCase("created_at")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

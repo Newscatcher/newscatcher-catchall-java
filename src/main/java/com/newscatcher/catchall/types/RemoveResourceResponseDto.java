@@ -106,7 +106,6 @@ public final class RemoveResourceResponseDto {
 
         private String message;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -143,6 +142,14 @@ public final class RemoveResourceResponseDto {
         @java.lang.Override
         public RemoveResourceResponseDto build() {
             return new RemoveResourceResponseDto(success, message, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("success") || key.equalsIgnoreCase("message")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

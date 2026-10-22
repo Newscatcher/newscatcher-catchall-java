@@ -111,7 +111,6 @@ public final class CreateEntitiesBatchResponse {
 
         private List<CreateEntityResponse> entities = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -172,6 +171,14 @@ public final class CreateEntitiesBatchResponse {
         @java.lang.Override
         public CreateEntitiesBatchResponse build() {
             return new CreateEntitiesBatchResponse(entities, count, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("entities") || key.equalsIgnoreCase("count")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

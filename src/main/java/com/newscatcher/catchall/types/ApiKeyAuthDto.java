@@ -106,7 +106,6 @@ public final class ApiKeyAuthDto {
 
         private String value;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -143,6 +142,14 @@ public final class ApiKeyAuthDto {
         @java.lang.Override
         public ApiKeyAuthDto build() {
             return new ApiKeyAuthDto(header, value, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("header") || key.equalsIgnoreCase("value")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

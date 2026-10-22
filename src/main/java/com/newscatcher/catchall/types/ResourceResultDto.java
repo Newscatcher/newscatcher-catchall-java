@@ -179,7 +179,6 @@ public final class ResourceResultDto {
 
         private Optional<Boolean> alreadyExists = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -262,6 +261,18 @@ public final class ResourceResultDto {
         public ResourceResultDto build() {
             return new ResourceResultDto(
                     resourceType, resourceId, success, message, alreadyExists, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("resource_type")
+                    || key.equalsIgnoreCase("resource_id")
+                    || key.equalsIgnoreCase("success")
+                    || key.equalsIgnoreCase("message")
+                    || key.equalsIgnoreCase("already_exists")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

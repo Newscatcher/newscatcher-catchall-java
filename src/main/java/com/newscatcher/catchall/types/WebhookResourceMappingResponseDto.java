@@ -180,7 +180,6 @@ public final class WebhookResourceMappingResponseDto {
 
         private Optional<OffsetDateTime> assignedAt = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -263,6 +262,18 @@ public final class WebhookResourceMappingResponseDto {
         public WebhookResourceMappingResponseDto build() {
             return new WebhookResourceMappingResponseDto(
                     id, webhookId, resourceType, resourceId, assignedAt, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("webhook_id")
+                    || key.equalsIgnoreCase("resource_type")
+                    || key.equalsIgnoreCase("resource_id")
+                    || key.equalsIgnoreCase("assigned_at")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

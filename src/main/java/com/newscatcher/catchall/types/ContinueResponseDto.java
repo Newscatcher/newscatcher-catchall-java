@@ -156,7 +156,6 @@ public final class ContinueResponseDto {
 
         private Optional<Integer> previousLimit = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -226,6 +225,17 @@ public final class ContinueResponseDto {
         @java.lang.Override
         public ContinueResponseDto build() {
             return new ContinueResponseDto(jobId, previousLimit, newLimit, status, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("job_id")
+                    || key.equalsIgnoreCase("previous_limit")
+                    || key.equalsIgnoreCase("new_limit")
+                    || key.equalsIgnoreCase("status")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

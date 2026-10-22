@@ -106,7 +106,6 @@ public final class UpdateMonitorResponseDto {
 
         private String status;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -143,6 +142,14 @@ public final class UpdateMonitorResponseDto {
         @java.lang.Override
         public UpdateMonitorResponseDto build() {
             return new UpdateMonitorResponseDto(monitorId, status, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("monitor_id") || key.equalsIgnoreCase("status")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

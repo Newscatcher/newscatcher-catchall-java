@@ -156,7 +156,6 @@ public final class DeleteMonitorResponseDto {
 
         private Optional<String> message = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -255,6 +254,16 @@ public final class DeleteMonitorResponseDto {
         @java.lang.Override
         public DeleteMonitorResponseDto build() {
             return new DeleteMonitorResponseDto(success, message, monitorId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("success")
+                    || key.equalsIgnoreCase("message")
+                    || key.equalsIgnoreCase("monitor_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -84,7 +84,6 @@ public final class BaseRecordEnrichment {
     public static final class Builder {
         private Optional<BaseRecordEnrichmentEnrichmentConfidence> enrichmentConfidence = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -121,6 +120,14 @@ public final class BaseRecordEnrichment {
 
         public BaseRecordEnrichment build() {
             return new BaseRecordEnrichment(enrichmentConfidence, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("enrichment_confidence")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

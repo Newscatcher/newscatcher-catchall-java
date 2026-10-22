@@ -118,7 +118,6 @@ public final class ProjectOverviewResponseDtoOverview {
 
         private Map<String, Object> webhooks = new LinkedHashMap<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -240,6 +239,18 @@ public final class ProjectOverviewResponseDtoOverview {
         public ProjectOverviewResponseDtoOverview build() {
             return new ProjectOverviewResponseDtoOverview(
                     jobs, monitors, datasets, monitorGroups, webhooks, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("jobs")
+                    || key.equalsIgnoreCase("monitors")
+                    || key.equalsIgnoreCase("datasets")
+                    || key.equalsIgnoreCase("monitor_groups")
+                    || key.equalsIgnoreCase("webhooks")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -155,7 +155,6 @@ public final class AssignWebhookResourceResponseDto {
 
         private Optional<String> message = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -244,6 +243,17 @@ public final class AssignWebhookResourceResponseDto {
         public AssignWebhookResourceResponseDto build() {
             return new AssignWebhookResourceResponseDto(
                     success, message, alreadyExisted, mapping, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("success")
+                    || key.equalsIgnoreCase("message")
+                    || key.equalsIgnoreCase("already_existed")
+                    || key.equalsIgnoreCase("mapping")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

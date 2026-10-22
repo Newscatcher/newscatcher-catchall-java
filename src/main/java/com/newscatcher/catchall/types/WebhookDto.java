@@ -179,7 +179,6 @@ public final class WebhookDto {
 
         private Optional<WebhookDtoMethod> method = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -288,6 +287,18 @@ public final class WebhookDto {
         @java.lang.Override
         public WebhookDto build() {
             return new WebhookDto(url, method, headers, params, auth, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("url")
+                    || key.equalsIgnoreCase("method")
+                    || key.equalsIgnoreCase("headers")
+                    || key.equalsIgnoreCase("params")
+                    || key.equalsIgnoreCase("auth")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

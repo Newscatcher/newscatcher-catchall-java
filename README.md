@@ -19,6 +19,7 @@ The Newscatcher Java library provides convenient access to the Newscatcher APIs 
   - [Retries](#retries)
   - [Timeouts](#timeouts)
   - [Custom Headers](#custom-headers)
+  - [Additional Body Properties](#additional-body-properties)
   - [Access Raw Response Data](#access-raw-response-data)
 - [Contributing](#contributing)
 - [Support](#support)
@@ -35,7 +36,7 @@ Add the dependency in your `build.gradle` file:
 
 ```groovy
 dependencies {
-  implementation 'com.newscatcherapi:newscatcher-catchall-sdk:3.0.5'
+  implementation 'com.newscatcherapi:newscatcher-catchall-sdk:0.0.0-fern-placeholder'
 }
 ```
 
@@ -47,7 +48,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.newscatcherapi</groupId>
   <artifactId>newscatcher-catchall-sdk</artifactId>
-  <version>3.0.5</version>
+  <version>0.0.0-fern-placeholder</version>
 </dependency>
 ```
 
@@ -99,7 +100,7 @@ import com.newscatcher.catchall.core.Environment;
 
 CatchAllApi client = CatchAllApi
     .builder()
-    .environment(Environment.Default)
+    .environment(Environment.DEFAULT)
     .build();
 ```
 
@@ -231,6 +232,25 @@ client.jobs().createJob(
 );
 ```
 
+### Additional Body Properties
+
+If you need to send a request body property that is not yet part of the SDK (for example, a beta field),
+use the `addBodyProperty` request option. Properties are sent with the key exactly as given and override
+any property with the same key; for endpoints without a request body, they are sent as a JSON body.
+This is supported for JSON and form-urlencoded request bodies, but not for multipart (file upload) requests.
+
+```java
+import com.newscatcher.catchall.core.RequestOptions;
+
+client.jobs().createJob(
+    ...,
+    RequestOptions
+        .builder()
+        .addBodyProperty("extra_field", "extra-value")
+        .build()
+);
+```
+
 ### Access Raw Response Data
 
 The SDK provides access to raw response data, including headers, through the `withRawResponse()` method.
@@ -257,6 +277,7 @@ On the other hand, contributions to the README are always very welcome!
 
 - Documentation: [www.newscatcherapi.com/docs/web-search-api](https://www.newscatcherapi.com/docs/web-search-api/get-started/introduction)
 - Support: <support@newscatcherapi.com>
+
 
 
 

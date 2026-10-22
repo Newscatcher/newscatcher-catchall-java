@@ -233,7 +233,6 @@ public final class Record implements IBaseRecord {
 
         private List<Citation> citations = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -390,6 +389,19 @@ public final class Record implements IBaseRecord {
         public Record build() {
             return new Record(
                     recordId, recordTitle, enrichment, citations, connectedEntities, tags, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("record_id")
+                    || key.equalsIgnoreCase("record_title")
+                    || key.equalsIgnoreCase("enrichment")
+                    || key.equalsIgnoreCase("citations")
+                    || key.equalsIgnoreCase("connected_entities")
+                    || key.equalsIgnoreCase("tags")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

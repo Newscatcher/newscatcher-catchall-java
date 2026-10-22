@@ -114,7 +114,6 @@ public final class ReferenceJob {
 
         private Optional<List<SourceGroupRef>> sourceGroups = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -182,6 +181,16 @@ public final class ReferenceJob {
 
         public ReferenceJob build() {
             return new ReferenceJob(query, context, sourceGroups, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("query")
+                    || key.equalsIgnoreCase("context")
+                    || key.equalsIgnoreCase("source_groups")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

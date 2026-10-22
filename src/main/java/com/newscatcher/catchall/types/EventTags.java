@@ -106,7 +106,6 @@ public final class EventTags {
 
         private Optional<String> sector = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -171,6 +170,14 @@ public final class EventTags {
 
         public EventTags build() {
             return new EventTags(eventType, sector, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("event_type") || key.equalsIgnoreCase("sector")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -180,7 +180,6 @@ public final class ListMonitorsResponseDto {
 
         private List<MonitorListItemDto> monitors = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -277,6 +276,18 @@ public final class ListMonitorsResponseDto {
         @java.lang.Override
         public ListMonitorsResponseDto build() {
             return new ListMonitorsResponseDto(total, page, pageSize, totalPages, monitors, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("total")
+                    || key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")
+                    || key.equalsIgnoreCase("total_pages")
+                    || key.equalsIgnoreCase("monitors")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

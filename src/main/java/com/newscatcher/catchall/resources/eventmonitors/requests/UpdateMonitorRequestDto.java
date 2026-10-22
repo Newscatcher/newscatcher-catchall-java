@@ -146,7 +146,6 @@ public final class UpdateMonitorRequestDto {
 
         private Optional<String> timezone = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -246,6 +245,17 @@ public final class UpdateMonitorRequestDto {
 
         public UpdateMonitorRequestDto build() {
             return new UpdateMonitorRequestDto(webhookIds, limit, schedule, timezone, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("webhook_ids")
+                    || key.equalsIgnoreCase("limit")
+                    || key.equalsIgnoreCase("schedule")
+                    || key.equalsIgnoreCase("timezone")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -129,7 +129,6 @@ public final class ValidatorSchema {
 
         private Optional<String> type = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -187,6 +186,14 @@ public final class ValidatorSchema {
         @java.lang.Override
         public ValidatorSchema build() {
             return new ValidatorSchema(name, description, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("name") || key.equalsIgnoreCase("description") || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

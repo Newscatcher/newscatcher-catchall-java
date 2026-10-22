@@ -120,7 +120,6 @@ public final class JobStep {
 
         private boolean completed;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -165,6 +164,14 @@ public final class JobStep {
         @java.lang.Override
         public JobStep build() {
             return new JobStep(status, order, completed, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("status") || key.equalsIgnoreCase("order") || key.equalsIgnoreCase("completed")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

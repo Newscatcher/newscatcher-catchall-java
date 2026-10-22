@@ -106,7 +106,6 @@ public final class ManageEntitiesResponse {
 
         private int affectedCount;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -143,6 +142,14 @@ public final class ManageEntitiesResponse {
         @java.lang.Override
         public ManageEntitiesResponse build() {
             return new ManageEntitiesResponse(datasetId, affectedCount, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("dataset_id") || key.equalsIgnoreCase("affected_count")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

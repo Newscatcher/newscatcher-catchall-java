@@ -157,7 +157,6 @@ public final class GetWebhookDeliveryHistoryRequest {
 
         private Optional<Integer> page = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -236,6 +235,17 @@ public final class GetWebhookDeliveryHistoryRequest {
         @java.lang.Override
         public GetWebhookDeliveryHistoryRequest build() {
             return new GetWebhookDeliveryHistoryRequest(resourceType, resourceId, page, pageSize, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("resource_type")
+                    || key.equalsIgnoreCase("resource_id")
+                    || key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

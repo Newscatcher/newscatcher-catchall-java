@@ -81,7 +81,6 @@ public final class PullJobResponseDtoDateRange {
 
         private Optional<OffsetDateTime> endDate = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -116,6 +115,14 @@ public final class PullJobResponseDtoDateRange {
 
         public PullJobResponseDtoDateRange build() {
             return new PullJobResponseDtoDateRange(startDate, endDate, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("start_date") || key.equalsIgnoreCase("end_date")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

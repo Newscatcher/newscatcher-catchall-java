@@ -129,25 +129,33 @@ public class DatasetsClient {
                 .body();
     }
 
-    public CreateDatasetCsvResponse createDatasetFromCsv(InputStream stream, String filename) {
-        return this.rawClient.createDatasetFromCsv(stream, filename).body();
-    }
-
-    public CreateDatasetCsvResponse createDatasetFromCsv(InputStream stream, String filename, MediaType mediaType) {
-        return this.rawClient.createDatasetFromCsv(stream, filename, mediaType).body();
+    public CreateDatasetCsvResponse createDatasetFromCsv(
+            CreateDatasetFromCsvRequest request, InputStream stream, String filename) {
+        return this.rawClient.createDatasetFromCsv(request, stream, filename).body();
     }
 
     public CreateDatasetCsvResponse createDatasetFromCsv(
-            InputStream stream, String filename, RequestOptions requestOptions) {
+            CreateDatasetFromCsvRequest request, InputStream stream, String filename, MediaType mediaType) {
         return this.rawClient
-                .createDatasetFromCsv(stream, filename, requestOptions)
+                .createDatasetFromCsv(request, stream, filename, mediaType)
                 .body();
     }
 
     public CreateDatasetCsvResponse createDatasetFromCsv(
-            InputStream stream, String filename, MediaType mediaType, RequestOptions requestOptions) {
+            CreateDatasetFromCsvRequest request, InputStream stream, String filename, RequestOptions requestOptions) {
         return this.rawClient
-                .createDatasetFromCsv(stream, filename, mediaType, requestOptions)
+                .createDatasetFromCsv(request, stream, filename, requestOptions)
+                .body();
+    }
+
+    public CreateDatasetCsvResponse createDatasetFromCsv(
+            CreateDatasetFromCsvRequest request,
+            InputStream stream,
+            String filename,
+            MediaType mediaType,
+            RequestOptions requestOptions) {
+        return this.rawClient
+                .createDatasetFromCsv(request, stream, filename, mediaType, requestOptions)
                 .body();
     }
 

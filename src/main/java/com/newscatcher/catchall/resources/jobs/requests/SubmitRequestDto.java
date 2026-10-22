@@ -425,7 +425,6 @@ public final class SubmitRequestDto {
 
         private Optional<String> context = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -764,6 +763,28 @@ public final class SubmitRequestDto {
                     edAssociationType,
                     sourceGroups,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("query")
+                    || key.equalsIgnoreCase("context")
+                    || key.equalsIgnoreCase("limit")
+                    || key.equalsIgnoreCase("start_date")
+                    || key.equalsIgnoreCase("end_date")
+                    || key.equalsIgnoreCase("validators")
+                    || key.equalsIgnoreCase("enrichments")
+                    || key.equalsIgnoreCase("mode")
+                    || key.equalsIgnoreCase("connected_dataset_ids")
+                    || key.equalsIgnoreCase("ed_score_min")
+                    || key.equalsIgnoreCase("project_id")
+                    || key.equalsIgnoreCase("webhook_ids")
+                    || key.equalsIgnoreCase("fetch_all_watchlist_news")
+                    || key.equalsIgnoreCase("ed_association_type")
+                    || key.equalsIgnoreCase("source_groups")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

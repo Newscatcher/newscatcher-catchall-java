@@ -108,7 +108,6 @@ public final class SkippedRow {
 
         private String reason;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -146,6 +145,14 @@ public final class SkippedRow {
         @java.lang.Override
         public SkippedRow build() {
             return new SkippedRow(row, reason, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("row") || key.equalsIgnoreCase("reason")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

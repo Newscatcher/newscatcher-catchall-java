@@ -145,7 +145,6 @@ public final class SourceGroupRef {
 
         private Optional<String> description = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -220,6 +219,14 @@ public final class SourceGroupRef {
         @java.lang.Override
         public SourceGroupRef build() {
             return new SourceGroupRef(slug, name, description, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("slug") || key.equalsIgnoreCase("name") || key.equalsIgnoreCase("description")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

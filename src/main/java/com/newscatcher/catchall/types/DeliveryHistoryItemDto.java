@@ -356,7 +356,6 @@ public final class DeliveryHistoryItemDto {
 
         private Optional<Map<String, Object>> additionalInfo = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -572,6 +571,24 @@ public final class DeliveryHistoryItemDto {
                     errorMessage,
                     warningMessage,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("webhook_id")
+                    || key.equalsIgnoreCase("resource_type")
+                    || key.equalsIgnoreCase("resource_id")
+                    || key.equalsIgnoreCase("additional_info")
+                    || key.equalsIgnoreCase("status_code")
+                    || key.equalsIgnoreCase("attempt_number")
+                    || key.equalsIgnoreCase("timestamp")
+                    || key.equalsIgnoreCase("delivery_status")
+                    || key.equalsIgnoreCase("error_message")
+                    || key.equalsIgnoreCase("warning_message")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

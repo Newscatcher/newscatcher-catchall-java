@@ -4,12 +4,14 @@
 package com.newscatcher.catchall.resources.eventmonitors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.newscatcher.catchall.core.BodyProperties;
 import com.newscatcher.catchall.core.CatchAllApiApiException;
 import com.newscatcher.catchall.core.CatchAllApiException;
 import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.MediaTypes;
 import com.newscatcher.catchall.core.ObjectMappers;
+import com.newscatcher.catchall.core.PathSegments;
 import com.newscatcher.catchall.core.QueryStringMapper;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.core.RetryInterceptor;
@@ -134,7 +136,8 @@ public class AsyncRawEventMonitorsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -184,6 +187,11 @@ public class AsyncRawEventMonitorsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -211,7 +219,9 @@ public class AsyncRawEventMonitorsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -236,7 +246,8 @@ public class AsyncRawEventMonitorsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<CreateMonitorResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -281,6 +292,11 @@ public class AsyncRawEventMonitorsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -315,7 +331,7 @@ public class AsyncRawEventMonitorsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors/pull")
-                .addPathSegment(monitorId);
+                .addPathSegment(PathSegments.validate(monitorId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -341,7 +357,8 @@ public class AsyncRawEventMonitorsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<PullMonitorResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -391,6 +408,11 @@ public class AsyncRawEventMonitorsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -431,7 +453,7 @@ public class AsyncRawEventMonitorsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors/pull")
-                .addPathSegment(monitorId)
+                .addPathSegment(PathSegments.validate(monitorId))
                 .addPathSegments("csv");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -458,7 +480,8 @@ public class AsyncRawEventMonitorsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<String>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -505,6 +528,11 @@ public class AsyncRawEventMonitorsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -539,7 +567,7 @@ public class AsyncRawEventMonitorsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors")
-                .addPathSegment(monitorId)
+                .addPathSegment(PathSegments.validate(monitorId))
                 .addPathSegments("jobs");
         if (request.getSort().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -570,7 +598,8 @@ public class AsyncRawEventMonitorsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -620,6 +649,11 @@ public class AsyncRawEventMonitorsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -657,7 +691,7 @@ public class AsyncRawEventMonitorsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors")
-                .addPathSegment(monitorId)
+                .addPathSegment(PathSegments.validate(monitorId))
                 .addPathSegments("status");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -684,7 +718,8 @@ public class AsyncRawEventMonitorsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<MonitorStatusHistoryResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -729,6 +764,11 @@ public class AsyncRawEventMonitorsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -763,7 +803,7 @@ public class AsyncRawEventMonitorsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors")
-                .addPathSegment(monitorId)
+                .addPathSegment(PathSegments.validate(monitorId))
                 .addPathSegments("enable");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -773,7 +813,9 @@ public class AsyncRawEventMonitorsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -798,7 +840,8 @@ public class AsyncRawEventMonitorsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<EnableMonitorResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -853,6 +896,11 @@ public class AsyncRawEventMonitorsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -887,7 +935,7 @@ public class AsyncRawEventMonitorsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors")
-                .addPathSegment(monitorId)
+                .addPathSegment(PathSegments.validate(monitorId))
                 .addPathSegments("disable");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -896,7 +944,11 @@ public class AsyncRawEventMonitorsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -914,7 +966,8 @@ public class AsyncRawEventMonitorsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -967,6 +1020,11 @@ public class AsyncRawEventMonitorsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -1023,7 +1081,7 @@ public class AsyncRawEventMonitorsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors")
-                .addPathSegment(monitorId);
+                .addPathSegment(PathSegments.validate(monitorId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -1031,7 +1089,10 @@ public class AsyncRawEventMonitorsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -1049,7 +1110,8 @@ public class AsyncRawEventMonitorsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<DeleteMonitorResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1091,6 +1153,11 @@ public class AsyncRawEventMonitorsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -1143,7 +1210,7 @@ public class AsyncRawEventMonitorsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/monitors")
-                .addPathSegment(monitorId);
+                .addPathSegment(PathSegments.validate(monitorId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -1152,7 +1219,9 @@ public class AsyncRawEventMonitorsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -1177,7 +1246,8 @@ public class AsyncRawEventMonitorsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1230,6 +1300,11 @@ public class AsyncRawEventMonitorsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;

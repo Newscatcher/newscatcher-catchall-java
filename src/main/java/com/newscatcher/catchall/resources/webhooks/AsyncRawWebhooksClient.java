@@ -4,12 +4,14 @@
 package com.newscatcher.catchall.resources.webhooks;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.newscatcher.catchall.core.BodyProperties;
 import com.newscatcher.catchall.core.CatchAllApiApiException;
 import com.newscatcher.catchall.core.CatchAllApiException;
 import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.MediaTypes;
 import com.newscatcher.catchall.core.ObjectMappers;
+import com.newscatcher.catchall.core.PathSegments;
 import com.newscatcher.catchall.core.QueryStringMapper;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.core.RetryInterceptor;
@@ -133,7 +135,8 @@ public class AsyncRawWebhooksClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<ListWebhooksResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -188,6 +191,11 @@ public class AsyncRawWebhooksClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -217,7 +225,9 @@ public class AsyncRawWebhooksClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -242,7 +252,8 @@ public class AsyncRawWebhooksClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<CreateWebhookResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -297,6 +308,11 @@ public class AsyncRawWebhooksClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -331,7 +347,7 @@ public class AsyncRawWebhooksClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/webhooks")
-                .addPathSegment(webhookId);
+                .addPathSegment(PathSegments.validate(webhookId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -357,7 +373,8 @@ public class AsyncRawWebhooksClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<GetWebhookResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -412,6 +429,11 @@ public class AsyncRawWebhooksClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -450,7 +472,7 @@ public class AsyncRawWebhooksClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/webhooks")
-                .addPathSegment(webhookId);
+                .addPathSegment(PathSegments.validate(webhookId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -458,7 +480,10 @@ public class AsyncRawWebhooksClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -476,7 +501,8 @@ public class AsyncRawWebhooksClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<Void>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -523,6 +549,11 @@ public class AsyncRawWebhooksClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -557,7 +588,7 @@ public class AsyncRawWebhooksClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/webhooks")
-                .addPathSegment(webhookId);
+                .addPathSegment(PathSegments.validate(webhookId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -566,7 +597,9 @@ public class AsyncRawWebhooksClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -591,7 +624,8 @@ public class AsyncRawWebhooksClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<UpdateWebhookResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -646,6 +680,11 @@ public class AsyncRawWebhooksClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -684,7 +723,7 @@ public class AsyncRawWebhooksClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/webhooks")
-                .addPathSegment(webhookId)
+                .addPathSegment(PathSegments.validate(webhookId))
                 .addPathSegments("test");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -694,7 +733,9 @@ public class AsyncRawWebhooksClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -719,7 +760,8 @@ public class AsyncRawWebhooksClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<TestWebhookResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -774,6 +816,11 @@ public class AsyncRawWebhooksClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -811,7 +858,7 @@ public class AsyncRawWebhooksClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/webhooks")
-                .addPathSegment(webhookId)
+                .addPathSegment(PathSegments.validate(webhookId))
                 .addPathSegments("resources");
         if (request.getResourceType().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -850,7 +897,8 @@ public class AsyncRawWebhooksClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<ListWebhookResourcesResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -906,6 +954,11 @@ public class AsyncRawWebhooksClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -931,7 +984,7 @@ public class AsyncRawWebhooksClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/webhooks")
-                .addPathSegment(webhookId)
+                .addPathSegment(PathSegments.validate(webhookId))
                 .addPathSegments("resources");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -941,7 +994,9 @@ public class AsyncRawWebhooksClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -966,7 +1021,8 @@ public class AsyncRawWebhooksClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<AssignWebhookResourceResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1027,6 +1083,11 @@ public class AsyncRawWebhooksClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1082,10 +1143,10 @@ public class AsyncRawWebhooksClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/webhooks")
-                .addPathSegment(webhookId)
+                .addPathSegment(PathSegments.validate(webhookId))
                 .addPathSegments("resources")
-                .addPathSegment(resourceType.toString())
-                .addPathSegment(resourceId);
+                .addPathSegment(PathSegments.validate(resourceType.toString()))
+                .addPathSegment(PathSegments.validate(resourceId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -1093,7 +1154,10 @@ public class AsyncRawWebhooksClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -1111,7 +1175,8 @@ public class AsyncRawWebhooksClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<Void>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1156,6 +1221,11 @@ public class AsyncRawWebhooksClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -1203,8 +1273,8 @@ public class AsyncRawWebhooksClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/resources")
-                .addPathSegment(resourceType.toString())
-                .addPathSegment(resourceId)
+                .addPathSegment(PathSegments.validate(resourceType.toString()))
+                .addPathSegment(PathSegments.validate(resourceId))
                 .addPathSegments("webhooks");
         if (request.getIsActive().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -1243,7 +1313,8 @@ public class AsyncRawWebhooksClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<ListWebhooksResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1298,6 +1369,11 @@ public class AsyncRawWebhooksClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1328,8 +1404,8 @@ public class AsyncRawWebhooksClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/webhook/trigger")
-                .addPathSegment(resourceType.toString())
-                .addPathSegment(resourceId);
+                .addPathSegment(PathSegments.validate(resourceType.toString()))
+                .addPathSegment(PathSegments.validate(resourceId));
         QueryStringMapper.addQueryParameter(httpUrl, "webhook_id", request.getWebhookId(), false);
         if (request.getJobId().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -1342,7 +1418,11 @@ public class AsyncRawWebhooksClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -1360,7 +1440,8 @@ public class AsyncRawWebhooksClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<Void>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1411,6 +1492,11 @@ public class AsyncRawWebhooksClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -1469,7 +1555,8 @@ public class AsyncRawWebhooksClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<DeliveryHistoryResponseDto>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1523,6 +1610,11 @@ public class AsyncRawWebhooksClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;

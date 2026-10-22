@@ -4,12 +4,14 @@
 package com.newscatcher.catchall.resources.projects;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.newscatcher.catchall.core.BodyProperties;
 import com.newscatcher.catchall.core.CatchAllApiApiException;
 import com.newscatcher.catchall.core.CatchAllApiException;
 import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.MediaTypes;
 import com.newscatcher.catchall.core.ObjectMappers;
+import com.newscatcher.catchall.core.PathSegments;
 import com.newscatcher.catchall.core.QueryStringMapper;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.core.RetryInterceptor;
@@ -180,7 +182,9 @@ public class RawProjectsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -267,7 +271,7 @@ public class RawProjectsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/projects")
-                .addPathSegment(projectId);
+                .addPathSegment(PathSegments.validate(projectId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -357,7 +361,7 @@ public class RawProjectsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/projects")
-                .addPathSegment(projectId);
+                .addPathSegment(PathSegments.validate(projectId));
         if (request.getDeleteResources().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "delete_resources", request.getDeleteResources().get(), false);
@@ -369,7 +373,10 @@ public class RawProjectsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -448,7 +455,7 @@ public class RawProjectsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/projects")
-                .addPathSegment(projectId);
+                .addPathSegment(PathSegments.validate(projectId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -457,7 +464,9 @@ public class RawProjectsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -553,7 +562,7 @@ public class RawProjectsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/projects")
-                .addPathSegment(projectId)
+                .addPathSegment(PathSegments.validate(projectId))
                 .addPathSegments("overview");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -645,7 +654,7 @@ public class RawProjectsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/projects")
-                .addPathSegment(projectId)
+                .addPathSegment(PathSegments.validate(projectId))
                 .addPathSegments("resources");
         if (request.getResourceType().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -736,7 +745,7 @@ public class RawProjectsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/projects")
-                .addPathSegment(projectId)
+                .addPathSegment(PathSegments.validate(projectId))
                 .addPathSegments("resources");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -746,7 +755,9 @@ public class RawProjectsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -858,10 +869,10 @@ public class RawProjectsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/projects")
-                .addPathSegment(projectId)
+                .addPathSegment(PathSegments.validate(projectId))
                 .addPathSegments("resources")
-                .addPathSegment(resourceType.toString())
-                .addPathSegment(resourceId);
+                .addPathSegment(PathSegments.validate(resourceType.toString()))
+                .addPathSegment(PathSegments.validate(resourceId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -869,7 +880,10 @@ public class RawProjectsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();

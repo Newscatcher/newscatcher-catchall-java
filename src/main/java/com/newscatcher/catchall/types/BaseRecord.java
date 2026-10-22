@@ -138,7 +138,6 @@ public final class BaseRecord implements IBaseRecord {
 
         private BaseRecordEnrichment enrichment;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -189,6 +188,16 @@ public final class BaseRecord implements IBaseRecord {
         @java.lang.Override
         public BaseRecord build() {
             return new BaseRecord(recordId, recordTitle, enrichment, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("record_id")
+                    || key.equalsIgnoreCase("record_title")
+                    || key.equalsIgnoreCase("enrichment")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

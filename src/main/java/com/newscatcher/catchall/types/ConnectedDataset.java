@@ -129,7 +129,6 @@ public final class ConnectedDataset {
 
         private Optional<Boolean> isDeleted = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -187,6 +186,14 @@ public final class ConnectedDataset {
         @java.lang.Override
         public ConnectedDataset build() {
             return new ConnectedDataset(id, name, isDeleted, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id") || key.equalsIgnoreCase("name") || key.equalsIgnoreCase("is_deleted")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -160,7 +160,6 @@ public final class ListMonitorJobsResponse {
 
         private List<MonitorJobItem> jobs = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -245,6 +244,17 @@ public final class ListMonitorJobsResponse {
         @java.lang.Override
         public ListMonitorJobsResponse build() {
             return new ListMonitorJobsResponse(monitorId, sortOrder, totalJobs, jobs, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("monitor_id")
+                    || key.equalsIgnoreCase("sort_order")
+                    || key.equalsIgnoreCase("total_jobs")
+                    || key.equalsIgnoreCase("jobs")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

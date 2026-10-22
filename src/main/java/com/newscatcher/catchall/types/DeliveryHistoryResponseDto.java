@@ -233,7 +233,6 @@ public final class DeliveryHistoryResponseDto {
 
         private List<DeliveryHistoryItemDto> items = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -355,6 +354,20 @@ public final class DeliveryHistoryResponseDto {
         public DeliveryHistoryResponseDto build() {
             return new DeliveryHistoryResponseDto(
                     resourceType, resourceId, total, page, pageSize, totalPages, items, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("resource_type")
+                    || key.equalsIgnoreCase("resource_id")
+                    || key.equalsIgnoreCase("total")
+                    || key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")
+                    || key.equalsIgnoreCase("total_pages")
+                    || key.equalsIgnoreCase("items")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

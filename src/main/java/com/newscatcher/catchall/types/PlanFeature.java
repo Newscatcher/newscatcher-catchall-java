@@ -178,7 +178,6 @@ public final class PlanFeature {
 
         private Optional<String> valueType = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -278,6 +277,18 @@ public final class PlanFeature {
         @java.lang.Override
         public PlanFeature build() {
             return new PlanFeature(name, code, valueType, value, currentUsage, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("code")
+                    || key.equalsIgnoreCase("value_type")
+                    || key.equalsIgnoreCase("value")
+                    || key.equalsIgnoreCase("current_usage")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override
