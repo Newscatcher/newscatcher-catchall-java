@@ -281,7 +281,6 @@ public final class ConnectedEntity {
 
         private Optional<String> associationType = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -450,6 +449,21 @@ public final class ConnectedEntity {
                     externalEntityId,
                     company,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("entity_id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("ed_score")
+                    || key.equalsIgnoreCase("relation")
+                    || key.equalsIgnoreCase("association_type")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("external_entity_id")
+                    || key.equalsIgnoreCase("company")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -4,6 +4,7 @@
 package com.newscatcher.catchall.resources.datasets;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.newscatcher.catchall.core.BodyProperties;
 import com.newscatcher.catchall.core.CatchAllApiApiException;
 import com.newscatcher.catchall.core.CatchAllApiException;
 import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
@@ -11,6 +12,7 @@ import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.FileStream;
 import com.newscatcher.catchall.core.MediaTypes;
 import com.newscatcher.catchall.core.ObjectMappers;
+import com.newscatcher.catchall.core.PathSegments;
 import com.newscatcher.catchall.core.QueryStringMapper;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.core.RetryInterceptor;
@@ -150,7 +152,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<DatasetListResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -194,6 +197,11 @@ public class AsyncRawDatasetsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -232,7 +240,9 @@ public class AsyncRawDatasetsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -257,7 +267,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -310,6 +321,11 @@ public class AsyncRawDatasetsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -384,7 +400,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -434,17 +451,31 @@ public class AsyncRawDatasetsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
     public CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> createDatasetFromCsv(
-            InputStream stream, String filename) {
+            CreateDatasetFromCsvRequest request, InputStream stream, String filename) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets/upload");
         FileStream fs = new FileStream(stream, filename, null);
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+        try {
+            multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+            multipartBodyBuilder.addFormDataPart("name", request.getName());
+            if (request.getDescription().isPresent()) {
+                multipartBodyBuilder.addFormDataPart(
+                        "description", request.getDescription().get());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         RequestBody body = multipartBodyBuilder.build();
         Request.Builder _requestBuilder = new Request.Builder();
         _requestBuilder.url(httpUrl.build());
@@ -453,7 +484,8 @@ public class AsyncRawDatasetsClient {
         Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -503,17 +535,31 @@ public class AsyncRawDatasetsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
     public CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> createDatasetFromCsv(
-            InputStream stream, String filename, MediaType mediaType) {
+            CreateDatasetFromCsvRequest request, InputStream stream, String filename, MediaType mediaType) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets/upload");
         FileStream fs = new FileStream(stream, filename, mediaType);
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+        try {
+            multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+            multipartBodyBuilder.addFormDataPart("name", request.getName());
+            if (request.getDescription().isPresent()) {
+                multipartBodyBuilder.addFormDataPart(
+                        "description", request.getDescription().get());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         RequestBody body = multipartBodyBuilder.build();
         Request.Builder _requestBuilder = new Request.Builder();
         _requestBuilder.url(httpUrl.build());
@@ -522,7 +568,8 @@ public class AsyncRawDatasetsClient {
         Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -572,11 +619,16 @@ public class AsyncRawDatasetsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
     public CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> createDatasetFromCsv(
-            InputStream stream, String filename, RequestOptions requestOptions) {
+            CreateDatasetFromCsvRequest request, InputStream stream, String filename, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets/upload");
@@ -587,7 +639,16 @@ public class AsyncRawDatasetsClient {
         }
         FileStream fs = new FileStream(stream, filename, null);
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+        try {
+            multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+            multipartBodyBuilder.addFormDataPart("name", request.getName());
+            if (request.getDescription().isPresent()) {
+                multipartBodyBuilder.addFormDataPart(
+                        "description", request.getDescription().get());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         RequestBody body = multipartBodyBuilder.build();
         Request.Builder _requestBuilder = new Request.Builder();
         _requestBuilder.url(httpUrl.build());
@@ -608,7 +669,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -658,11 +720,20 @@ public class AsyncRawDatasetsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
     public CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> createDatasetFromCsv(
-            InputStream stream, String filename, MediaType mediaType, RequestOptions requestOptions) {
+            CreateDatasetFromCsvRequest request,
+            InputStream stream,
+            String filename,
+            MediaType mediaType,
+            RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets/upload");
@@ -673,7 +744,16 @@ public class AsyncRawDatasetsClient {
         }
         FileStream fs = new FileStream(stream, filename, mediaType);
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+        try {
+            multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+            multipartBodyBuilder.addFormDataPart("name", request.getName());
+            if (request.getDescription().isPresent()) {
+                multipartBodyBuilder.addFormDataPart(
+                        "description", request.getDescription().get());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         RequestBody body = multipartBodyBuilder.build();
         Request.Builder _requestBuilder = new Request.Builder();
         _requestBuilder.url(httpUrl.build());
@@ -694,7 +774,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -742,6 +823,11 @@ public class AsyncRawDatasetsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -778,7 +864,7 @@ public class AsyncRawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId);
+                .addPathSegment(PathSegments.validate(datasetId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -804,7 +890,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -853,6 +940,11 @@ public class AsyncRawDatasetsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -895,7 +987,7 @@ public class AsyncRawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId);
+                .addPathSegment(PathSegments.validate(datasetId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -903,7 +995,10 @@ public class AsyncRawDatasetsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -921,7 +1016,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<Void>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -968,6 +1064,11 @@ public class AsyncRawDatasetsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1002,7 +1103,7 @@ public class AsyncRawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId);
+                .addPathSegment(PathSegments.validate(datasetId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -1011,7 +1112,9 @@ public class AsyncRawDatasetsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -1036,7 +1139,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1091,6 +1195,11 @@ public class AsyncRawDatasetsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1110,7 +1219,7 @@ public class AsyncRawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("entities");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1120,7 +1229,9 @@ public class AsyncRawDatasetsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request.getBody(), requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -1145,7 +1256,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<ManageEntitiesResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1200,6 +1312,11 @@ public class AsyncRawDatasetsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1219,7 +1336,7 @@ public class AsyncRawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("entities");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1229,7 +1346,9 @@ public class AsyncRawDatasetsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request.getBody(), requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -1254,7 +1373,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<ManageEntitiesResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1307,6 +1427,11 @@ public class AsyncRawDatasetsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -1346,7 +1471,7 @@ public class AsyncRawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("entities")
                 .addPathSegments("list");
         if (requestOptions != null) {
@@ -1357,7 +1482,9 @@ public class AsyncRawDatasetsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -1382,7 +1509,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<DatasetEntityListResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1438,6 +1566,11 @@ public class AsyncRawDatasetsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1475,7 +1608,7 @@ public class AsyncRawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("status");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1502,7 +1635,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<DatasetStatusHistoryResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1552,6 +1686,11 @@ public class AsyncRawDatasetsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1573,7 +1712,7 @@ public class AsyncRawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("upload");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1609,7 +1748,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1663,6 +1803,11 @@ public class AsyncRawDatasetsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -1673,7 +1818,7 @@ public class AsyncRawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("upload");
         FileStream fs = new FileStream(stream, filename, null);
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -1686,7 +1831,8 @@ public class AsyncRawDatasetsClient {
         Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1740,6 +1886,11 @@ public class AsyncRawDatasetsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -1750,7 +1901,7 @@ public class AsyncRawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("upload");
         FileStream fs = new FileStream(stream, filename, mediaType);
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -1763,7 +1914,8 @@ public class AsyncRawDatasetsClient {
         Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1819,6 +1971,11 @@ public class AsyncRawDatasetsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1827,7 +1984,7 @@ public class AsyncRawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("upload");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1857,7 +2014,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1913,6 +2071,11 @@ public class AsyncRawDatasetsClient {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1921,7 +2084,7 @@ public class AsyncRawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("upload");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1951,7 +2114,8 @@ public class AsyncRawDatasetsClient {
                     .build();
         }
         CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -2005,6 +2169,11 @@ public class AsyncRawDatasetsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new CatchAllApiException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;

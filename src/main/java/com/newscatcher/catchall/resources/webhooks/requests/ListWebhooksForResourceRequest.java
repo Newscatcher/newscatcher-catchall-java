@@ -100,7 +100,6 @@ public final class ListWebhooksForResourceRequest {
 
         private Optional<Integer> pageSize = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -156,6 +155,16 @@ public final class ListWebhooksForResourceRequest {
 
         public ListWebhooksForResourceRequest build() {
             return new ListWebhooksForResourceRequest(isActive, page, pageSize, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("is_active")
+                    || key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

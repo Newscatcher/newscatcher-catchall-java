@@ -135,7 +135,6 @@ public final class AddResourceResponseDto {
 
         private List<ResourceResultDto> results = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -208,6 +207,14 @@ public final class AddResourceResponseDto {
         @java.lang.Override
         public AddResourceResponseDto build() {
             return new AddResourceResponseDto(success, message, results, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("success") || key.equalsIgnoreCase("message") || key.equalsIgnoreCase("results")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

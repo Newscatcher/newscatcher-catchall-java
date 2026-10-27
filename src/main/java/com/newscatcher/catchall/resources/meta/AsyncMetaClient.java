@@ -3,6 +3,7 @@
  */
 package com.newscatcher.catchall.resources.meta;
 
+import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.meta.types.GetVersionResponse;
@@ -31,41 +32,86 @@ public class AsyncMetaClient {
      * Check API availability.
      */
     public CompletableFuture<HealthCheckResponse> healthCheck() {
-        return this.rawClient.healthCheck().thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<HealthCheckResponse>> rawFuture = this.rawClient.healthCheck();
+        CompletableFuture<HealthCheckResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Check API availability.
      */
     public CompletableFuture<HealthCheckResponse> healthCheck(RequestOptions requestOptions) {
-        return this.rawClient.healthCheck(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<HealthCheckResponse>> rawFuture =
+                this.rawClient.healthCheck(requestOptions);
+        CompletableFuture<HealthCheckResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns current API version.
      */
     public CompletableFuture<GetVersionResponse> getVersion() {
-        return this.rawClient.getVersion().thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<GetVersionResponse>> rawFuture = this.rawClient.getVersion();
+        CompletableFuture<GetVersionResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns current API version.
      */
     public CompletableFuture<GetVersionResponse> getVersion(RequestOptions requestOptions) {
-        return this.rawClient.getVersion(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<GetVersionResponse>> rawFuture =
+                this.rawClient.getVersion(requestOptions);
+        CompletableFuture<GetVersionResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns plan features and current usage for the authenticated organization.
      */
     public CompletableFuture<GetPlanLimitsResponseDto> getPlanLimits() {
-        return this.rawClient.getPlanLimits().thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<GetPlanLimitsResponseDto>> rawFuture = this.rawClient.getPlanLimits();
+        CompletableFuture<GetPlanLimitsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns plan features and current usage for the authenticated organization.
      */
     public CompletableFuture<GetPlanLimitsResponseDto> getPlanLimits(RequestOptions requestOptions) {
-        return this.rawClient.getPlanLimits(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<GetPlanLimitsResponseDto>> rawFuture =
+                this.rawClient.getPlanLimits(requestOptions);
+        CompletableFuture<GetPlanLimitsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

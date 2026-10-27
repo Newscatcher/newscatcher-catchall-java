@@ -108,7 +108,6 @@ public final class AssignWebhookResourceRequestDto {
 
         private String resourceId;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -145,6 +144,14 @@ public final class AssignWebhookResourceRequestDto {
         @java.lang.Override
         public AssignWebhookResourceRequestDto build() {
             return new AssignWebhookResourceRequestDto(resourceType, resourceId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("resource_type") || key.equalsIgnoreCase("resource_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

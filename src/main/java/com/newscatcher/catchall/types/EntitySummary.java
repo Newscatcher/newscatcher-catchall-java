@@ -236,7 +236,6 @@ public final class EntitySummary {
 
         private Optional<String> description = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -378,6 +377,20 @@ public final class EntitySummary {
         public EntitySummary build() {
             return new EntitySummary(
                     id, name, entityType, status, description, externalEntityId, attributes, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("entity_type")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("external_entity_id")
+                    || key.equalsIgnoreCase("attributes")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

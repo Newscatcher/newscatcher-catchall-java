@@ -332,7 +332,6 @@ public final class PullMonitorResponseDto {
 
         private Optional<String> cronExpression = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -575,6 +574,24 @@ public final class PullMonitorResponseDto {
                     connectedDatasets,
                     isAllNewsQuery,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("monitor_id")
+                    || key.equalsIgnoreCase("cron_expression")
+                    || key.equalsIgnoreCase("timezone")
+                    || key.equalsIgnoreCase("reference_job")
+                    || key.equalsIgnoreCase("run_info")
+                    || key.equalsIgnoreCase("records")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("all_records")
+                    || key.equalsIgnoreCase("limit")
+                    || key.equalsIgnoreCase("connected_datasets")
+                    || key.equalsIgnoreCase("is_all_news_query")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

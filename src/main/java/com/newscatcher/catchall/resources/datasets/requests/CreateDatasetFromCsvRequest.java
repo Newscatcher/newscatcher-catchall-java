@@ -109,7 +109,6 @@ public final class CreateDatasetFromCsvRequest {
 
         private Optional<String> description = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -155,6 +154,14 @@ public final class CreateDatasetFromCsvRequest {
         @java.lang.Override
         public CreateDatasetFromCsvRequest build() {
             return new CreateDatasetFromCsvRequest(name, description, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("name") || key.equalsIgnoreCase("description")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

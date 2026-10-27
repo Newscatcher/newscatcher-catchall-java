@@ -81,7 +81,6 @@ public final class RemoveEntitiesFromDatasetRequest {
     public static final class Builder implements BodyStage, _FinalStage {
         private DatasetEntityIdsRequest body;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -102,6 +101,14 @@ public final class RemoveEntitiesFromDatasetRequest {
         @java.lang.Override
         public RemoveEntitiesFromDatasetRequest build() {
             return new RemoveEntitiesFromDatasetRequest(body, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("body")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

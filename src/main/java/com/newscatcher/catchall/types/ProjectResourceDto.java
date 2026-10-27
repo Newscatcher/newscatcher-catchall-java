@@ -175,7 +175,6 @@ public final class ProjectResourceDto {
 
         private Optional<String> name = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -273,6 +272,18 @@ public final class ProjectResourceDto {
         @java.lang.Override
         public ProjectResourceDto build() {
             return new ProjectResourceDto(resourceType, resourceId, name, createdAt, metadata, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("resource_type")
+                    || key.equalsIgnoreCase("resource_id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("metadata")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

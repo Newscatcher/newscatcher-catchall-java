@@ -130,7 +130,6 @@ public final class ListMonitorsRequest {
 
         private Optional<String> projectId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -213,6 +212,18 @@ public final class ListMonitorsRequest {
 
         public ListMonitorsRequest build() {
             return new ListMonitorsRequest(page, pageSize, search, ownership, projectId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")
+                    || key.equalsIgnoreCase("search")
+                    || key.equalsIgnoreCase("ownership")
+                    || key.equalsIgnoreCase("project_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

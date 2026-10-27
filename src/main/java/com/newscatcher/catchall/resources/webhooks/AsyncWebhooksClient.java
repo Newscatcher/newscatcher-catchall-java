@@ -3,6 +3,7 @@
  */
 package com.newscatcher.catchall.resources.webhooks;
 
+import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.webhooks.requests.AssignWebhookResourceRequestDto;
@@ -49,21 +50,44 @@ public class AsyncWebhooksClient {
      * Returns a paginated list of webhooks belonging to the organization.
      */
     public CompletableFuture<ListWebhooksResponseDto> listWebhooks() {
-        return this.rawClient.listWebhooks().thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListWebhooksResponseDto>> rawFuture = this.rawClient.listWebhooks();
+        CompletableFuture<ListWebhooksResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a paginated list of webhooks belonging to the organization.
      */
     public CompletableFuture<ListWebhooksResponseDto> listWebhooks(RequestOptions requestOptions) {
-        return this.rawClient.listWebhooks(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListWebhooksResponseDto>> rawFuture =
+                this.rawClient.listWebhooks(requestOptions);
+        CompletableFuture<ListWebhooksResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a paginated list of webhooks belonging to the organization.
      */
     public CompletableFuture<ListWebhooksResponseDto> listWebhooks(ListWebhooksRequest request) {
-        return this.rawClient.listWebhooks(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListWebhooksResponseDto>> rawFuture =
+                this.rawClient.listWebhooks(request);
+        CompletableFuture<ListWebhooksResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -71,7 +95,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<ListWebhooksResponseDto> listWebhooks(
             ListWebhooksRequest request, RequestOptions requestOptions) {
-        return this.rawClient.listWebhooks(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListWebhooksResponseDto>> rawFuture =
+                this.rawClient.listWebhooks(request, requestOptions);
+        CompletableFuture<ListWebhooksResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -79,7 +111,15 @@ public class AsyncWebhooksClient {
      * <p>Optionally pass <code>project_id</code> to attach the webhook to a project in the same request.</p>
      */
     public CompletableFuture<CreateWebhookResponseDto> createWebhook(CreateWebhookRequestDto request) {
-        return this.rawClient.createWebhook(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<CreateWebhookResponseDto>> rawFuture =
+                this.rawClient.createWebhook(request);
+        CompletableFuture<CreateWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -88,28 +128,60 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<CreateWebhookResponseDto> createWebhook(
             CreateWebhookRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.createWebhook(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<CreateWebhookResponseDto>> rawFuture =
+                this.rawClient.createWebhook(request, requestOptions);
+        CompletableFuture<CreateWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns the full configuration of a single webhook by ID.
      */
     public CompletableFuture<GetWebhookResponseDto> getWebhook(String webhookId) {
-        return this.rawClient.getWebhook(webhookId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<GetWebhookResponseDto>> rawFuture =
+                this.rawClient.getWebhook(webhookId);
+        CompletableFuture<GetWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns the full configuration of a single webhook by ID.
      */
     public CompletableFuture<GetWebhookResponseDto> getWebhook(String webhookId, RequestOptions requestOptions) {
-        return this.rawClient.getWebhook(webhookId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<GetWebhookResponseDto>> rawFuture =
+                this.rawClient.getWebhook(webhookId, requestOptions);
+        CompletableFuture<GetWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns the full configuration of a single webhook by ID.
      */
     public CompletableFuture<GetWebhookResponseDto> getWebhook(String webhookId, GetWebhookRequest request) {
-        return this.rawClient.getWebhook(webhookId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<GetWebhookResponseDto>> rawFuture =
+                this.rawClient.getWebhook(webhookId, request);
+        CompletableFuture<GetWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -117,7 +189,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<GetWebhookResponseDto> getWebhook(
             String webhookId, GetWebhookRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getWebhook(webhookId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<GetWebhookResponseDto>> rawFuture =
+                this.rawClient.getWebhook(webhookId, request, requestOptions);
+        CompletableFuture<GetWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -125,7 +205,14 @@ public class AsyncWebhooksClient {
      * <p>Assigned jobs and event monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
      */
     public CompletableFuture<Void> deleteWebhook(String webhookId) {
-        return this.rawClient.deleteWebhook(webhookId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture = this.rawClient.deleteWebhook(webhookId);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -133,7 +220,15 @@ public class AsyncWebhooksClient {
      * <p>Assigned jobs and event monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
      */
     public CompletableFuture<Void> deleteWebhook(String webhookId, RequestOptions requestOptions) {
-        return this.rawClient.deleteWebhook(webhookId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.deleteWebhook(webhookId, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -141,7 +236,14 @@ public class AsyncWebhooksClient {
      * <p>Assigned jobs and event monitors no longer trigger delivery to this webhook. This operation cannot be undone.</p>
      */
     public CompletableFuture<Void> deleteWebhook(String webhookId, DeleteWebhookRequest request) {
-        return this.rawClient.deleteWebhook(webhookId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture = this.rawClient.deleteWebhook(webhookId, request);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -150,21 +252,45 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<Void> deleteWebhook(
             String webhookId, DeleteWebhookRequest request, RequestOptions requestOptions) {
-        return this.rawClient.deleteWebhook(webhookId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.deleteWebhook(webhookId, request, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates one or more fields of an existing webhook.
      */
     public CompletableFuture<UpdateWebhookResponseDto> updateWebhook(String webhookId) {
-        return this.rawClient.updateWebhook(webhookId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UpdateWebhookResponseDto>> rawFuture =
+                this.rawClient.updateWebhook(webhookId);
+        CompletableFuture<UpdateWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates one or more fields of an existing webhook.
      */
     public CompletableFuture<UpdateWebhookResponseDto> updateWebhook(String webhookId, RequestOptions requestOptions) {
-        return this.rawClient.updateWebhook(webhookId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UpdateWebhookResponseDto>> rawFuture =
+                this.rawClient.updateWebhook(webhookId, requestOptions);
+        CompletableFuture<UpdateWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -172,7 +298,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<UpdateWebhookResponseDto> updateWebhook(
             String webhookId, UpdateWebhookRequestDto request) {
-        return this.rawClient.updateWebhook(webhookId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UpdateWebhookResponseDto>> rawFuture =
+                this.rawClient.updateWebhook(webhookId, request);
+        CompletableFuture<UpdateWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -180,7 +314,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<UpdateWebhookResponseDto> updateWebhook(
             String webhookId, UpdateWebhookRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.updateWebhook(webhookId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UpdateWebhookResponseDto>> rawFuture =
+                this.rawClient.updateWebhook(webhookId, request, requestOptions);
+        CompletableFuture<UpdateWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -188,7 +330,15 @@ public class AsyncWebhooksClient {
      * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or event monitor.</p>
      */
     public CompletableFuture<TestWebhookResponseDto> testWebhook(String webhookId) {
-        return this.rawClient.testWebhook(webhookId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<TestWebhookResponseDto>> rawFuture =
+                this.rawClient.testWebhook(webhookId);
+        CompletableFuture<TestWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -196,7 +346,15 @@ public class AsyncWebhooksClient {
      * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or event monitor.</p>
      */
     public CompletableFuture<TestWebhookResponseDto> testWebhook(String webhookId, RequestOptions requestOptions) {
-        return this.rawClient.testWebhook(webhookId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<TestWebhookResponseDto>> rawFuture =
+                this.rawClient.testWebhook(webhookId, requestOptions);
+        CompletableFuture<TestWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -204,7 +362,15 @@ public class AsyncWebhooksClient {
      * <p>Use this to verify URL reachability and authentication before attaching the webhook to a live job or event monitor.</p>
      */
     public CompletableFuture<TestWebhookResponseDto> testWebhook(String webhookId, TestWebhookRequestDto request) {
-        return this.rawClient.testWebhook(webhookId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<TestWebhookResponseDto>> rawFuture =
+                this.rawClient.testWebhook(webhookId, request);
+        CompletableFuture<TestWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -213,14 +379,30 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<TestWebhookResponseDto> testWebhook(
             String webhookId, TestWebhookRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.testWebhook(webhookId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<TestWebhookResponseDto>> rawFuture =
+                this.rawClient.testWebhook(webhookId, request, requestOptions);
+        CompletableFuture<TestWebhookResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a paginated list of resources currently assigned to this webhook.
      */
     public CompletableFuture<ListWebhookResourcesResponseDto> listWebhookResources(String webhookId) {
-        return this.rawClient.listWebhookResources(webhookId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListWebhookResourcesResponseDto>> rawFuture =
+                this.rawClient.listWebhookResources(webhookId);
+        CompletableFuture<ListWebhookResourcesResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -228,7 +410,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<ListWebhookResourcesResponseDto> listWebhookResources(
             String webhookId, RequestOptions requestOptions) {
-        return this.rawClient.listWebhookResources(webhookId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListWebhookResourcesResponseDto>> rawFuture =
+                this.rawClient.listWebhookResources(webhookId, requestOptions);
+        CompletableFuture<ListWebhookResourcesResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -236,7 +426,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<ListWebhookResourcesResponseDto> listWebhookResources(
             String webhookId, ListWebhookResourcesRequest request) {
-        return this.rawClient.listWebhookResources(webhookId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListWebhookResourcesResponseDto>> rawFuture =
+                this.rawClient.listWebhookResources(webhookId, request);
+        CompletableFuture<ListWebhookResourcesResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -244,9 +442,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<ListWebhookResourcesResponseDto> listWebhookResources(
             String webhookId, ListWebhookResourcesRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .listWebhookResources(webhookId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListWebhookResourcesResponseDto>> rawFuture =
+                this.rawClient.listWebhookResources(webhookId, request, requestOptions);
+        CompletableFuture<ListWebhookResourcesResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -257,7 +461,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<AssignWebhookResourceResponseDto> assignWebhookResource(
             String webhookId, AssignWebhookResourceRequestDto request) {
-        return this.rawClient.assignWebhookResource(webhookId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<AssignWebhookResourceResponseDto>> rawFuture =
+                this.rawClient.assignWebhookResource(webhookId, request);
+        CompletableFuture<AssignWebhookResourceResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -268,9 +480,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<AssignWebhookResourceResponseDto> assignWebhookResource(
             String webhookId, AssignWebhookResourceRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient
-                .assignWebhookResource(webhookId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<AssignWebhookResourceResponseDto>> rawFuture =
+                this.rawClient.assignWebhookResource(webhookId, request, requestOptions);
+        CompletableFuture<AssignWebhookResourceResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -279,9 +497,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<Void> removeWebhookResource(
             String webhookId, MappableResourceType resourceType, String resourceId) {
-        return this.rawClient
-                .removeWebhookResource(webhookId, resourceType, resourceId)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.removeWebhookResource(webhookId, resourceType, resourceId);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -290,9 +514,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<Void> removeWebhookResource(
             String webhookId, MappableResourceType resourceType, String resourceId, RequestOptions requestOptions) {
-        return this.rawClient
-                .removeWebhookResource(webhookId, resourceType, resourceId, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.removeWebhookResource(webhookId, resourceType, resourceId, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -304,9 +534,15 @@ public class AsyncWebhooksClient {
             MappableResourceType resourceType,
             String resourceId,
             RemoveWebhookResourceRequest request) {
-        return this.rawClient
-                .removeWebhookResource(webhookId, resourceType, resourceId, request)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.removeWebhookResource(webhookId, resourceType, resourceId, request);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -319,9 +555,15 @@ public class AsyncWebhooksClient {
             String resourceId,
             RemoveWebhookResourceRequest request,
             RequestOptions requestOptions) {
-        return this.rawClient
-                .removeWebhookResource(webhookId, resourceType, resourceId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.removeWebhookResource(webhookId, resourceType, resourceId, request, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -329,7 +571,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<ListWebhooksResponseDto> listWebhooksForResource(
             MappableResourceType resourceType, String resourceId) {
-        return this.rawClient.listWebhooksForResource(resourceType, resourceId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListWebhooksResponseDto>> rawFuture =
+                this.rawClient.listWebhooksForResource(resourceType, resourceId);
+        CompletableFuture<ListWebhooksResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -337,9 +587,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<ListWebhooksResponseDto> listWebhooksForResource(
             MappableResourceType resourceType, String resourceId, RequestOptions requestOptions) {
-        return this.rawClient
-                .listWebhooksForResource(resourceType, resourceId, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListWebhooksResponseDto>> rawFuture =
+                this.rawClient.listWebhooksForResource(resourceType, resourceId, requestOptions);
+        CompletableFuture<ListWebhooksResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -347,9 +603,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<ListWebhooksResponseDto> listWebhooksForResource(
             MappableResourceType resourceType, String resourceId, ListWebhooksForResourceRequest request) {
-        return this.rawClient
-                .listWebhooksForResource(resourceType, resourceId, request)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListWebhooksResponseDto>> rawFuture =
+                this.rawClient.listWebhooksForResource(resourceType, resourceId, request);
+        CompletableFuture<ListWebhooksResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -360,9 +622,15 @@ public class AsyncWebhooksClient {
             String resourceId,
             ListWebhooksForResourceRequest request,
             RequestOptions requestOptions) {
-        return this.rawClient
-                .listWebhooksForResource(resourceType, resourceId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListWebhooksResponseDto>> rawFuture =
+                this.rawClient.listWebhooksForResource(resourceType, resourceId, request, requestOptions);
+        CompletableFuture<ListWebhooksResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -374,7 +642,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<Void> triggerWebhook(
             MappableResourceType resourceType, String resourceId, TriggerWebhookRequest request) {
-        return this.rawClient.triggerWebhook(resourceType, resourceId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.triggerWebhook(resourceType, resourceId, request);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -389,9 +665,15 @@ public class AsyncWebhooksClient {
             String resourceId,
             TriggerWebhookRequest request,
             RequestOptions requestOptions) {
-        return this.rawClient
-                .triggerWebhook(resourceType, resourceId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.triggerWebhook(resourceType, resourceId, request, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -400,7 +682,15 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<DeliveryHistoryResponseDto> getWebhookDeliveryHistory(
             GetWebhookDeliveryHistoryRequest request) {
-        return this.rawClient.getWebhookDeliveryHistory(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DeliveryHistoryResponseDto>> rawFuture =
+                this.rawClient.getWebhookDeliveryHistory(request);
+        CompletableFuture<DeliveryHistoryResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -409,6 +699,14 @@ public class AsyncWebhooksClient {
      */
     public CompletableFuture<DeliveryHistoryResponseDto> getWebhookDeliveryHistory(
             GetWebhookDeliveryHistoryRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getWebhookDeliveryHistory(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DeliveryHistoryResponseDto>> rawFuture =
+                this.rawClient.getWebhookDeliveryHistory(request, requestOptions);
+        CompletableFuture<DeliveryHistoryResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

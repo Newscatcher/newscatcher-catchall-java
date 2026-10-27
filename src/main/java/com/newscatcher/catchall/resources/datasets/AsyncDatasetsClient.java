@@ -3,6 +3,7 @@
  */
 package com.newscatcher.catchall.resources.datasets;
 
+import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.datasets.requests.AddEntitiesToDatasetRequest;
@@ -49,21 +50,44 @@ public class AsyncDatasetsClient {
      * Returns a paginated list of datasets belonging to the authenticated organization. Supports filtering by status and sorting by name, status, or creation date.
      */
     public CompletableFuture<DatasetListResponse> listDatasets() {
-        return this.rawClient.listDatasets().thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetListResponse>> rawFuture = this.rawClient.listDatasets();
+        CompletableFuture<DatasetListResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a paginated list of datasets belonging to the authenticated organization. Supports filtering by status and sorting by name, status, or creation date.
      */
     public CompletableFuture<DatasetListResponse> listDatasets(RequestOptions requestOptions) {
-        return this.rawClient.listDatasets(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetListResponse>> rawFuture =
+                this.rawClient.listDatasets(requestOptions);
+        CompletableFuture<DatasetListResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a paginated list of datasets belonging to the authenticated organization. Supports filtering by status and sorting by name, status, or creation date.
      */
     public CompletableFuture<DatasetListResponse> listDatasets(ListDatasetsRequest request) {
-        return this.rawClient.listDatasets(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetListResponse>> rawFuture =
+                this.rawClient.listDatasets(request);
+        CompletableFuture<DatasetListResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -71,7 +95,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<DatasetListResponse> listDatasets(
             ListDatasetsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.listDatasets(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetListResponse>> rawFuture =
+                this.rawClient.listDatasets(request, requestOptions);
+        CompletableFuture<DatasetListResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -84,7 +116,14 @@ public class AsyncDatasetsClient {
      * endpoint instead.</p>
      */
     public CompletableFuture<DatasetResponse> createDataset(CreateDatasetRequest request) {
-        return this.rawClient.createDataset(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> rawFuture = this.rawClient.createDataset(request);
+        CompletableFuture<DatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -98,7 +137,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<DatasetResponse> createDataset(
             CreateDatasetRequest request, RequestOptions requestOptions) {
-        return this.rawClient.createDataset(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> rawFuture =
+                this.rawClient.createDataset(request, requestOptions);
+        CompletableFuture<DatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -113,7 +160,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<CreateDatasetCsvResponse> createDatasetFromCsv(
             File file, CreateDatasetFromCsvRequest request) {
-        return this.rawClient.createDatasetFromCsv(file, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> rawFuture =
+                this.rawClient.createDatasetFromCsv(file, request);
+        CompletableFuture<CreateDatasetCsvResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -128,53 +183,115 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<CreateDatasetCsvResponse> createDatasetFromCsv(
             File file, CreateDatasetFromCsvRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .createDatasetFromCsv(file, request, requestOptions)
-                .thenApply(response -> response.body());
-    }
-
-    public CompletableFuture<CreateDatasetCsvResponse> createDatasetFromCsv(InputStream stream, String filename) {
-        return this.rawClient.createDatasetFromCsv(stream, filename).thenApply(response -> response.body());
-    }
-
-    public CompletableFuture<CreateDatasetCsvResponse> createDatasetFromCsv(
-            InputStream stream, String filename, MediaType mediaType) {
-        return this.rawClient.createDatasetFromCsv(stream, filename, mediaType).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> rawFuture =
+                this.rawClient.createDatasetFromCsv(file, request, requestOptions);
+        CompletableFuture<CreateDatasetCsvResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     public CompletableFuture<CreateDatasetCsvResponse> createDatasetFromCsv(
-            InputStream stream, String filename, RequestOptions requestOptions) {
-        return this.rawClient
-                .createDatasetFromCsv(stream, filename, requestOptions)
-                .thenApply(response -> response.body());
+            CreateDatasetFromCsvRequest request, InputStream stream, String filename) {
+        CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> rawFuture =
+                this.rawClient.createDatasetFromCsv(request, stream, filename);
+        CompletableFuture<CreateDatasetCsvResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     public CompletableFuture<CreateDatasetCsvResponse> createDatasetFromCsv(
-            InputStream stream, String filename, MediaType mediaType, RequestOptions requestOptions) {
-        return this.rawClient
-                .createDatasetFromCsv(stream, filename, mediaType, requestOptions)
-                .thenApply(response -> response.body());
+            CreateDatasetFromCsvRequest request, InputStream stream, String filename, MediaType mediaType) {
+        CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> rawFuture =
+                this.rawClient.createDatasetFromCsv(request, stream, filename, mediaType);
+        CompletableFuture<CreateDatasetCsvResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
+    }
+
+    public CompletableFuture<CreateDatasetCsvResponse> createDatasetFromCsv(
+            CreateDatasetFromCsvRequest request, InputStream stream, String filename, RequestOptions requestOptions) {
+        CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> rawFuture =
+                this.rawClient.createDatasetFromCsv(request, stream, filename, requestOptions);
+        CompletableFuture<CreateDatasetCsvResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
+    }
+
+    public CompletableFuture<CreateDatasetCsvResponse> createDatasetFromCsv(
+            CreateDatasetFromCsvRequest request,
+            InputStream stream,
+            String filename,
+            MediaType mediaType,
+            RequestOptions requestOptions) {
+        CompletableFuture<CatchAllApiHttpResponse<CreateDatasetCsvResponse>> rawFuture =
+                this.rawClient.createDatasetFromCsv(request, stream, filename, mediaType, requestOptions);
+        CompletableFuture<CreateDatasetCsvResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a single dataset by ID including entity count and current status.
      */
     public CompletableFuture<DatasetResponse> getDataset(String datasetId) {
-        return this.rawClient.getDataset(datasetId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> rawFuture = this.rawClient.getDataset(datasetId);
+        CompletableFuture<DatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a single dataset by ID including entity count and current status.
      */
     public CompletableFuture<DatasetResponse> getDataset(String datasetId, RequestOptions requestOptions) {
-        return this.rawClient.getDataset(datasetId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> rawFuture =
+                this.rawClient.getDataset(datasetId, requestOptions);
+        CompletableFuture<DatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a single dataset by ID including entity count and current status.
      */
     public CompletableFuture<DatasetResponse> getDataset(String datasetId, GetDatasetRequest request) {
-        return this.rawClient.getDataset(datasetId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> rawFuture =
+                this.rawClient.getDataset(datasetId, request);
+        CompletableFuture<DatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -182,7 +299,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<DatasetResponse> getDataset(
             String datasetId, GetDatasetRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getDataset(datasetId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> rawFuture =
+                this.rawClient.getDataset(datasetId, request, requestOptions);
+        CompletableFuture<DatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -191,7 +316,14 @@ public class AsyncDatasetsClient {
      * undone.
      */
     public CompletableFuture<Void> deleteDataset(String datasetId) {
-        return this.rawClient.deleteDataset(datasetId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture = this.rawClient.deleteDataset(datasetId);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -200,7 +332,15 @@ public class AsyncDatasetsClient {
      * undone.
      */
     public CompletableFuture<Void> deleteDataset(String datasetId, RequestOptions requestOptions) {
-        return this.rawClient.deleteDataset(datasetId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.deleteDataset(datasetId, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -209,7 +349,14 @@ public class AsyncDatasetsClient {
      * undone.
      */
     public CompletableFuture<Void> deleteDataset(String datasetId, DeleteDatasetRequest request) {
-        return this.rawClient.deleteDataset(datasetId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture = this.rawClient.deleteDataset(datasetId, request);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -219,28 +366,59 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<Void> deleteDataset(
             String datasetId, DeleteDatasetRequest request, RequestOptions requestOptions) {
-        return this.rawClient.deleteDataset(datasetId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.deleteDataset(datasetId, request, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates the name or description of a dataset.
      */
     public CompletableFuture<DatasetResponse> updateDataset(String datasetId) {
-        return this.rawClient.updateDataset(datasetId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> rawFuture = this.rawClient.updateDataset(datasetId);
+        CompletableFuture<DatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates the name or description of a dataset.
      */
     public CompletableFuture<DatasetResponse> updateDataset(String datasetId, RequestOptions requestOptions) {
-        return this.rawClient.updateDataset(datasetId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> rawFuture =
+                this.rawClient.updateDataset(datasetId, requestOptions);
+        CompletableFuture<DatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates the name or description of a dataset.
      */
     public CompletableFuture<DatasetResponse> updateDataset(String datasetId, UpdateDatasetRequest request) {
-        return this.rawClient.updateDataset(datasetId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> rawFuture =
+                this.rawClient.updateDataset(datasetId, request);
+        CompletableFuture<DatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -248,7 +426,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<DatasetResponse> updateDataset(
             String datasetId, UpdateDatasetRequest request, RequestOptions requestOptions) {
-        return this.rawClient.updateDataset(datasetId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetResponse>> rawFuture =
+                this.rawClient.updateDataset(datasetId, request, requestOptions);
+        CompletableFuture<DatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -256,7 +442,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<ManageEntitiesResponse> addEntitiesToDataset(
             String datasetId, AddEntitiesToDatasetRequest request) {
-        return this.rawClient.addEntitiesToDataset(datasetId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ManageEntitiesResponse>> rawFuture =
+                this.rawClient.addEntitiesToDataset(datasetId, request);
+        CompletableFuture<ManageEntitiesResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -264,9 +458,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<ManageEntitiesResponse> addEntitiesToDataset(
             String datasetId, AddEntitiesToDatasetRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .addEntitiesToDataset(datasetId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ManageEntitiesResponse>> rawFuture =
+                this.rawClient.addEntitiesToDataset(datasetId, request, requestOptions);
+        CompletableFuture<ManageEntitiesResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -274,7 +474,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<ManageEntitiesResponse> removeEntitiesFromDataset(
             String datasetId, RemoveEntitiesFromDatasetRequest request) {
-        return this.rawClient.removeEntitiesFromDataset(datasetId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ManageEntitiesResponse>> rawFuture =
+                this.rawClient.removeEntitiesFromDataset(datasetId, request);
+        CompletableFuture<ManageEntitiesResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -282,16 +490,30 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<ManageEntitiesResponse> removeEntitiesFromDataset(
             String datasetId, RemoveEntitiesFromDatasetRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .removeEntitiesFromDataset(datasetId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ManageEntitiesResponse>> rawFuture =
+                this.rawClient.removeEntitiesFromDataset(datasetId, request, requestOptions);
+        CompletableFuture<ManageEntitiesResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a paginated list of entities in a dataset. Supports filtering by status, entity type, and name search.
      */
     public CompletableFuture<DatasetEntityListResponse> listEntitiesInDataset(String datasetId) {
-        return this.rawClient.listEntitiesInDataset(datasetId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetEntityListResponse>> rawFuture =
+                this.rawClient.listEntitiesInDataset(datasetId);
+        CompletableFuture<DatasetEntityListResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -299,7 +521,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<DatasetEntityListResponse> listEntitiesInDataset(
             String datasetId, RequestOptions requestOptions) {
-        return this.rawClient.listEntitiesInDataset(datasetId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetEntityListResponse>> rawFuture =
+                this.rawClient.listEntitiesInDataset(datasetId, requestOptions);
+        CompletableFuture<DatasetEntityListResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -307,7 +537,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<DatasetEntityListResponse> listEntitiesInDataset(
             String datasetId, ListDatasetEntitiesRequest request) {
-        return this.rawClient.listEntitiesInDataset(datasetId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetEntityListResponse>> rawFuture =
+                this.rawClient.listEntitiesInDataset(datasetId, request);
+        CompletableFuture<DatasetEntityListResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -315,16 +553,30 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<DatasetEntityListResponse> listEntitiesInDataset(
             String datasetId, ListDatasetEntitiesRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .listEntitiesInDataset(datasetId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetEntityListResponse>> rawFuture =
+                this.rawClient.listEntitiesInDataset(datasetId, request, requestOptions);
+        CompletableFuture<DatasetEntityListResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns the full status change history for a dataset, ordered chronologically from oldest to newest.
      */
     public CompletableFuture<DatasetStatusHistoryResponse> getDatasetStatusHistory(String datasetId) {
-        return this.rawClient.getDatasetStatusHistory(datasetId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetStatusHistoryResponse>> rawFuture =
+                this.rawClient.getDatasetStatusHistory(datasetId);
+        CompletableFuture<DatasetStatusHistoryResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -332,7 +584,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<DatasetStatusHistoryResponse> getDatasetStatusHistory(
             String datasetId, RequestOptions requestOptions) {
-        return this.rawClient.getDatasetStatusHistory(datasetId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetStatusHistoryResponse>> rawFuture =
+                this.rawClient.getDatasetStatusHistory(datasetId, requestOptions);
+        CompletableFuture<DatasetStatusHistoryResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -340,7 +600,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<DatasetStatusHistoryResponse> getDatasetStatusHistory(
             String datasetId, GetDatasetStatusHistoryRequest request) {
-        return this.rawClient.getDatasetStatusHistory(datasetId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetStatusHistoryResponse>> rawFuture =
+                this.rawClient.getDatasetStatusHistory(datasetId, request);
+        CompletableFuture<DatasetStatusHistoryResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -348,9 +616,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<DatasetStatusHistoryResponse> getDatasetStatusHistory(
             String datasetId, GetDatasetStatusHistoryRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .getDatasetStatusHistory(datasetId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DatasetStatusHistoryResponse>> rawFuture =
+                this.rawClient.getDatasetStatusHistory(datasetId, request, requestOptions);
+        CompletableFuture<DatasetStatusHistoryResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -359,7 +633,15 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<UploadCsvToDatasetResponse> uploadCsvToDataset(
             String datasetId, File file, UploadCsvToDatasetRequest request) {
-        return this.rawClient.uploadCsvToDataset(datasetId, file, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> rawFuture =
+                this.rawClient.uploadCsvToDataset(datasetId, file, request);
+        CompletableFuture<UploadCsvToDatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -368,34 +650,66 @@ public class AsyncDatasetsClient {
      */
     public CompletableFuture<UploadCsvToDatasetResponse> uploadCsvToDataset(
             String datasetId, File file, UploadCsvToDatasetRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .uploadCsvToDataset(datasetId, file, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> rawFuture =
+                this.rawClient.uploadCsvToDataset(datasetId, file, request, requestOptions);
+        CompletableFuture<UploadCsvToDatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     public CompletableFuture<UploadCsvToDatasetResponse> uploadCsvToDataset(
             String datasetId, InputStream stream, String filename) {
-        return this.rawClient.uploadCsvToDataset(datasetId, stream, filename).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> rawFuture =
+                this.rawClient.uploadCsvToDataset(datasetId, stream, filename);
+        CompletableFuture<UploadCsvToDatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     public CompletableFuture<UploadCsvToDatasetResponse> uploadCsvToDataset(
             String datasetId, InputStream stream, String filename, MediaType mediaType) {
-        return this.rawClient
-                .uploadCsvToDataset(datasetId, stream, filename, mediaType)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> rawFuture =
+                this.rawClient.uploadCsvToDataset(datasetId, stream, filename, mediaType);
+        CompletableFuture<UploadCsvToDatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     public CompletableFuture<UploadCsvToDatasetResponse> uploadCsvToDataset(
             String datasetId, InputStream stream, String filename, RequestOptions requestOptions) {
-        return this.rawClient
-                .uploadCsvToDataset(datasetId, stream, filename, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> rawFuture =
+                this.rawClient.uploadCsvToDataset(datasetId, stream, filename, requestOptions);
+        CompletableFuture<UploadCsvToDatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     public CompletableFuture<UploadCsvToDatasetResponse> uploadCsvToDataset(
             String datasetId, InputStream stream, String filename, MediaType mediaType, RequestOptions requestOptions) {
-        return this.rawClient
-                .uploadCsvToDataset(datasetId, stream, filename, mediaType, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UploadCsvToDatasetResponse>> rawFuture =
+                this.rawClient.uploadCsvToDataset(datasetId, stream, filename, mediaType, requestOptions);
+        CompletableFuture<UploadCsvToDatasetResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

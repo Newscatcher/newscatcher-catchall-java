@@ -330,7 +330,6 @@ public final class EntityResponse {
 
         private Optional<String> description = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -558,6 +557,24 @@ public final class EntityResponse {
                     createdAt,
                     updatedAt,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("entity_type")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("external_entity_id")
+                    || key.equalsIgnoreCase("additional_attributes")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("created_by_user_id")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("updated_at")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -121,7 +121,6 @@ public final class EnrichmentSchema {
 
         private EnrichmentType type;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -166,6 +165,14 @@ public final class EnrichmentSchema {
         @java.lang.Override
         public EnrichmentSchema build() {
             return new EnrichmentSchema(name, description, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("name") || key.equalsIgnoreCase("description") || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

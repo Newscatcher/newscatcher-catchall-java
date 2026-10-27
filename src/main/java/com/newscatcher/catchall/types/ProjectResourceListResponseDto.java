@@ -180,7 +180,6 @@ public final class ProjectResourceListResponseDto {
 
         private List<ProjectResourceDto> resources = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -278,6 +277,18 @@ public final class ProjectResourceListResponseDto {
         public ProjectResourceListResponseDto build() {
             return new ProjectResourceListResponseDto(
                     total, page, pageSize, totalPages, resources, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("total")
+                    || key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")
+                    || key.equalsIgnoreCase("total_pages")
+                    || key.equalsIgnoreCase("resources")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

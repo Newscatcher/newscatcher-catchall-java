@@ -160,7 +160,6 @@ public final class ValidationReport {
 
         private List<SkippedRow> skippedRows = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -246,6 +245,17 @@ public final class ValidationReport {
         @java.lang.Override
         public ValidationReport build() {
             return new ValidationReport(totalRows, validRows, skippedCount, skippedRows, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("total_rows")
+                    || key.equalsIgnoreCase("valid_rows")
+                    || key.equalsIgnoreCase("skipped_count")
+                    || key.equalsIgnoreCase("skipped_rows")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

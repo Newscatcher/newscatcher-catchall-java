@@ -146,7 +146,6 @@ public final class GetUserJobsRequest {
 
         private Optional<GetUserJobsRequestMode> mode = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -244,6 +243,19 @@ public final class GetUserJobsRequest {
 
         public GetUserJobsRequest build() {
             return new GetUserJobsRequest(page, pageSize, search, ownership, projectId, mode, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")
+                    || key.equalsIgnoreCase("search")
+                    || key.equalsIgnoreCase("ownership")
+                    || key.equalsIgnoreCase("project_id")
+                    || key.equalsIgnoreCase("mode")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

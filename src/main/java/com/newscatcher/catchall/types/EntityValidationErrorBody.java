@@ -129,7 +129,6 @@ public final class EntityValidationErrorBody {
 
         private int statusCode;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -179,6 +178,16 @@ public final class EntityValidationErrorBody {
         @java.lang.Override
         public EntityValidationErrorBody build() {
             return new EntityValidationErrorBody(message, status, statusCode, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("message")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("status_code")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

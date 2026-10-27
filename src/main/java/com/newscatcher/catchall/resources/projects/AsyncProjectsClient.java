@@ -3,6 +3,7 @@
  */
 package com.newscatcher.catchall.resources.projects;
 
+import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.projects.requests.AddResourceRequestDto;
@@ -46,21 +47,44 @@ public class AsyncProjectsClient {
      * Returns all projects visible to the authenticated user.
      */
     public CompletableFuture<ProjectListResponseDto> listProjects() {
-        return this.rawClient.listProjects().thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectListResponseDto>> rawFuture = this.rawClient.listProjects();
+        CompletableFuture<ProjectListResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns all projects visible to the authenticated user.
      */
     public CompletableFuture<ProjectListResponseDto> listProjects(RequestOptions requestOptions) {
-        return this.rawClient.listProjects(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectListResponseDto>> rawFuture =
+                this.rawClient.listProjects(requestOptions);
+        CompletableFuture<ProjectListResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns all projects visible to the authenticated user.
      */
     public CompletableFuture<ProjectListResponseDto> listProjects(ListProjectsRequest request) {
-        return this.rawClient.listProjects(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectListResponseDto>> rawFuture =
+                this.rawClient.listProjects(request);
+        CompletableFuture<ProjectListResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -68,14 +92,30 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<ProjectListResponseDto> listProjects(
             ListProjectsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.listProjects(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectListResponseDto>> rawFuture =
+                this.rawClient.listProjects(request, requestOptions);
+        CompletableFuture<ProjectListResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Creates a new project.
      */
     public CompletableFuture<CreateProjectResponseDto> createProject(CreateProjectRequestDto request) {
-        return this.rawClient.createProject(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<CreateProjectResponseDto>> rawFuture =
+                this.rawClient.createProject(request);
+        CompletableFuture<CreateProjectResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -83,28 +123,59 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<CreateProjectResponseDto> createProject(
             CreateProjectRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.createProject(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<CreateProjectResponseDto>> rawFuture =
+                this.rawClient.createProject(request, requestOptions);
+        CompletableFuture<CreateProjectResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a single project by ID.
      */
     public CompletableFuture<ProjectResponseDto> getProject(String projectId) {
-        return this.rawClient.getProject(projectId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectResponseDto>> rawFuture = this.rawClient.getProject(projectId);
+        CompletableFuture<ProjectResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a single project by ID.
      */
     public CompletableFuture<ProjectResponseDto> getProject(String projectId, RequestOptions requestOptions) {
-        return this.rawClient.getProject(projectId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectResponseDto>> rawFuture =
+                this.rawClient.getProject(projectId, requestOptions);
+        CompletableFuture<ProjectResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a single project by ID.
      */
     public CompletableFuture<ProjectResponseDto> getProject(String projectId, GetProjectRequest request) {
-        return this.rawClient.getProject(projectId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectResponseDto>> rawFuture =
+                this.rawClient.getProject(projectId, request);
+        CompletableFuture<ProjectResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -112,7 +183,15 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<ProjectResponseDto> getProject(
             String projectId, GetProjectRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getProject(projectId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectResponseDto>> rawFuture =
+                this.rawClient.getProject(projectId, request, requestOptions);
+        CompletableFuture<ProjectResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -120,7 +199,14 @@ public class AsyncProjectsClient {
      * <p>Webhooks are an exception: they are never deleted by this operation, even when <code>delete_resources</code> is <code>true</code>. Any attached webhook is detached from the project and continues to exist and deliver, because the same webhook may be attached to other projects.</p>
      */
     public CompletableFuture<Void> deleteProject(String projectId) {
-        return this.rawClient.deleteProject(projectId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture = this.rawClient.deleteProject(projectId);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -128,7 +214,15 @@ public class AsyncProjectsClient {
      * <p>Webhooks are an exception: they are never deleted by this operation, even when <code>delete_resources</code> is <code>true</code>. Any attached webhook is detached from the project and continues to exist and deliver, because the same webhook may be attached to other projects.</p>
      */
     public CompletableFuture<Void> deleteProject(String projectId, RequestOptions requestOptions) {
-        return this.rawClient.deleteProject(projectId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.deleteProject(projectId, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -136,7 +230,14 @@ public class AsyncProjectsClient {
      * <p>Webhooks are an exception: they are never deleted by this operation, even when <code>delete_resources</code> is <code>true</code>. Any attached webhook is detached from the project and continues to exist and deliver, because the same webhook may be attached to other projects.</p>
      */
     public CompletableFuture<Void> deleteProject(String projectId, DeleteProjectRequest request) {
-        return this.rawClient.deleteProject(projectId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture = this.rawClient.deleteProject(projectId, request);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -145,21 +246,45 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<Void> deleteProject(
             String projectId, DeleteProjectRequest request, RequestOptions requestOptions) {
-        return this.rawClient.deleteProject(projectId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.deleteProject(projectId, request, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates the name or description of an existing project.
      */
     public CompletableFuture<UpdateProjectResponseDto> updateProject(String projectId) {
-        return this.rawClient.updateProject(projectId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UpdateProjectResponseDto>> rawFuture =
+                this.rawClient.updateProject(projectId);
+        CompletableFuture<UpdateProjectResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates the name or description of an existing project.
      */
     public CompletableFuture<UpdateProjectResponseDto> updateProject(String projectId, RequestOptions requestOptions) {
-        return this.rawClient.updateProject(projectId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UpdateProjectResponseDto>> rawFuture =
+                this.rawClient.updateProject(projectId, requestOptions);
+        CompletableFuture<UpdateProjectResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -167,7 +292,15 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<UpdateProjectResponseDto> updateProject(
             String projectId, UpdateProjectRequestDto request) {
-        return this.rawClient.updateProject(projectId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UpdateProjectResponseDto>> rawFuture =
+                this.rawClient.updateProject(projectId, request);
+        CompletableFuture<UpdateProjectResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -175,7 +308,15 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<UpdateProjectResponseDto> updateProject(
             String projectId, UpdateProjectRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.updateProject(projectId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UpdateProjectResponseDto>> rawFuture =
+                this.rawClient.updateProject(projectId, request, requestOptions);
+        CompletableFuture<UpdateProjectResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -183,7 +324,15 @@ public class AsyncProjectsClient {
      * <p>For <code>jobs</code> and <code>monitors</code>, counts are broken down by status (for example, <code>completed</code>, <code>failed</code>). For <code>datasets</code>, <code>monitor_groups</code>, and <code>webhooks</code>, only a <code>total</code> count is returned.</p>
      */
     public CompletableFuture<ProjectOverviewResponseDto> getProjectOverview(String projectId) {
-        return this.rawClient.getProjectOverview(projectId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectOverviewResponseDto>> rawFuture =
+                this.rawClient.getProjectOverview(projectId);
+        CompletableFuture<ProjectOverviewResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -192,7 +341,15 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<ProjectOverviewResponseDto> getProjectOverview(
             String projectId, RequestOptions requestOptions) {
-        return this.rawClient.getProjectOverview(projectId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectOverviewResponseDto>> rawFuture =
+                this.rawClient.getProjectOverview(projectId, requestOptions);
+        CompletableFuture<ProjectOverviewResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -201,7 +358,15 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<ProjectOverviewResponseDto> getProjectOverview(
             String projectId, GetProjectOverviewRequest request) {
-        return this.rawClient.getProjectOverview(projectId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectOverviewResponseDto>> rawFuture =
+                this.rawClient.getProjectOverview(projectId, request);
+        CompletableFuture<ProjectOverviewResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -210,16 +375,30 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<ProjectOverviewResponseDto> getProjectOverview(
             String projectId, GetProjectOverviewRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .getProjectOverview(projectId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectOverviewResponseDto>> rawFuture =
+                this.rawClient.getProjectOverview(projectId, request, requestOptions);
+        CompletableFuture<ProjectOverviewResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns all resources assigned to a project, with optional filtering by type.
      */
     public CompletableFuture<ProjectResourceListResponseDto> listProjectResources(String projectId) {
-        return this.rawClient.listProjectResources(projectId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectResourceListResponseDto>> rawFuture =
+                this.rawClient.listProjectResources(projectId);
+        CompletableFuture<ProjectResourceListResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -227,7 +406,15 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<ProjectResourceListResponseDto> listProjectResources(
             String projectId, RequestOptions requestOptions) {
-        return this.rawClient.listProjectResources(projectId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectResourceListResponseDto>> rawFuture =
+                this.rawClient.listProjectResources(projectId, requestOptions);
+        CompletableFuture<ProjectResourceListResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -235,7 +422,15 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<ProjectResourceListResponseDto> listProjectResources(
             String projectId, ListProjectResourcesRequest request) {
-        return this.rawClient.listProjectResources(projectId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectResourceListResponseDto>> rawFuture =
+                this.rawClient.listProjectResources(projectId, request);
+        CompletableFuture<ProjectResourceListResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -243,9 +438,15 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<ProjectResourceListResponseDto> listProjectResources(
             String projectId, ListProjectResourcesRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .listProjectResources(projectId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ProjectResourceListResponseDto>> rawFuture =
+                this.rawClient.listProjectResources(projectId, request, requestOptions);
+        CompletableFuture<ProjectResourceListResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -253,7 +454,15 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<AddResourceResponseDto> addResourceToProject(
             String projectId, AddResourceRequestDto request) {
-        return this.rawClient.addResourceToProject(projectId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<AddResourceResponseDto>> rawFuture =
+                this.rawClient.addResourceToProject(projectId, request);
+        CompletableFuture<AddResourceResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -261,9 +470,15 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<AddResourceResponseDto> addResourceToProject(
             String projectId, AddResourceRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient
-                .addResourceToProject(projectId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<AddResourceResponseDto>> rawFuture =
+                this.rawClient.addResourceToProject(projectId, request, requestOptions);
+        CompletableFuture<AddResourceResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -272,9 +487,15 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<RemoveResourceResponseDto> removeResourceFromProject(
             String projectId, ProjectResourceType resourceType, String resourceId) {
-        return this.rawClient
-                .removeResourceFromProject(projectId, resourceType, resourceId)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<RemoveResourceResponseDto>> rawFuture =
+                this.rawClient.removeResourceFromProject(projectId, resourceType, resourceId);
+        CompletableFuture<RemoveResourceResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -283,9 +504,15 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<RemoveResourceResponseDto> removeResourceFromProject(
             String projectId, ProjectResourceType resourceType, String resourceId, RequestOptions requestOptions) {
-        return this.rawClient
-                .removeResourceFromProject(projectId, resourceType, resourceId, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<RemoveResourceResponseDto>> rawFuture =
+                this.rawClient.removeResourceFromProject(projectId, resourceType, resourceId, requestOptions);
+        CompletableFuture<RemoveResourceResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -297,9 +524,15 @@ public class AsyncProjectsClient {
             ProjectResourceType resourceType,
             String resourceId,
             RemoveResourceFromProjectRequest request) {
-        return this.rawClient
-                .removeResourceFromProject(projectId, resourceType, resourceId, request)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<RemoveResourceResponseDto>> rawFuture =
+                this.rawClient.removeResourceFromProject(projectId, resourceType, resourceId, request);
+        CompletableFuture<RemoveResourceResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -312,8 +545,14 @@ public class AsyncProjectsClient {
             String resourceId,
             RemoveResourceFromProjectRequest request,
             RequestOptions requestOptions) {
-        return this.rawClient
-                .removeResourceFromProject(projectId, resourceType, resourceId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<RemoveResourceResponseDto>> rawFuture =
+                this.rawClient.removeResourceFromProject(projectId, resourceType, resourceId, request, requestOptions);
+        CompletableFuture<RemoveResourceResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

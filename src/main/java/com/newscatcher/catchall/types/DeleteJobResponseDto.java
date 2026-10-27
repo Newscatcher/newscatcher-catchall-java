@@ -156,7 +156,6 @@ public final class DeleteJobResponseDto {
 
         private Optional<String> message = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -255,6 +254,14 @@ public final class DeleteJobResponseDto {
         @java.lang.Override
         public DeleteJobResponseDto build() {
             return new DeleteJobResponseDto(success, message, jobId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("success") || key.equalsIgnoreCase("message") || key.equalsIgnoreCase("job_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

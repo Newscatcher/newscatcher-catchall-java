@@ -112,7 +112,6 @@ public final class TriggerWebhookRequest {
 
         private Optional<String> jobId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -162,6 +161,14 @@ public final class TriggerWebhookRequest {
         @java.lang.Override
         public TriggerWebhookRequest build() {
             return new TriggerWebhookRequest(webhookId, jobId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("webhook_id") || key.equalsIgnoreCase("job_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

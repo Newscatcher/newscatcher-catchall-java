@@ -359,7 +359,6 @@ public final class DatasetResponse {
 
         private Optional<String> description = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -625,6 +624,25 @@ public final class DatasetResponse {
                     createdAt,
                     updatedAt,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("entity_count")
+                    || key.equalsIgnoreCase("entity_status_breakdown")
+                    || key.equalsIgnoreCase("health_score")
+                    || key.equalsIgnoreCase("health_breakdown")
+                    || key.equalsIgnoreCase("latest_status")
+                    || key.equalsIgnoreCase("created_by_user_id")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("updated_at")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

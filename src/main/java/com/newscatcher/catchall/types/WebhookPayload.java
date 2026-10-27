@@ -203,7 +203,6 @@ public final class WebhookPayload {
 
         private Optional<List<MonitorRecord>> records = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -359,6 +358,22 @@ public final class WebhookPayload {
                     timezone,
                     records,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("monitor_id")
+                    || key.equalsIgnoreCase("reference_job_id")
+                    || key.equalsIgnoreCase("latest_job_id")
+                    || key.equalsIgnoreCase("records_count")
+                    || key.equalsIgnoreCase("jobs_processed")
+                    || key.equalsIgnoreCase("updated_at")
+                    || key.equalsIgnoreCase("cron_expression")
+                    || key.equalsIgnoreCase("timezone")
+                    || key.equalsIgnoreCase("records")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

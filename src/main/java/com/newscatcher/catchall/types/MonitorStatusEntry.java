@@ -209,7 +209,6 @@ public final class MonitorStatusEntry {
 
         private Optional<Map<String, Object>> additionalInformation = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -351,6 +350,16 @@ public final class MonitorStatusEntry {
         @java.lang.Override
         public MonitorStatusEntry build() {
             return new MonitorStatusEntry(status, createdAt, additionalInformation, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("additional_information")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

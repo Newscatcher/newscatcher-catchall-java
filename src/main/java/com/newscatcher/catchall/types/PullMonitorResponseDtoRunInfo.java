@@ -87,7 +87,6 @@ public final class PullMonitorResponseDtoRunInfo {
 
         private Optional<OffsetDateTime> lastRun = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -128,6 +127,14 @@ public final class PullMonitorResponseDtoRunInfo {
 
         public PullMonitorResponseDtoRunInfo build() {
             return new PullMonitorResponseDtoRunInfo(firstRun, lastRun, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("first_run") || key.equalsIgnoreCase("last_run")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

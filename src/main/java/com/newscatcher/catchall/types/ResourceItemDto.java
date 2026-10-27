@@ -101,7 +101,6 @@ public final class ResourceItemDto {
 
         private String resourceId;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -134,6 +133,14 @@ public final class ResourceItemDto {
         @java.lang.Override
         public ResourceItemDto build() {
             return new ResourceItemDto(resourceType, resourceId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("resource_type") || key.equalsIgnoreCase("resource_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

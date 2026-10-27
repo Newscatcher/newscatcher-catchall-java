@@ -433,7 +433,6 @@ public final class WebhookResponseDto {
 
         private Optional<Map<String, String>> headers = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -740,6 +739,28 @@ public final class WebhookResponseDto {
                     createdAt,
                     updatedAt,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("url")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("delivery_mode")
+                    || key.equalsIgnoreCase("method")
+                    || key.equalsIgnoreCase("headers")
+                    || key.equalsIgnoreCase("params")
+                    || key.equalsIgnoreCase("auth")
+                    || key.equalsIgnoreCase("formatter_config")
+                    || key.equalsIgnoreCase("is_active")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("created_by_user_id")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("updated_at")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

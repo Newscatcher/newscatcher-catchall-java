@@ -3,6 +3,7 @@
  */
 package com.newscatcher.catchall.resources.eventmonitors;
 
+import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.eventmonitors.requests.CreateMonitorRequestDto;
@@ -47,21 +48,44 @@ public class AsyncEventMonitorsClient {
      * Returns all event monitors created by the authenticated user.
      */
     public CompletableFuture<ListMonitorsResponseDto> listMonitors() {
-        return this.rawClient.listMonitors().thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> rawFuture = this.rawClient.listMonitors();
+        CompletableFuture<ListMonitorsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns all event monitors created by the authenticated user.
      */
     public CompletableFuture<ListMonitorsResponseDto> listMonitors(RequestOptions requestOptions) {
-        return this.rawClient.listMonitors(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> rawFuture =
+                this.rawClient.listMonitors(requestOptions);
+        CompletableFuture<ListMonitorsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns all event monitors created by the authenticated user.
      */
     public CompletableFuture<ListMonitorsResponseDto> listMonitors(ListMonitorsRequest request) {
-        return this.rawClient.listMonitors(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> rawFuture =
+                this.rawClient.listMonitors(request);
+        CompletableFuture<ListMonitorsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -69,14 +93,30 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<ListMonitorsResponseDto> listMonitors(
             ListMonitorsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.listMonitors(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListMonitorsResponseDto>> rawFuture =
+                this.rawClient.listMonitors(request, requestOptions);
+        CompletableFuture<ListMonitorsResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Create a scheduled event monitor based on a reference job.
      */
     public CompletableFuture<CreateMonitorResponseDto> createMonitor(CreateMonitorRequestDto request) {
-        return this.rawClient.createMonitor(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<CreateMonitorResponseDto>> rawFuture =
+                this.rawClient.createMonitor(request);
+        CompletableFuture<CreateMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -84,14 +124,30 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<CreateMonitorResponseDto> createMonitor(
             CreateMonitorRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.createMonitor(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<CreateMonitorResponseDto>> rawFuture =
+                this.rawClient.createMonitor(request, requestOptions);
+        CompletableFuture<CreateMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Retrieve aggregated results from all jobs executed by an event monitor.
      */
     public CompletableFuture<PullMonitorResponseDto> pullMonitorResults(String monitorId) {
-        return this.rawClient.pullMonitorResults(monitorId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<PullMonitorResponseDto>> rawFuture =
+                this.rawClient.pullMonitorResults(monitorId);
+        CompletableFuture<PullMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -99,7 +155,15 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<PullMonitorResponseDto> pullMonitorResults(
             String monitorId, RequestOptions requestOptions) {
-        return this.rawClient.pullMonitorResults(monitorId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<PullMonitorResponseDto>> rawFuture =
+                this.rawClient.pullMonitorResults(monitorId, requestOptions);
+        CompletableFuture<PullMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -107,7 +171,15 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<PullMonitorResponseDto> pullMonitorResults(
             String monitorId, PullMonitorResultsRequest request) {
-        return this.rawClient.pullMonitorResults(monitorId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<PullMonitorResponseDto>> rawFuture =
+                this.rawClient.pullMonitorResults(monitorId, request);
+        CompletableFuture<PullMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -115,9 +187,15 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<PullMonitorResponseDto> pullMonitorResults(
             String monitorId, PullMonitorResultsRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .pullMonitorResults(monitorId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<PullMonitorResponseDto>> rawFuture =
+                this.rawClient.pullMonitorResults(monitorId, request, requestOptions);
+        CompletableFuture<PullMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -125,7 +203,14 @@ public class AsyncEventMonitorsClient {
      * <p>If the event monitor's reference job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CompletableFuture<String> pullMonitorResultsCsv(String monitorId) {
-        return this.rawClient.pullMonitorResultsCsv(monitorId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<String>> rawFuture = this.rawClient.pullMonitorResultsCsv(monitorId);
+        CompletableFuture<String> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -133,7 +218,15 @@ public class AsyncEventMonitorsClient {
      * <p>If the event monitor's reference job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CompletableFuture<String> pullMonitorResultsCsv(String monitorId, RequestOptions requestOptions) {
-        return this.rawClient.pullMonitorResultsCsv(monitorId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<String>> rawFuture =
+                this.rawClient.pullMonitorResultsCsv(monitorId, requestOptions);
+        CompletableFuture<String> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -141,7 +234,15 @@ public class AsyncEventMonitorsClient {
      * <p>If the event monitor's reference job used connected entity datasets, connected entities are split into <code>event_associated_entities</code> and <code>mention_entities</code> JSON columns. When no entity dataset was used, those two columns are omitted from the export entirely.</p>
      */
     public CompletableFuture<String> pullMonitorResultsCsv(String monitorId, PullMonitorResultsCsvRequest request) {
-        return this.rawClient.pullMonitorResultsCsv(monitorId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<String>> rawFuture =
+                this.rawClient.pullMonitorResultsCsv(monitorId, request);
+        CompletableFuture<String> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -150,23 +251,45 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<String> pullMonitorResultsCsv(
             String monitorId, PullMonitorResultsCsvRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .pullMonitorResultsCsv(monitorId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<String>> rawFuture =
+                this.rawClient.pullMonitorResultsCsv(monitorId, request, requestOptions);
+        CompletableFuture<String> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Return all jobs executed by an event monitor.
      */
     public CompletableFuture<ListMonitorJobsResponse> listMonitorJobs(String monitorId) {
-        return this.rawClient.listMonitorJobs(monitorId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> rawFuture =
+                this.rawClient.listMonitorJobs(monitorId);
+        CompletableFuture<ListMonitorJobsResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Return all jobs executed by an event monitor.
      */
     public CompletableFuture<ListMonitorJobsResponse> listMonitorJobs(String monitorId, RequestOptions requestOptions) {
-        return this.rawClient.listMonitorJobs(monitorId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> rawFuture =
+                this.rawClient.listMonitorJobs(monitorId, requestOptions);
+        CompletableFuture<ListMonitorJobsResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -174,7 +297,15 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<ListMonitorJobsResponse> listMonitorJobs(
             String monitorId, ListMonitorJobsRequest request) {
-        return this.rawClient.listMonitorJobs(monitorId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> rawFuture =
+                this.rawClient.listMonitorJobs(monitorId, request);
+        CompletableFuture<ListMonitorJobsResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -182,16 +313,30 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<ListMonitorJobsResponse> listMonitorJobs(
             String monitorId, ListMonitorJobsRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .listMonitorJobs(monitorId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<ListMonitorJobsResponse>> rawFuture =
+                this.rawClient.listMonitorJobs(monitorId, request, requestOptions);
+        CompletableFuture<ListMonitorJobsResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns the full execution history of an event monitor as a list of status entries, ordered from newest to oldest.
      */
     public CompletableFuture<MonitorStatusHistoryResponseDto> getMonitorStatusHistory(String monitorId) {
-        return this.rawClient.getMonitorStatusHistory(monitorId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<MonitorStatusHistoryResponseDto>> rawFuture =
+                this.rawClient.getMonitorStatusHistory(monitorId);
+        CompletableFuture<MonitorStatusHistoryResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -199,7 +344,15 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<MonitorStatusHistoryResponseDto> getMonitorStatusHistory(
             String monitorId, RequestOptions requestOptions) {
-        return this.rawClient.getMonitorStatusHistory(monitorId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<MonitorStatusHistoryResponseDto>> rawFuture =
+                this.rawClient.getMonitorStatusHistory(monitorId, requestOptions);
+        CompletableFuture<MonitorStatusHistoryResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -207,7 +360,15 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<MonitorStatusHistoryResponseDto> getMonitorStatusHistory(
             String monitorId, GetMonitorStatusHistoryRequest request) {
-        return this.rawClient.getMonitorStatusHistory(monitorId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<MonitorStatusHistoryResponseDto>> rawFuture =
+                this.rawClient.getMonitorStatusHistory(monitorId, request);
+        CompletableFuture<MonitorStatusHistoryResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -215,30 +376,60 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<MonitorStatusHistoryResponseDto> getMonitorStatusHistory(
             String monitorId, GetMonitorStatusHistoryRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .getMonitorStatusHistory(monitorId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<MonitorStatusHistoryResponseDto>> rawFuture =
+                this.rawClient.getMonitorStatusHistory(monitorId, request, requestOptions);
+        CompletableFuture<MonitorStatusHistoryResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Resume scheduled job execution for an event monitor.
      */
     public CompletableFuture<EnableMonitorResponse> enableMonitor(String monitorId) {
-        return this.rawClient.enableMonitor(monitorId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EnableMonitorResponse>> rawFuture =
+                this.rawClient.enableMonitor(monitorId);
+        CompletableFuture<EnableMonitorResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Resume scheduled job execution for an event monitor.
      */
     public CompletableFuture<EnableMonitorResponse> enableMonitor(String monitorId, RequestOptions requestOptions) {
-        return this.rawClient.enableMonitor(monitorId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EnableMonitorResponse>> rawFuture =
+                this.rawClient.enableMonitor(monitorId, requestOptions);
+        CompletableFuture<EnableMonitorResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Resume scheduled job execution for an event monitor.
      */
     public CompletableFuture<EnableMonitorResponse> enableMonitor(String monitorId, EnableMonitorRequestDto request) {
-        return this.rawClient.enableMonitor(monitorId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EnableMonitorResponse>> rawFuture =
+                this.rawClient.enableMonitor(monitorId, request);
+        CompletableFuture<EnableMonitorResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -246,28 +437,60 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<EnableMonitorResponse> enableMonitor(
             String monitorId, EnableMonitorRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.enableMonitor(monitorId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EnableMonitorResponse>> rawFuture =
+                this.rawClient.enableMonitor(monitorId, request, requestOptions);
+        CompletableFuture<EnableMonitorResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Stop scheduled job execution for an event monitor.
      */
     public CompletableFuture<DisableMonitorResponse> disableMonitor(String monitorId) {
-        return this.rawClient.disableMonitor(monitorId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> rawFuture =
+                this.rawClient.disableMonitor(monitorId);
+        CompletableFuture<DisableMonitorResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Stop scheduled job execution for an event monitor.
      */
     public CompletableFuture<DisableMonitorResponse> disableMonitor(String monitorId, RequestOptions requestOptions) {
-        return this.rawClient.disableMonitor(monitorId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> rawFuture =
+                this.rawClient.disableMonitor(monitorId, requestOptions);
+        CompletableFuture<DisableMonitorResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Stop scheduled job execution for an event monitor.
      */
     public CompletableFuture<DisableMonitorResponse> disableMonitor(String monitorId, DisableMonitorRequest request) {
-        return this.rawClient.disableMonitor(monitorId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> rawFuture =
+                this.rawClient.disableMonitor(monitorId, request);
+        CompletableFuture<DisableMonitorResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -275,7 +498,15 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<DisableMonitorResponse> disableMonitor(
             String monitorId, DisableMonitorRequest request, RequestOptions requestOptions) {
-        return this.rawClient.disableMonitor(monitorId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DisableMonitorResponse>> rawFuture =
+                this.rawClient.disableMonitor(monitorId, request, requestOptions);
+        CompletableFuture<DisableMonitorResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -287,7 +518,15 @@ public class AsyncEventMonitorsClient {
      * <p>Deleting an already-deleted event monitor returns <code>200</code>.</p>
      */
     public CompletableFuture<DeleteMonitorResponseDto> deleteMonitor(String monitorId) {
-        return this.rawClient.deleteMonitor(monitorId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DeleteMonitorResponseDto>> rawFuture =
+                this.rawClient.deleteMonitor(monitorId);
+        CompletableFuture<DeleteMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -299,7 +538,15 @@ public class AsyncEventMonitorsClient {
      * <p>Deleting an already-deleted event monitor returns <code>200</code>.</p>
      */
     public CompletableFuture<DeleteMonitorResponseDto> deleteMonitor(String monitorId, RequestOptions requestOptions) {
-        return this.rawClient.deleteMonitor(monitorId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DeleteMonitorResponseDto>> rawFuture =
+                this.rawClient.deleteMonitor(monitorId, requestOptions);
+        CompletableFuture<DeleteMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -311,7 +558,15 @@ public class AsyncEventMonitorsClient {
      * <p>Deleting an already-deleted event monitor returns <code>200</code>.</p>
      */
     public CompletableFuture<DeleteMonitorResponseDto> deleteMonitor(String monitorId, DeleteMonitorRequest request) {
-        return this.rawClient.deleteMonitor(monitorId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DeleteMonitorResponseDto>> rawFuture =
+                this.rawClient.deleteMonitor(monitorId, request);
+        CompletableFuture<DeleteMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -324,7 +579,15 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<DeleteMonitorResponseDto> deleteMonitor(
             String monitorId, DeleteMonitorRequest request, RequestOptions requestOptions) {
-        return this.rawClient.deleteMonitor(monitorId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<DeleteMonitorResponseDto>> rawFuture =
+                this.rawClient.deleteMonitor(monitorId, request, requestOptions);
+        CompletableFuture<DeleteMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -335,7 +598,15 @@ public class AsyncEventMonitorsClient {
      * stops firing. The reference job cannot be changed.</p>
      */
     public CompletableFuture<UpdateMonitorResponseDto> updateMonitor(String monitorId) {
-        return this.rawClient.updateMonitor(monitorId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> rawFuture =
+                this.rawClient.updateMonitor(monitorId);
+        CompletableFuture<UpdateMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -346,7 +617,15 @@ public class AsyncEventMonitorsClient {
      * stops firing. The reference job cannot be changed.</p>
      */
     public CompletableFuture<UpdateMonitorResponseDto> updateMonitor(String monitorId, RequestOptions requestOptions) {
-        return this.rawClient.updateMonitor(monitorId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> rawFuture =
+                this.rawClient.updateMonitor(monitorId, requestOptions);
+        CompletableFuture<UpdateMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -358,7 +637,15 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<UpdateMonitorResponseDto> updateMonitor(
             String monitorId, UpdateMonitorRequestDto request) {
-        return this.rawClient.updateMonitor(monitorId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> rawFuture =
+                this.rawClient.updateMonitor(monitorId, request);
+        CompletableFuture<UpdateMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -370,6 +657,14 @@ public class AsyncEventMonitorsClient {
      */
     public CompletableFuture<UpdateMonitorResponseDto> updateMonitor(
             String monitorId, UpdateMonitorRequestDto request, RequestOptions requestOptions) {
-        return this.rawClient.updateMonitor(monitorId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<UpdateMonitorResponseDto>> rawFuture =
+                this.rawClient.updateMonitor(monitorId, request, requestOptions);
+        CompletableFuture<UpdateMonitorResponseDto> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

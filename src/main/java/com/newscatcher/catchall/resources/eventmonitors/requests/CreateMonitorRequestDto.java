@@ -242,7 +242,6 @@ public final class CreateMonitorRequestDto {
 
         private Optional<String> timezone = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -396,6 +395,20 @@ public final class CreateMonitorRequestDto {
         public CreateMonitorRequestDto build() {
             return new CreateMonitorRequestDto(
                     referenceJobId, schedule, timezone, webhookIds, limit, backfill, projectId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("reference_job_id")
+                    || key.equalsIgnoreCase("schedule")
+                    || key.equalsIgnoreCase("timezone")
+                    || key.equalsIgnoreCase("webhook_ids")
+                    || key.equalsIgnoreCase("limit")
+                    || key.equalsIgnoreCase("backfill")
+                    || key.equalsIgnoreCase("project_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

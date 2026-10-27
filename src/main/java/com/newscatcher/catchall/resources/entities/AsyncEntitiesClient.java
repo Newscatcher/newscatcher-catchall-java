@@ -3,6 +3,7 @@
  */
 package com.newscatcher.catchall.resources.entities;
 
+import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
 import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.resources.entities.requests.CreateEntitiesBatchRequest;
@@ -38,21 +39,43 @@ public class AsyncEntitiesClient {
      * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public CompletableFuture<EntityListResponse> listEntities() {
-        return this.rawClient.listEntities().thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EntityListResponse>> rawFuture = this.rawClient.listEntities();
+        CompletableFuture<EntityListResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public CompletableFuture<EntityListResponse> listEntities(RequestOptions requestOptions) {
-        return this.rawClient.listEntities(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EntityListResponse>> rawFuture =
+                this.rawClient.listEntities(requestOptions);
+        CompletableFuture<EntityListResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a paginated list of entities belonging to the authenticated organization. Supports filtering by status and entity type, and sorting by name, status, or creation date.
      */
     public CompletableFuture<EntityListResponse> listEntities(ListEntitiesRequest request) {
-        return this.rawClient.listEntities(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EntityListResponse>> rawFuture = this.rawClient.listEntities(request);
+        CompletableFuture<EntityListResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -60,7 +83,15 @@ public class AsyncEntitiesClient {
      */
     public CompletableFuture<EntityListResponse> listEntities(
             ListEntitiesRequest request, RequestOptions requestOptions) {
-        return this.rawClient.listEntities(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EntityListResponse>> rawFuture =
+                this.rawClient.listEntities(request, requestOptions);
+        CompletableFuture<EntityListResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -70,7 +101,15 @@ public class AsyncEntitiesClient {
      * enrichment completes.</p>
      */
     public CompletableFuture<CreateEntityResponse> createEntity(CreateEntityRequest request) {
-        return this.rawClient.createEntity(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<CreateEntityResponse>> rawFuture =
+                this.rawClient.createEntity(request);
+        CompletableFuture<CreateEntityResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -81,7 +120,15 @@ public class AsyncEntitiesClient {
      */
     public CompletableFuture<CreateEntityResponse> createEntity(
             CreateEntityRequest request, RequestOptions requestOptions) {
-        return this.rawClient.createEntity(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<CreateEntityResponse>> rawFuture =
+                this.rawClient.createEntity(request, requestOptions);
+        CompletableFuture<CreateEntityResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -90,7 +137,15 @@ public class AsyncEntitiesClient {
      * <p>Returns an array of <code>{id, status}</code> objects in the same order as the input array.</p>
      */
     public CompletableFuture<CreateEntitiesBatchResponse> createEntitiesBatch(CreateEntitiesBatchRequest request) {
-        return this.rawClient.createEntitiesBatch(request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<CreateEntitiesBatchResponse>> rawFuture =
+                this.rawClient.createEntitiesBatch(request);
+        CompletableFuture<CreateEntitiesBatchResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -100,28 +155,59 @@ public class AsyncEntitiesClient {
      */
     public CompletableFuture<CreateEntitiesBatchResponse> createEntitiesBatch(
             CreateEntitiesBatchRequest request, RequestOptions requestOptions) {
-        return this.rawClient.createEntitiesBatch(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<CreateEntitiesBatchResponse>> rawFuture =
+                this.rawClient.createEntitiesBatch(request, requestOptions);
+        CompletableFuture<CreateEntitiesBatchResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a single entity by ID with all attributes and current status.
      */
     public CompletableFuture<EntityResponse> getEntity(String entityId) {
-        return this.rawClient.getEntity(entityId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EntityResponse>> rawFuture = this.rawClient.getEntity(entityId);
+        CompletableFuture<EntityResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a single entity by ID with all attributes and current status.
      */
     public CompletableFuture<EntityResponse> getEntity(String entityId, RequestOptions requestOptions) {
-        return this.rawClient.getEntity(entityId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EntityResponse>> rawFuture =
+                this.rawClient.getEntity(entityId, requestOptions);
+        CompletableFuture<EntityResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a single entity by ID with all attributes and current status.
      */
     public CompletableFuture<EntityResponse> getEntity(String entityId, GetEntityRequest request) {
-        return this.rawClient.getEntity(entityId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EntityResponse>> rawFuture =
+                this.rawClient.getEntity(entityId, request);
+        CompletableFuture<EntityResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -129,7 +215,15 @@ public class AsyncEntitiesClient {
      */
     public CompletableFuture<EntityResponse> getEntity(
             String entityId, GetEntityRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getEntity(entityId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EntityResponse>> rawFuture =
+                this.rawClient.getEntity(entityId, request, requestOptions);
+        CompletableFuture<EntityResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -137,7 +231,14 @@ public class AsyncEntitiesClient {
      * datasets and the search index. This operation cannot be undone.
      */
     public CompletableFuture<Void> deleteEntity(String entityId) {
-        return this.rawClient.deleteEntity(entityId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture = this.rawClient.deleteEntity(entityId);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -145,7 +246,15 @@ public class AsyncEntitiesClient {
      * datasets and the search index. This operation cannot be undone.
      */
     public CompletableFuture<Void> deleteEntity(String entityId, RequestOptions requestOptions) {
-        return this.rawClient.deleteEntity(entityId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.deleteEntity(entityId, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -153,7 +262,14 @@ public class AsyncEntitiesClient {
      * datasets and the search index. This operation cannot be undone.
      */
     public CompletableFuture<Void> deleteEntity(String entityId, DeleteEntityRequest request) {
-        return this.rawClient.deleteEntity(entityId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture = this.rawClient.deleteEntity(entityId, request);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -162,28 +278,59 @@ public class AsyncEntitiesClient {
      */
     public CompletableFuture<Void> deleteEntity(
             String entityId, DeleteEntityRequest request, RequestOptions requestOptions) {
-        return this.rawClient.deleteEntity(entityId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<Void>> rawFuture =
+                this.rawClient.deleteEntity(entityId, request, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates one or more fields of an existing entity.
      */
     public CompletableFuture<EntityResponse> updateEntity(String entityId) {
-        return this.rawClient.updateEntity(entityId).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EntityResponse>> rawFuture = this.rawClient.updateEntity(entityId);
+        CompletableFuture<EntityResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates one or more fields of an existing entity.
      */
     public CompletableFuture<EntityResponse> updateEntity(String entityId, RequestOptions requestOptions) {
-        return this.rawClient.updateEntity(entityId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EntityResponse>> rawFuture =
+                this.rawClient.updateEntity(entityId, requestOptions);
+        CompletableFuture<EntityResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates one or more fields of an existing entity.
      */
     public CompletableFuture<EntityResponse> updateEntity(String entityId, UpdateEntityRequest request) {
-        return this.rawClient.updateEntity(entityId, request).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EntityResponse>> rawFuture =
+                this.rawClient.updateEntity(entityId, request);
+        CompletableFuture<EntityResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -191,6 +338,14 @@ public class AsyncEntitiesClient {
      */
     public CompletableFuture<EntityResponse> updateEntity(
             String entityId, UpdateEntityRequest request, RequestOptions requestOptions) {
-        return this.rawClient.updateEntity(entityId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<CatchAllApiHttpResponse<EntityResponse>> rawFuture =
+                this.rawClient.updateEntity(entityId, request, requestOptions);
+        CompletableFuture<EntityResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

@@ -69,7 +69,6 @@ public final class ValidationErrorResponse {
     public static final class Builder {
         private Optional<List<ValidationErrorDetail>> detail = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -92,6 +91,14 @@ public final class ValidationErrorResponse {
 
         public ValidationErrorResponse build() {
             return new ValidationErrorResponse(detail, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("detail")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

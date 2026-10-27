@@ -203,7 +203,6 @@ public final class MonitorCitation implements ICitation {
 
         private OffsetDateTime addedOn;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -288,6 +287,19 @@ public final class MonitorCitation implements ICitation {
         @java.lang.Override
         public MonitorCitation build() {
             return new MonitorCitation(title, link, publishedDate, id, jobId, addedOn, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("title")
+                    || key.equalsIgnoreCase("link")
+                    || key.equalsIgnoreCase("published_date")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("job_id")
+                    || key.equalsIgnoreCase("added_on")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

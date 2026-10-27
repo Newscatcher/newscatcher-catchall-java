@@ -150,7 +150,6 @@ public final class CreateProjectResponseDto {
 
         private String name;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -211,6 +210,17 @@ public final class CreateProjectResponseDto {
         @java.lang.Override
         public CreateProjectResponseDto build() {
             return new CreateProjectResponseDto(success, message, projectId, name, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("success")
+                    || key.equalsIgnoreCase("message")
+                    || key.equalsIgnoreCase("project_id")
+                    || key.equalsIgnoreCase("name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

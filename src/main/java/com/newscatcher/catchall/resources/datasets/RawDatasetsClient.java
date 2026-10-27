@@ -4,6 +4,7 @@
 package com.newscatcher.catchall.resources.datasets;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.newscatcher.catchall.core.BodyProperties;
 import com.newscatcher.catchall.core.CatchAllApiApiException;
 import com.newscatcher.catchall.core.CatchAllApiException;
 import com.newscatcher.catchall.core.CatchAllApiHttpResponse;
@@ -11,6 +12,7 @@ import com.newscatcher.catchall.core.ClientOptions;
 import com.newscatcher.catchall.core.FileStream;
 import com.newscatcher.catchall.core.MediaTypes;
 import com.newscatcher.catchall.core.ObjectMappers;
+import com.newscatcher.catchall.core.PathSegments;
 import com.newscatcher.catchall.core.QueryStringMapper;
 import com.newscatcher.catchall.core.RequestOptions;
 import com.newscatcher.catchall.core.RetryInterceptor;
@@ -209,7 +211,9 @@ public class RawDatasetsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -371,13 +375,23 @@ public class RawDatasetsClient {
         }
     }
 
-    public CatchAllApiHttpResponse<CreateDatasetCsvResponse> createDatasetFromCsv(InputStream stream, String filename) {
+    public CatchAllApiHttpResponse<CreateDatasetCsvResponse> createDatasetFromCsv(
+            CreateDatasetFromCsvRequest request, InputStream stream, String filename) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets/upload");
         FileStream fs = new FileStream(stream, filename, null);
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+        try {
+            multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+            multipartBodyBuilder.addFormDataPart("name", request.getName());
+            if (request.getDescription().isPresent()) {
+                multipartBodyBuilder.addFormDataPart(
+                        "description", request.getDescription().get());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         RequestBody body = multipartBodyBuilder.build();
         Request.Builder _requestBuilder = new Request.Builder();
         _requestBuilder.url(httpUrl.build());
@@ -420,13 +434,22 @@ public class RawDatasetsClient {
     }
 
     public CatchAllApiHttpResponse<CreateDatasetCsvResponse> createDatasetFromCsv(
-            InputStream stream, String filename, MediaType mediaType) {
+            CreateDatasetFromCsvRequest request, InputStream stream, String filename, MediaType mediaType) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets/upload");
         FileStream fs = new FileStream(stream, filename, mediaType);
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+        try {
+            multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+            multipartBodyBuilder.addFormDataPart("name", request.getName());
+            if (request.getDescription().isPresent()) {
+                multipartBodyBuilder.addFormDataPart(
+                        "description", request.getDescription().get());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         RequestBody body = multipartBodyBuilder.build();
         Request.Builder _requestBuilder = new Request.Builder();
         _requestBuilder.url(httpUrl.build());
@@ -469,7 +492,7 @@ public class RawDatasetsClient {
     }
 
     public CatchAllApiHttpResponse<CreateDatasetCsvResponse> createDatasetFromCsv(
-            InputStream stream, String filename, RequestOptions requestOptions) {
+            CreateDatasetFromCsvRequest request, InputStream stream, String filename, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets/upload");
@@ -480,7 +503,16 @@ public class RawDatasetsClient {
         }
         FileStream fs = new FileStream(stream, filename, null);
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+        try {
+            multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+            multipartBodyBuilder.addFormDataPart("name", request.getName());
+            if (request.getDescription().isPresent()) {
+                multipartBodyBuilder.addFormDataPart(
+                        "description", request.getDescription().get());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         RequestBody body = multipartBodyBuilder.build();
         Request.Builder _requestBuilder = new Request.Builder();
         _requestBuilder.url(httpUrl.build());
@@ -535,7 +567,11 @@ public class RawDatasetsClient {
     }
 
     public CatchAllApiHttpResponse<CreateDatasetCsvResponse> createDatasetFromCsv(
-            InputStream stream, String filename, MediaType mediaType, RequestOptions requestOptions) {
+            CreateDatasetFromCsvRequest request,
+            InputStream stream,
+            String filename,
+            MediaType mediaType,
+            RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets/upload");
@@ -546,7 +582,16 @@ public class RawDatasetsClient {
         }
         FileStream fs = new FileStream(stream, filename, mediaType);
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+        try {
+            multipartBodyBuilder.addFormDataPart("file", filename, fs.toRequestBody());
+            multipartBodyBuilder.addFormDataPart("name", request.getName());
+            if (request.getDescription().isPresent()) {
+                multipartBodyBuilder.addFormDataPart(
+                        "description", request.getDescription().get());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         RequestBody body = multipartBodyBuilder.build();
         Request.Builder _requestBuilder = new Request.Builder();
         _requestBuilder.url(httpUrl.build());
@@ -629,7 +674,7 @@ public class RawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId);
+                .addPathSegment(PathSegments.validate(datasetId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -723,7 +768,7 @@ public class RawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId);
+                .addPathSegment(PathSegments.validate(datasetId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -731,7 +776,10 @@ public class RawDatasetsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -808,7 +856,7 @@ public class RawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId);
+                .addPathSegment(PathSegments.validate(datasetId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -817,7 +865,9 @@ public class RawDatasetsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -893,7 +943,7 @@ public class RawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("entities");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -903,7 +953,9 @@ public class RawDatasetsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request.getBody(), requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -980,7 +1032,7 @@ public class RawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("entities");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -990,7 +1042,9 @@ public class RawDatasetsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request.getBody(), requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -1084,7 +1138,7 @@ public class RawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("entities")
                 .addPathSegments("list");
         if (requestOptions != null) {
@@ -1095,7 +1149,9 @@ public class RawDatasetsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new CatchAllApiException("Failed to serialize request", e);
         }
@@ -1189,7 +1245,7 @@ public class RawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("status");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1266,7 +1322,7 @@ public class RawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("upload");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1343,7 +1399,7 @@ public class RawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("upload");
         FileStream fs = new FileStream(stream, filename, null);
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -1397,7 +1453,7 @@ public class RawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("upload");
         FileStream fs = new FileStream(stream, filename, mediaType);
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -1451,7 +1507,7 @@ public class RawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("upload");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1522,7 +1578,7 @@ public class RawDatasetsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("catchAll/datasets")
-                .addPathSegment(datasetId)
+                .addPathSegment(PathSegments.validate(datasetId))
                 .addPathSegments("upload");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {

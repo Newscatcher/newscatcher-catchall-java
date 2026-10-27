@@ -105,7 +105,6 @@ public final class BasicAuthResponseDto {
 
         private Optional<String> password = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -168,6 +167,14 @@ public final class BasicAuthResponseDto {
 
         public BasicAuthResponseDto build() {
             return new BasicAuthResponseDto(username, password, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("username") || key.equalsIgnoreCase("password")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

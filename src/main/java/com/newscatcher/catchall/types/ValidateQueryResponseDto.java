@@ -201,7 +201,6 @@ public final class ValidateQueryResponseDto {
 
         private Optional<String> description = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -314,6 +313,19 @@ public final class ValidateQueryResponseDto {
         public ValidateQueryResponseDto build() {
             return new ValidateQueryResponseDto(
                     status, title, description, issues, suggestions, confidence, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("title")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("issues")
+                    || key.equalsIgnoreCase("suggestions")
+                    || key.equalsIgnoreCase("confidence")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

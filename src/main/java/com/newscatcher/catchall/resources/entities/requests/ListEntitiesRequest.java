@@ -177,7 +177,6 @@ public final class ListEntitiesRequest {
 
         private Optional<String> projectId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -297,6 +296,21 @@ public final class ListEntitiesRequest {
         public ListEntitiesRequest build() {
             return new ListEntitiesRequest(
                     page, pageSize, search, status, entityType, sortBy, sortOrder, projectId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")
+                    || key.equalsIgnoreCase("search")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("entity_type")
+                    || key.equalsIgnoreCase("sort_by")
+                    || key.equalsIgnoreCase("sort_order")
+                    || key.equalsIgnoreCase("project_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -620,7 +620,6 @@ public final class PullJobResponseDto {
 
         private Optional<String> query = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -1172,6 +1171,35 @@ public final class PullJobResponseDto {
                     sharingInfo,
                     allRecords,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("job_id")
+                    || key.equalsIgnoreCase("query")
+                    || key.equalsIgnoreCase("context")
+                    || key.equalsIgnoreCase("validators")
+                    || key.equalsIgnoreCase("enrichments")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("error")
+                    || key.equalsIgnoreCase("limit")
+                    || key.equalsIgnoreCase("duration")
+                    || key.equalsIgnoreCase("candidate_records")
+                    || key.equalsIgnoreCase("valid_records")
+                    || key.equalsIgnoreCase("progress_validated")
+                    || key.equalsIgnoreCase("date_range")
+                    || key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")
+                    || key.equalsIgnoreCase("total_pages")
+                    || key.equalsIgnoreCase("mode")
+                    || key.equalsIgnoreCase("connected_datasets")
+                    || key.equalsIgnoreCase("source_groups")
+                    || key.equalsIgnoreCase("is_all_news_query")
+                    || key.equalsIgnoreCase("sharing_info")
+                    || key.equalsIgnoreCase("all_records")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

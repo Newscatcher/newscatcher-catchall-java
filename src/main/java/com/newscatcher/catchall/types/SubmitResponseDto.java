@@ -86,7 +86,6 @@ public final class SubmitResponseDto {
     public static final class Builder implements JobIdStage, _FinalStage {
         private String jobId;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -111,6 +110,14 @@ public final class SubmitResponseDto {
         @java.lang.Override
         public SubmitResponseDto build() {
             return new SubmitResponseDto(jobId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("job_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

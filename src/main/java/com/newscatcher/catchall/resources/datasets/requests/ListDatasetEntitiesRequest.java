@@ -155,7 +155,6 @@ public final class ListDatasetEntitiesRequest {
 
         private Optional<SortOrder> sortOrder = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -260,6 +259,20 @@ public final class ListDatasetEntitiesRequest {
         public ListDatasetEntitiesRequest build() {
             return new ListDatasetEntitiesRequest(
                     page, pageSize, search, status, entityType, sortBy, sortOrder, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")
+                    || key.equalsIgnoreCase("search")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("entity_type")
+                    || key.equalsIgnoreCase("sort_by")
+                    || key.equalsIgnoreCase("sort_order")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

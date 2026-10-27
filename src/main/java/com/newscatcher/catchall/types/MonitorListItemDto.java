@@ -337,7 +337,6 @@ public final class MonitorListItemDto {
 
         private Optional<String> schedule = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -573,6 +572,24 @@ public final class MonitorListItemDto {
                     userKey,
                     sharingInfo,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("monitor_id")
+                    || key.equalsIgnoreCase("reference_job_id")
+                    || key.equalsIgnoreCase("reference_job_query")
+                    || key.equalsIgnoreCase("enabled")
+                    || key.equalsIgnoreCase("schedule")
+                    || key.equalsIgnoreCase("schedule_human_readable")
+                    || key.equalsIgnoreCase("timezone")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("webhook")
+                    || key.equalsIgnoreCase("user_key")
+                    || key.equalsIgnoreCase("sharing_info")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

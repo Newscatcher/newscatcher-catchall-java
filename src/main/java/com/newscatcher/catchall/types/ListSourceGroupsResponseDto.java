@@ -158,7 +158,6 @@ public final class ListSourceGroupsResponseDto {
 
         private List<SourceGroupRef> sourceGroups = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -243,6 +242,17 @@ public final class ListSourceGroupsResponseDto {
         @java.lang.Override
         public ListSourceGroupsResponseDto build() {
             return new ListSourceGroupsResponseDto(sourceGroups, total, page, pageSize, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("source_groups")
+                    || key.equalsIgnoreCase("total")
+                    || key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

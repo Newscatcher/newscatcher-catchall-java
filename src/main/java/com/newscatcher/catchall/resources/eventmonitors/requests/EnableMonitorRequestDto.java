@@ -71,7 +71,6 @@ public final class EnableMonitorRequestDto {
     public static final class Builder {
         private Optional<Boolean> backfill = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -98,6 +97,14 @@ public final class EnableMonitorRequestDto {
 
         public EnableMonitorRequestDto build() {
             return new EnableMonitorRequestDto(backfill, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("backfill")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

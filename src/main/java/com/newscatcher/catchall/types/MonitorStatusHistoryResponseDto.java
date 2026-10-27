@@ -225,7 +225,6 @@ public final class MonitorStatusHistoryResponseDto {
 
         private Optional<String> message = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -399,6 +398,18 @@ public final class MonitorStatusHistoryResponseDto {
         public MonitorStatusHistoryResponseDto build() {
             return new MonitorStatusHistoryResponseDto(
                     success, message, monitorId, totalStatuses, statuses, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("success")
+                    || key.equalsIgnoreCase("message")
+                    || key.equalsIgnoreCase("monitor_id")
+                    || key.equalsIgnoreCase("total_statuses")
+                    || key.equalsIgnoreCase("statuses")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

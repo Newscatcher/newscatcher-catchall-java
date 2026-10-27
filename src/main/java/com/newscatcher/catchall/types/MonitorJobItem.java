@@ -128,7 +128,6 @@ public final class MonitorJobItem {
 
         private OffsetDateTime endDate;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -177,6 +176,16 @@ public final class MonitorJobItem {
         @java.lang.Override
         public MonitorJobItem build() {
             return new MonitorJobItem(jobId, startDate, endDate, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("job_id")
+                    || key.equalsIgnoreCase("start_date")
+                    || key.equalsIgnoreCase("end_date")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

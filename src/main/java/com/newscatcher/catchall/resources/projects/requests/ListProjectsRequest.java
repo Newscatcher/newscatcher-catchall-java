@@ -115,7 +115,6 @@ public final class ListProjectsRequest {
 
         private Optional<OwnershipFilter> ownership = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -183,6 +182,17 @@ public final class ListProjectsRequest {
 
         public ListProjectsRequest build() {
             return new ListProjectsRequest(page, pageSize, search, ownership, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")
+                    || key.equalsIgnoreCase("search")
+                    || key.equalsIgnoreCase("ownership")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

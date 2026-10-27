@@ -135,7 +135,6 @@ public final class SharingInfo {
 
         private String sharedBy;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -185,6 +184,16 @@ public final class SharingInfo {
         @java.lang.Override
         public SharingInfo build() {
             return new SharingInfo(sharedAt, permission, sharedBy, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("shared_at")
+                    || key.equalsIgnoreCase("permission")
+                    || key.equalsIgnoreCase("shared_by")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

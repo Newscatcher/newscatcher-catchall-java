@@ -131,7 +131,6 @@ public final class Citation implements ICitation {
 
         private OffsetDateTime publishedDate;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -180,6 +179,16 @@ public final class Citation implements ICitation {
         @java.lang.Override
         public Citation build() {
             return new Citation(title, link, publishedDate, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("title")
+                    || key.equalsIgnoreCase("link")
+                    || key.equalsIgnoreCase("published_date")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

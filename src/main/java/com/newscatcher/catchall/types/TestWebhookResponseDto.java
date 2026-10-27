@@ -156,7 +156,6 @@ public final class TestWebhookResponseDto {
 
         private Optional<Integer> httpStatusCode = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -235,6 +234,17 @@ public final class TestWebhookResponseDto {
         @java.lang.Override
         public TestWebhookResponseDto build() {
             return new TestWebhookResponseDto(success, message, httpStatusCode, responseBody, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("success")
+                    || key.equalsIgnoreCase("message")
+                    || key.equalsIgnoreCase("http_status_code")
+                    || key.equalsIgnoreCase("response_body")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -113,7 +113,6 @@ public final class FormatterConfigDto {
 
         private Optional<String> contentType = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -163,6 +162,14 @@ public final class FormatterConfigDto {
         @java.lang.Override
         public FormatterConfigDto build() {
             return new FormatterConfigDto(template, contentType, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("template") || key.equalsIgnoreCase("content_type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -73,7 +73,6 @@ public final class CreateEntitiesBatchRequest {
     public static final class Builder {
         private List<CreateEntityRequest> entities = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -110,6 +109,14 @@ public final class CreateEntitiesBatchRequest {
 
         public CreateEntitiesBatchRequest build() {
             return new CreateEntitiesBatchRequest(entities, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("entities")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

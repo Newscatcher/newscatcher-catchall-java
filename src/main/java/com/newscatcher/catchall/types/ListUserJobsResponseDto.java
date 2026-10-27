@@ -180,7 +180,6 @@ public final class ListUserJobsResponseDto {
 
         private List<UserJob> jobs = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -277,6 +276,18 @@ public final class ListUserJobsResponseDto {
         @java.lang.Override
         public ListUserJobsResponseDto build() {
             return new ListUserJobsResponseDto(total, page, pageSize, totalPages, jobs, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("total")
+                    || key.equalsIgnoreCase("page")
+                    || key.equalsIgnoreCase("page_size")
+                    || key.equalsIgnoreCase("total_pages")
+                    || key.equalsIgnoreCase("jobs")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -167,7 +167,6 @@ public final class CreateEntityRequest {
 
         private Optional<EntityType> entityType = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -263,6 +262,18 @@ public final class CreateEntityRequest {
         public CreateEntityRequest build() {
             return new CreateEntityRequest(
                     name, entityType, description, externalEntityId, additionalAttributes, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("entity_type")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("external_entity_id")
+                    || key.equalsIgnoreCase("additional_attributes")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -149,7 +149,6 @@ public final class CreateDatasetCsvResponse {
 
         private ValidationReport validationReport;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -207,6 +206,17 @@ public final class CreateDatasetCsvResponse {
         public CreateDatasetCsvResponse build() {
             return new CreateDatasetCsvResponse(
                     datasetId, datasetName, entitiesCreated, validationReport, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("dataset_id")
+                    || key.equalsIgnoreCase("dataset_name")
+                    || key.equalsIgnoreCase("entities_created")
+                    || key.equalsIgnoreCase("validation_report")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override
